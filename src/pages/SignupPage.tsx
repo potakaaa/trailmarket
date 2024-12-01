@@ -5,6 +5,7 @@ import "./SignupPage.css";
 
 const SignupPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
+
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
 
@@ -18,14 +19,17 @@ const SignupPage = () => {
     event.preventDefault();
 
     if (input.password === input.passwordconfirm) {
-        await supabase
-        .from('DIM_USER')
-        .insert({ STUDENT_ID: input.id, USER_NAME: input.name, USER_EMAIL: input.email, USER_PASS: input.password })
+      await supabase
+        .from("DIM_USER")
+        .insert({
+          STUDENT_ID: input.id,
+          USER_NAME: input.name,
+          USER_EMAIL: input.email,
+          USER_PASS: input.password,
+        });
+    } else {
+      alert("Failed confirmed password attempt!");
     }
-    else{
-      alert("Failed confirmed password attempt!")
-    }
-
   }
 
   return (
@@ -36,9 +40,27 @@ const SignupPage = () => {
           <h3>The exclusive market for USTP-CDO Students!</h3>
         </div>
         <div className="right-container">
-          <input name="name" type="text" placeholder="Name" className="name-input" onChange={handleChange} />
-          <input name="id" type="number" placeholder="ID Number" className="id-input" onChange={handleChange} />
-          <input name="email" type="email" placeholder="Email" className="email-input" onChange={handleChange} />
+          <input
+            name="name"
+            type="text"
+            placeholder="Name"
+            className="name-input"
+            onChange={handleChange}
+          />
+          <input
+            name="id"
+            type="number"
+            placeholder="ID Number"
+            className="id-input"
+            onChange={handleChange}
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="email-input"
+            onChange={handleChange}
+          />
           <input
             type="password"
             placeholder="Password"
@@ -53,7 +75,9 @@ const SignupPage = () => {
             name="passwordconfirm"
             onChange={handleChange}
           />
-          <button className="login-button" onClick={handleSignUp}>Sign up</button>
+          <button className="login-button" onClick={handleSignUp}>
+            Sign up
+          </button>
         </div>
       </div>
     </div>
