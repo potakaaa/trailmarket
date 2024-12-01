@@ -18,10 +18,6 @@ const SignOrLoginPage = () => {
       <div className="right-container">
         {i > 1 ? <SignupPage /> : <LoginPage />}
       </div>
-<<<<<<< HEAD
-=======
-      <div className="right-container">{<LoginPage />}</div>
->>>>>>> 384d67c661c3c9e279c1d362b0f5964a05454545
     </div>
   );
 };
