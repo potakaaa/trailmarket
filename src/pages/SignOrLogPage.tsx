@@ -9,7 +9,7 @@ const SignOrLoginPage = () => {
         <h1>TrailMarket</h1>
         <h3>The exclusive market for USTP-CDO Students!</h3>
       </div>
-      <div className="right-container">{<SignupPage />}</div>
+      <div className="right-container">{<LoginPage />}</div>
     </div>
   );
 };
