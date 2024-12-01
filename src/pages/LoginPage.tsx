@@ -10,7 +10,6 @@ const LoginPage = () => {
         </div>
         <div className="right-container">
           <input
-            type="number"
             placeholder="ID Number"
             id="id-input"
             className="form-control"
