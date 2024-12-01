@@ -3,13 +3,21 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 
 const SignOrLoginPage = () => {
+  const i = 1;
   return (
     <div className="column-container">
       <div className="left-container">
-        <h1>TrailMarket</h1>
-        <h3>The exclusive market for USTP-CDO Students!</h3>
+        <div className="logo-container">
+          <h1 className="trail">Trail</h1>
+          <h1 className="market">Market</h1>
+        </div>
+        <h3 className="subtitle">
+          An exclusive market for Trailblazers of USTP-CDO Campus!
+        </h3>
       </div>
-      <div className="right-container">{<SignupPage />}</div>
+      <div className="right-container">
+        {i > 1 ? <SignupPage /> : <LoginPage />}
+      </div>
     </div>
   );
 };

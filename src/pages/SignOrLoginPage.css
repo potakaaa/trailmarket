@@ -3,6 +3,30 @@
   flex-direction: row;
 }
 
+.logo-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.trail {
+  color: #282667;
+  font-size: 4rem;
+}
+
+.market {
+  color: #ffb757;
+  font-size: 4rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+}
+
 .left-container {
+  display: flex;
+  flex-direction: column;
   border: 1px solid black;
+  height: auto;
+  width: 80%;
+  justify-content: space-between;
 }

@@ -1,18 +1,29 @@
 @font-face {
-  font-family: Inter;
+  font-family: "Inter";
   src: url(./fonts/Inter.ttf);
-  font-weight: 650;
+  font-weight: 750;
+}
+
+@font-face {
+  font-family: "Inter Medium";
+  src: url(./fonts/Inter.ttf);
+  font-weight: 500;
 }
 
 * {
   font-family: Inter;
+  color: #282667;
 }
 
 #container {
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+
+  border: 5px solid;
 }
