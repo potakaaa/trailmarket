@@ -1,0 +1,18 @@
+@font-face {
+  font-family: Inter;
+  src: url(./fonts/Inter.ttf);
+  font-weight: 650;
+}
+
+* {
+  font-family: Inter;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}

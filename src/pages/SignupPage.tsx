@@ -2,28 +2,29 @@ import "./SignupPage.css";
 
 const SignupPage = () => {
   return (
-    <div id="container" className="container-md">
-      <div className="column-container">
-        <div className="left-container">
-          <h1>TrailMarket</h1>
-          <h3>The exclusive market for USTP-CDO Students!</h3>
-        </div>
-        <div className="right-container">
-          <input placeholder="ID Number" className="id-input" />
-          <input type="email" placeholder="Email" className="email-input" />
-          <input
-            type="password"
-            placeholder="Password"
-            className="password-input"
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="confirm-password-input"
-          />
-          <button className="login-button">Login</button>
-        </div>
-      </div>
+    <div className="right-container">
+      <input placeholder="ID Number" className="form-control " id="id-input" />
+      <input
+        type="email"
+        placeholder="Email"
+        className="form-control "
+        id="email-input"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        className="form-control "
+        id="password-input"
+      />
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        className="form-control "
+        id="confirm-password-input"
+      />
+      <button className="btn btn-primary" id="login-button">
+        Login
+      </button>
     </div>
   );
 };
