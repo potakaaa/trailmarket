@@ -1,9 +1,14 @@
 import React from "react";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
+import SignOrLoginPage from "./pages/SignOrLogPage";
+
+import "./App.css";
 
 const App = () => {
-  return <SignupPage />;
+  return (
+    <div id="container" className="container-fluid">
+      <SignOrLoginPage />
+    </div>
+  );
 };
 
 export default App;

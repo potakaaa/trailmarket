@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../createClient";
 import { ChangeEvent } from "react";
+import "./SignupPage.css";
 
 const SignupPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});

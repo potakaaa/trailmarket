@@ -1,16 +1,5 @@
-#container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin: 30px;
-}
-
-.column-container {
-  display: flex;
-  flex-direction: row;
-}
-
 .right-container {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }

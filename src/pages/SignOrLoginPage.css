@@ -1,0 +1,8 @@
+.column-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-container {
+  border: 1px solid black;
+}
