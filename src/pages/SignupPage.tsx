@@ -16,17 +16,53 @@ const SignupPage = () => {
   }
 
   async function handleSignUp(event: React.FormEvent) {
-    event.preventDefault();
+    event.preventDefault(); 
 
-    if (input.password === input.passwordconfirm) {
-      await supabase.from("DIM_USER").insert({
-        STUDENT_ID: input.id,
-        USER_NAME: input.name,
-        USER_EMAIL: input.email,
-        USER_PASS: input.password,
-      });
-    } else {
-      alert("Failed confirmed password attempt!");
+    if (!input.name || !input.id || !input.email || !input.password || !input.passwordconfirm) {
+        alert("Please fill in all fields.");
+        return;
+    }
+    if (input.password !== input.passwordconfirm) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    try {
+        const { data: existingUser, error: fetchError } = await supabase
+            .from('DIM_USER')
+            .select('STUDENT_ID')
+            .eq('STUDENT_ID', input.id);
+
+        if (fetchError) {
+            console.error("Error checking student ID:", fetchError.message);
+            alert("An error occurred while checking Student ID.");
+            return;
+        }
+
+        if (existingUser && existingUser.length > 0) {
+            alert("Student ID already exists. Please use a different ID.");
+            return;
+        }
+        const { error: insertError } = await supabase
+            .from('DIM_USER')
+            .insert([
+                {
+                    USER_NAME:input.name,
+                    STUDENT_ID: input.id,
+                    USER_EMAIL: input.email,
+                    USER_PASS: input.password, 
+                }
+            ]);
+
+        if (insertError) {
+            console.error("Error signing up:", insertError.message);
+            alert("Sign-up failed. Please try again.");
+        } else {
+            alert("Sign-up successful!");
+        }
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        alert("An unexpected error occurred. Please try again later.");
     }
   }
 
