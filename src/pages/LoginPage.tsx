@@ -2,20 +2,28 @@ import "./LoginPage.css";
 
 const LoginPage = () => {
   return (
-    <div className="container">
+    <div id="container" className="container-md">
       <div className="column-container">
         <div className="left-container">
           <h1>TrailMarket</h1>
           <h3>The exclusive market for USTP-CDO Students!</h3>
         </div>
         <div className="right-container">
-          <input type="number" placeholder="ID Number" className="id-input" />
+          <input
+            type="number"
+            placeholder="ID Number"
+            id="id-input"
+            className="form-control"
+          />
           <input
             type="password"
             placeholder="Password"
-            className="password-input"
+            id="password-input"
+            className="form-control"
           />
-          <button className="login-button">Login</button>
+          <button id="login-button" className="btn btn-primary">
+            Login
+          </button>
         </div>
       </div>
     </div>
