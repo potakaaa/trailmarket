@@ -12,7 +12,7 @@ const HomePage = () => {
         className="category-title-container
       flex justify-center items-center
       bg-gradient-to-r from-[#252525] to-[#282667]
-      flex-col  w-full height h-[100px] m-0 p-5 
+      flex-col  w-full height h-[80px] m-0 p-5 
       sm:m-5 sm:rounded-xl sm:w-5/6
       
       
@@ -21,7 +21,7 @@ const HomePage = () => {
         <h2
           id="categories-label"
           className="
-        text-white text-4xl font-medium
+        text-white text-3xl sm:text-4xl font-medium
         "
         >
           CATEGORIES
