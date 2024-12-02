@@ -1,20 +1,3 @@
-.column-container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  width: 100vw;
-}
-
-.logo-container {
-  display: flex;
-  flex-direction: row;
-}
-
-.title-container {
-  max-width: 38vw;
-  width: 100%;
-}
-
 .trail {
   color: #282667;
   font-size: min(6em, 7vw);
@@ -30,22 +13,4 @@
 .subtitle {
   font-size: min(2em, 2vw);
   margin: 0 11px; /* temporary margin to align on fulscreen */
-}
-
-.left-container,
-.right-container {
-  flex: 1;
-  display: flex;
-  border: 1px solid black;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.left-container {
-  width: 100%;
-}
-
-.right-container {
-  gap: 20px;
 }
