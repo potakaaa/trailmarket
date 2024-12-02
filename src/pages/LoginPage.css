@@ -1,6 +1,9 @@
-.right-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: space-between;
+.container {
+}
+
+#id-input,
+#password-input {
+  border: 2px solid #ffb757;
+  margin: 10px;
+  color: rgba(40, 38, 103, 0.1);
 }

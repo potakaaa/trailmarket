@@ -1,6 +1,8 @@
 .column-container {
   display: flex;
   flex-direction: row;
+  height: 100vh;
+  width: 100vw;
 }
 
 .logo-container {
@@ -8,25 +10,42 @@
   flex-direction: row;
 }
 
+.title-container {
+  max-width: 38vw;
+  width: 100%;
+}
+
 .trail {
   color: #282667;
-  font-size: 4rem;
+  font-size: min(6em, 7vw);
+  text-align: left;
 }
 
 .market {
   color: #ffb757;
-  font-size: 4rem;
+  font-size: min(6em, 7vw);
 }
 
+/* subtitle is not aligned on logo */
 .subtitle {
-  font-size: 1rem;
+  font-size: min(2em, 2vw);
+  margin: 0 11px; /* temporary margin to align on fulscreen */
+}
+
+.left-container,
+.right-container {
+  flex: 1;
+  display: flex;
+  border: 1px solid black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .left-container {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid black;
-  height: auto;
-  width: 80%;
-  justify-content: space-between;
+  width: 100%;
+}
+
+.right-container {
+  gap: 20px;
 }

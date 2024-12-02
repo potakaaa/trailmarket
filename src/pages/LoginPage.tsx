@@ -3,7 +3,6 @@ import "./LoginPage.css";
 import { supabase } from "../createClient";
 
 const LoginPage = () => {
-
   const [input, setInput] = useState<Record<string, string>>({});
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -16,38 +15,34 @@ const LoginPage = () => {
   }
 
   async function handleLogIn(event: React.FormEvent) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const { data, error } = await supabase
-            .from('DIM_USER')
-            .select('*')
-            .eq('STUDENT_ID', input.id); // Fetch rows where STUDENT_ID matches the input
+      .from("DIM_USER")
+      .select("*")
+      .eq("STUDENT_ID", input.id); // Fetch rows where STUDENT_ID matches the input
 
-        if (error) {
-            console.error('Error fetching data:', error.message); // Log error if one occurs
-        }
-        if (data && data.length > 0) {
-            const user = data[0];
-            if (user.USER_PASS === input.password) {
-                alert('Login successful!');
-            }
-            else{
-                alert('Login failed, invalid username or password')
-            }
-        }
-        else {
-            alert('No matching records found.');
-        }
-
-    
+    if (error) {
+      console.error("Error fetching data:", error.message); // Log error if one occurs
+    }
+    if (data && data.length > 0) {
+      const user = data[0];
+      if (user.USER_PASS === input.password) {
+        alert("Login successful!");
+      } else {
+        alert("Login failed, invalid username or password");
+      }
+    } else {
+      alert("No matching records found.");
+    }
   }
   return (
-    <div className="right-container">
-      <input 
-        placeholder="ID Number" 
-        id="id-input" 
-        className="form-control" 
-        name="id"  
+    <div className="container">
+      <input
+        placeholder="ID Number"
+        id="id-input"
+        className="form-control"
+        name="id"
         onChange={handleChange}
       />
       <input
@@ -58,12 +53,12 @@ const LoginPage = () => {
         name="password"
         onChange={handleChange}
       />
-      <button 
-        id="login-button" 
+      <button
+        id="login-button"
         className="btn btn-primary"
         onClick={handleLogIn}
       >
-          Login
+        Login
       </button>
     </div>
   );

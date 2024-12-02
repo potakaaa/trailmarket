@@ -7,13 +7,15 @@ const SignOrLoginPage = () => {
   return (
     <div className="column-container">
       <div className="left-container">
-        <div className="logo-container">
-          <h1 className="trail">Trail</h1>
-          <h1 className="market">Market</h1>
+        <div className="title-container">
+          <div className="logo-container">
+            <h1 className="trail">Trail</h1>
+            <h1 className="market">Market</h1>
+          </div>
+          <h3 className="subtitle">
+            An exclusive market for Trailblazers of USTP-CDO Campus!
+          </h3>
         </div>
-        <h3 className="subtitle">
-          An exclusive market for Trailblazers of USTP-CDO Campus!
-        </h3>
       </div>
       <div className="right-container">
         {i > 1 ? <SignupPage /> : <LoginPage />}
