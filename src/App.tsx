@@ -9,7 +9,7 @@ import ForgetPass from "./pages/login_signup/ForgetPass";
 const App = () => {
   return (
     <div id="container" className="">
-      <HomePage />
+      <NavBar />
     </div>
   );
 };

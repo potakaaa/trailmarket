@@ -13,7 +13,7 @@ const HomePage = () => {
       flex justify-center items-center
       bg-gradient-to-r from-[#252525] to-[#282667]
       flex-col  w-full height h-[80px] m-0 p-5 
-      sm:m-5 sm:rounded-xl sm:w-5/6
+      sm:m-5 sm:rounded-xl sm:w-5/6 sm:h-[100px]
       
       
       "
@@ -29,7 +29,7 @@ const HomePage = () => {
         <p
           id="categories-sublabel"
           className="
-        text-[#b9b9b9] text-[13px] font-normal
+        text-[#b9b9b9] text-[11px] sm:text-[13px] font-normal
         text-center
         "
         >

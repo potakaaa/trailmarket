@@ -1,46 +1,63 @@
 .NavBar {
-  position: sticky;
-  top: 0;
-  box-shadow: 1px 0.5px 10px 6px rgb(236, 238, 240);
-
+    padding: 1rem 0;
+    width: 100%;
 }
 
-.NavBarTop {
-  height: 40px;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #282667;
+.NavBar, .NavBarMiddle, .NavBarRight, .NavBarSearch, .NavBarSearchCategories {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.NavBarBottom {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #FFFFFF;
+.NavBarLeft {
+    text-align: center;
+    padding: 0 3rem;
 }
 
-li {
-  float: right;
-  display: flex;
-  color: rgb(29, 30, 116);
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  border: rgb(241, 241, 241);
-  border-style: none;
+.NavBarRight {
+    padding: 0 1rem;
 }
 
-.NavBarTopItem {
-  color: #FFFFFF;
-  font-size: 10px;
+.NavBarMiddle {
+    padding: 0 1rem;
+    gap: 1rem;
 }
 
-.SellerPageButton {
-  border: solid;
-  border-width: thin ;
-  border-radius: 13px;
-  color: #282667;
+.NavBarSearch {
+    padding: 0 1rem;
+}
+
+.NavBarSellerButton {
+    padding: 1rem;
+}
+
+.NavBarLeft p {
+    background: linear-gradient(90deg, rgba(40,38,103,1) 0%, rgba(2,0,36,1) 100%);
+    font-size: 2rem;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.NavBarSearch, .NavBarSellerButton {
+    border-radius: 5rem;
+    border: 3px solid #000000;
+}
+
+.NavBarSellerButton {
+    text-align: center;
+    min-width: 150px;
+}
+
+input {
+    border-left: 3px solid #000000;
+    padding: 1rem;
+    margin: 1rem;
+    margin: 0;
+    height: 100%;
+}
+
+img {
+    min-width: 2rem;
+    margin: 0;
 }
