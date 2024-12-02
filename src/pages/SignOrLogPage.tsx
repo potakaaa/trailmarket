@@ -3,18 +3,26 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 
 const SignOrLoginPage = () => {
-  const i = 2;
+  const i = 1;
   return (
-    <div className="column-container flex flex-row size-full">
+    <div
+      className="column-container flex 
+    flex-col size-full
+    sm:flex-row
+    "
+    >
       <div
         className="left-container 
-      flex flex-1 flex-col justify-center 
-      items-center w-full"
+      flex flex-none flex-col justify-center 
+      items-center m-5 h-[30vh] sm:h-full sm:flex-1
+      
+      border-2 border-black
+      "
       >
         <div className="title-container max-w-[38vw] w-full">
           <div className="logo-container flex flex-row">
-            <h1 className="text-3xl">Trail</h1>
-            <h1 className="text-3xl">Market</h1>
+            <h1 className="trail">Trail</h1>
+            <h1 className="market">Market</h1>
           </div>
           <h3 className="subtitle">
             An exclusive market for Trailblazers of USTP-CDO Campus!
