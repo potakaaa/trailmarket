@@ -73,12 +73,15 @@ const LoginPage = () => {
       />
       <div
         className="flex w-full 
-      justify-between items-center flex-row"
+      justify-between flex-col
+      items-stretch
+      "
       >
         <button
           id="forget-pass"
           className="
-        font-thin text-sm
+        font-thin text-sm ml-2
+        text-left
         "
         >
           Forget Password?
@@ -92,7 +95,7 @@ const LoginPage = () => {
           font-normal
           rounded-full
           w-28 h-10
-          mt-3
+          mt-3 self-end
         
         "
           onClick={handleLogIn}
