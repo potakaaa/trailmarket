@@ -3,6 +3,7 @@ import SignOrLoginPage from "./pages/SignOrLoginPage";
 import NavBar from "./pages/NavBar";
 import HomePage from "./pages/HomePage";
 import "./App.css";
+import ProductPage from "./pages/ProductPage";
 
 
 const App = () => {
@@ -13,7 +14,7 @@ const App = () => {
     justify-center items-center absolute top-[50%]
     transform translate-y-[-50%]"
     >
-      <HomePage />
+      <ProductPage/>
     </div>
   );
 };
