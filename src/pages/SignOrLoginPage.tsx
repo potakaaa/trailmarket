@@ -49,7 +49,7 @@ const SignOrLoginPage = () => {
           </div>
           <div
             className="form-container
-          mt-5
+          mt-5 w-full max-w-md
           "
           >
             {i > 1 ? <LoginPage /> : <SignupPage />}
