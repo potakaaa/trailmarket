@@ -37,28 +37,43 @@ const LoginPage = () => {
     }
   }
   return (
-    <div className="container items-center flex justify-center">
-      <div className="form-container flex flex-col w-[50%] sm:w-[70%]">
-        <input
-          placeholder="ID Number"
-          id="id-input"
-          className="form-control"
-          name="id"
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          id="password-input"
-          className="form-control"
-          name="password"
-          onChange={handleChange}
-        />
-        <button id="forget-pass">Forget Password?</button>
-        <button id="login-button" className="btn" onClick={handleLogIn}>
-          Login
-        </button>
-      </div>
+    <div
+      className="form-container
+    justify-center items-center 
+    flex flex-col sm:block
+    "
+    >
+      <input
+        placeholder="ID Number"
+        id="id-input"
+        className="
+        w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal
+        "
+        name="id"
+        onChange={handleChange}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        id="password-input"
+        className="
+        w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal
+        "
+        name="password"
+        onChange={handleChange}
+      />
+      <button id="forget-pass">Forget Password?</button>
+      <button id="login-button" className="btn" onClick={handleLogIn}>
+        Log In
+      </button>
     </div>
   );
 };

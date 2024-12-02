@@ -3,36 +3,58 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 
 const SignOrLoginPage = () => {
-  const i = 1;
+  const i = 2;
   return (
     <div
-      className="column-container flex 
-    flex-col size-full
-    sm:flex-row
-    "
+      className="container 
+    flex size-full justify-center items-center"
     >
       <div
-        className="left-container 
-      flex flex-none flex-col justify-center 
-      items-center m-5 h-[30vh] sm:h-full sm:flex-1
-      "
+        className="column-container 
+       flex w-full"
       >
-        <div className="title-container max-w-[38vw] w-full">
-          <div className="logo-container flex flex-row">
-            <h1 className="trail">Trail</h1>
-            <h1 className="market">Market</h1>
-          </div>
-          <h3 className="subtitle">
-            An exclusive market for Trailblazers of USTP-CDO Campus!
-          </h3>
+        {/* Left Container */}
+        <div
+          className="left-container 
+        basis-0 sm:basis-[55%]
+        "
+        >
+          <img src="../src/img/image_1.png" alt="TrailMarket" />
         </div>
-      </div>
-      <div
-        className="right-container 
-      flex flex-1 flex-row justify-center 
-      items-center"
-      >
-        {i > 1 ? <SignupPage /> : <LoginPage />}
+        {/* Right Container */}
+        <div
+          className="right-container 
+        basis-[45%] m-9
+        flex flex-1 flex-col justify-center 
+        items-center"
+        >
+          <div
+            className="title-container
+          flex flex-col justify-center 
+          items-center
+          "
+          >
+            <h1
+              className="bg-gradient-to-r
+             from-[#6B66FB] to-[#000000]
+              text-transparent bg-clip-text
+              text-5xl font-semibold
+              "
+            >
+              TrailMarket
+            </h1>
+            <p className="text-sm font-light ml-2 text-center sm:text-left">
+              An exclusive market for Trailblazers of USTP-CDO Campus!
+            </p>
+          </div>
+          <div
+            className="form-container
+          mt-5
+          "
+          >
+            {i > 1 ? <LoginPage /> : <SignupPage />}
+          </div>
+        </div>
       </div>
     </div>
   );
