@@ -15,8 +15,6 @@ const SignOrLoginPage = () => {
         className="left-container 
       flex flex-none flex-col justify-center 
       items-center m-5 h-[30vh] sm:h-full sm:flex-1
-      
-      border-2 border-black
       "
       >
         <div className="title-container max-w-[38vw] w-full">
@@ -32,7 +30,7 @@ const SignOrLoginPage = () => {
       <div
         className="right-container 
       flex flex-1 flex-row justify-center 
-      items-center border-2 border-black"
+      items-center"
       >
         {i > 1 ? <SignupPage /> : <LoginPage />}
       </div>

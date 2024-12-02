@@ -113,7 +113,7 @@ const SignupPage = () => {
         onChange={handleChange}
       />
       <button
-        id="login-button"
+        id="sign-button"
         className="btn btn-primary"
         onClick={handleSignUp}
       >
