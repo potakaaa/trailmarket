@@ -8,7 +8,7 @@ import { supabase } from '../createClient';
 const ForgetPass = () => {
     const [input, setInput] = useState<Record<string, string>>({});
     const [isVerified, setIsVerified] = useState(false);
-    const [message, setMessage] = useState("");
+
     
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
@@ -47,11 +47,9 @@ const ForgetPass = () => {
               alert(data.message);
               setIsVerified(true);
             } else {
-              setMessage(data.message);
             }
           } catch (error) {
             console.error("Error:", error);
-            setMessage("Failed to send reset code.");
           }
           
         } else {
@@ -82,12 +80,9 @@ const ForgetPass = () => {
   
           if (response.ok) {
             alert(data.message);
-          } else {
-            setMessage(data.message);
           }
         } catch (error) {
           console.error("Error:", error);
-          setMessage("Failed to verify code.");
         }
       };
 

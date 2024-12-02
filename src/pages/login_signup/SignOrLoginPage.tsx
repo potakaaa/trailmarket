@@ -7,44 +7,60 @@ const SignOrLoginPage = () => {
   const i = 2;
   return (
     <div
-      className="container 
-    flex size-full justify-center items-center"
+      className="
+    flex w-full justify-center 
+    items-center overflow-hidden"
     >
       <div
         className="column-container 
-       flex w-full"
+       flex flex-row w-full"
       >
         {/* Left Container */}
         <div
-          className="left-container 
-        basis-0 sm:basis-[55%]
+          className="left-container       
+        w-0 sm:w-1/2 h-screen 
+        m-0
+        drop-shadow-2xl
         "
         >
-          <img src="../src/img/image_1.png" alt="TrailMarket" />
+          <img
+            src="../src/img/image_1.png"
+            alt="TrailMarket"
+            className="w-full h-full 
+            object-cover "
+          />
         </div>
         {/* Right Container */}
         <div
           className="right-container 
-        basis-[45%] m-9
         flex flex-1 flex-col justify-center 
-        items-center"
+        items-center m-8
+        
+        "
         >
           <div
             className="title-container
           flex flex-col justify-center 
-          items-center
+          items-center sm:items-start
+          
           "
           >
             <h1
               className="bg-gradient-to-r
              from-[#6B66FB] to-[#000000]
               text-transparent bg-clip-text
-              text-5xl font-semibold
+              text-5xl font-semibold 
+              text-center
+              sm:text-left
               "
             >
               TrailMarket
             </h1>
-            <p className="text-sm font-light ml-2 text-center sm:text-left">
+            <p
+              className="text-sm 
+            font-light ml-2 text-center
+             sm:text-left"
+            >
               An exclusive market for Trailblazers of USTP-CDO Campus!
             </p>
           </div>
@@ -53,7 +69,7 @@ const SignOrLoginPage = () => {
           mt-5 w-full max-w-md
           "
           >
-            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <ForgetPass/>}
+            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <LoginPage />}
           </div>
         </div>
       </div>

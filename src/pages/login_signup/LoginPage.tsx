@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
-import { supabase } from "../createClient";
+import { supabase } from "../../createClient";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
@@ -82,6 +82,9 @@ const LoginPage = () => {
           className="
         font-thin text-sm ml-2
         text-left
+        bg-gradient-to-r
+        from-[#2b24ea] to-[#000000]
+        text-transparent bg-clip-text
         "
         >
           Forget Password?
@@ -94,8 +97,9 @@ const LoginPage = () => {
           text-white
           font-normal
           rounded-full
-          w-28 h-10
+          w-32 h-10
           mt-3 self-end
+          
         
         "
           onClick={handleLogIn}
