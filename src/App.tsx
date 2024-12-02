@@ -1,7 +1,7 @@
 import React from "react";
 import SignOrLoginPage from "./pages/SignOrLogPage";
 import HomePage from "./pages/HomePage";
-
+import NavBar from "./pages/NavBar";
 import "./App.css";
 
 
