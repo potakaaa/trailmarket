@@ -1,24 +1,5 @@
-.colors-generic-gradient {
-  color: #282667;
-  color: #823275;
-  color: #c64b6f;
-  color: #f47a60;
-  color: #ffb757;
-  color: #f9f871;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.colors-matching-gradient {
-  color: #282667;
-  color: #004d94;
-  color: #0073b4;
-  color: #0099c5;
-  color: #00bec4;
-  color: #00e1b8;
-}
-
-.colors-matching-gradient {
-  color: #282667;
-  color: #5c539b;
-  color: #f4ecff;
-  color: #00c89b;
-}
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");

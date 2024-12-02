@@ -3,10 +3,16 @@ import SignOrLoginPage from "./pages/SignOrLogPage";
 import HomePage from "./pages/HomePage";
 
 import "./App.css";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
-    <div id="container" className="container-fluid">
+    <div
+      id="container"
+      className="size-full flex 
+    justify-center items-center absolute top-[50%]
+    transform translate-y-[-50%]"
+    >
       <HomePage />
     </div>
   );
