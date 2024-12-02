@@ -79,14 +79,4 @@ const HomePage = () => {
   );
 };
 
-
-               </div>
-               <div className="category"></div>
-               <div className="see-more"></div>
-            </div>
-        
-        </div>
-    );
-}
-
 export default HomePage;
