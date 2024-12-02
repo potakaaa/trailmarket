@@ -1,0 +1,46 @@
+.NavBar {
+  position: sticky;
+  top: 0;
+  box-shadow: 1px 0.5px 10px 6px rgb(236, 238, 240);
+
+}
+
+.NavBarTop {
+  height: 40px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #282667;
+}
+
+.NavBarBottom {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #FFFFFF;
+}
+
+li {
+  float: right;
+  display: flex;
+  color: rgb(29, 30, 116);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  border: rgb(241, 241, 241);
+  border-style: none;
+}
+
+.NavBarTopItem {
+  color: #FFFFFF;
+  font-size: 10px;
+}
+
+.SellerPageButton {
+  border: solid;
+  border-width: thin ;
+  border-radius: 13px;
+  color: #282667;
+}
