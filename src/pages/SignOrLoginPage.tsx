@@ -1,6 +1,7 @@
 import "./SignOrLoginPage.css";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
+import ForgetPass from "./ForgetPass";
 
 const SignOrLoginPage = () => {
   const i = 2;
@@ -68,7 +69,7 @@ const SignOrLoginPage = () => {
           mt-5 w-full max-w-md
           "
           >
-            {i > 1 ? <LoginPage /> : <SignupPage />}
+            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <ForgetPass/>}
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import React from "react";
 
 import "./HomePage.css";
 
@@ -79,5 +78,15 @@ const HomePage = () => {
     </div>
   );
 };
+
+
+               </div>
+               <div className="category"></div>
+               <div className="see-more"></div>
+            </div>
+        
+        </div>
+    );
+}
 
 export default HomePage;
