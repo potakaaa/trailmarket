@@ -37,7 +37,7 @@ const LoginPage = () => {
     }
   }
   return (
-    <div className="container">
+    <div className="container items-center flex flex-col">
       <input
         placeholder="ID Number"
         id="id-input"
@@ -53,11 +53,8 @@ const LoginPage = () => {
         name="password"
         onChange={handleChange}
       />
-      <button
-        id="login-button"
-        className="btn btn-primary"
-        onClick={handleLogIn}
-      >
+      <button id="forget-pass">Forget Password?</button>
+      <button id="login-button" className="btn" onClick={handleLogIn}>
         Login
       </button>
     </div>
