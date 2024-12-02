@@ -14,7 +14,7 @@ const App = () => {
     justify-center items-center absolute top-[50%]
     transform translate-y-[-50%]"
     >
-      <ProductPage/>
+      <SignOrLoginPage />
     </div>
   );
 };
