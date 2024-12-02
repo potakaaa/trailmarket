@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
-import { supabase } from "../createClient";
+import { supabase } from "../../createClient";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
@@ -97,7 +97,7 @@ const LoginPage = () => {
           text-white
           font-normal
           rounded-full
-          w-28 h-10
+          w-32 h-10
           mt-3 self-end
           
         

@@ -7,19 +7,19 @@ const SignOrLoginPage = () => {
   const i = 2;
   return (
     <div
-      className="container 
-    flex size-full justify-center 
+      className="
+    flex w-full justify-center 
     items-center overflow-hidden"
     >
       <div
         className="column-container 
-       flex w-full"
+       flex flex-row w-full"
       >
         {/* Left Container */}
         <div
           className="left-container       
         w-0 sm:w-1/2 h-screen 
-        m-0 sm:mr-5
+        m-0
         drop-shadow-2xl
         "
         >
@@ -34,7 +34,7 @@ const SignOrLoginPage = () => {
         <div
           className="right-container 
         flex flex-1 flex-col justify-center 
-        items-center m-5
+        items-center m-8
         
         "
         >
@@ -69,7 +69,7 @@ const SignOrLoginPage = () => {
           mt-5 w-full max-w-md
           "
           >
-            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <ForgetPass/>}
+            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <LoginPage />}
           </div>
         </div>
       </div>
