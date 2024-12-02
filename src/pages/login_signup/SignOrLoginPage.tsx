@@ -69,7 +69,7 @@ const SignOrLoginPage = () => {
           mt-5 w-full max-w-md
           "
           >
-            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <ForgetPass />}
+            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <LoginPage />}
           </div>
         </div>
       </div>
