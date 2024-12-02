@@ -1,28 +1,44 @@
 import "./NavBar.css"
+import ChevronDown from '../assets/ChevronDown.svg';
+import LogOut from '../assets/LogOut.svg';
+import Person from '../assets/Person.svg';
+import Search from '../assets/Search.svg';
+import ShoppingCart from '../assets/ShoppingCart.svg';
 
 function NavBar() {
     return (
         <div className="NavBar">
-            <ul className="NavBarTop">
-                <li className="NavBarTopItem">Name</li>
-                <li className="NavBarTopItem">Picture</li>
-            </ul>
-            <ul className="NavBarBottom">
-
-                <li>Wishlist</li>
-                <li>Post a Product</li>
-                <li>My Account</li>
-                <li><button className="SellerPageButton" >Seller Page</button></li>
-
-                <li>
-                    <input
-                        type="text"
-                        placeholder="Search in the market"
-                    />
-                    <button>Search Button</button>
-
-                </li>
-            </ul>
+            <div className="NavBarLeft">
+                <p>TrailMarket</p>
+            </div>
+            <div className="NavBarMiddle">
+                <div className="NavBarSearch">
+                    <div className="NavBarSearchCategories">
+                        <p>CATEGORIES</p>
+                        <img src={ChevronDown}alt="ChevronDown" />
+                    </div>
+                    <div className="NavBarSearchTextbox"> 
+                        <input type="text" name="" id="" placeholder="Search in the market"/>
+                    </div>
+                    <div className="NavBarSearchIcon">
+                        <img src={Search} alt="Search" />
+                    </div>
+                </div>
+                <div className="NavBarSellerButton">
+                    <p>Seller Page</p>
+                </div>
+            </div>
+            <div className="NavBarRight">
+                <div className="NavBarRightIcons">
+                    <img src={ShoppingCart} alt="ShoppingCart" />
+                </div> 
+                <div className="NavBarRightIcons">
+                    <img src={Person} alt="Person" />
+                </div>
+                <div className="NavBarRightIcons">
+                    <img src={LogOut} alt="LogOut" />
+                </div>
+            </div>
         </div>
     )
 }
