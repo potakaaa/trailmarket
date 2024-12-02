@@ -1,17 +1,25 @@
 import React from "react";
 
+import "./HomePage.css";
+
 const HomePage = () => {
   return (
-    <div className="home-container flex">
+    <div
+      className="home-container justify-center 
+    items-center flex size-full
+    border-black border-2
+    "
+    >
       <div
         className="category-title-container
       flex justify-center items-center
       bg-gradient-to-r from-[#252525] to-[#282667]
-      flex-col rounded-xl w-auto
+      flex-col rounded-xl w-5/6 height h-[120px]
+      absolute top-10
       "
       >
-        <h2>Categories</h2>
-        <p>Pick one to simplify your search</p>
+        <h2 id="categories-label">Categories</h2>
+        <p id="categories-sublabel">Pick one to simplify your search</p>
       </div>
       <div className="category-container">
         <div className="category-1">
