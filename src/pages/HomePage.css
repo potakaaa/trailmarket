@@ -1,0 +1,51 @@
+
+.home-page{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: 80vw;
+    height: 80vh;
+}
+
+.category-title{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border: black;
+    border-style: dashed;
+    width: 90vw;
+    height: 15vh;
+    border-radius: 13px;
+
+    font-size: x-small
+}
+
+.category-list{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: 7px;
+    width: 90vw;
+    height: 35vh;
+
+    font-size: x-small
+}
+
+.category{
+    border: black;
+    border-style: dashed;
+    width: 90vw;
+    height: 20vh;
+    border-radius: 13px;
+}
+
+.see-more{
+    border: black;
+    border-style: dashed;
+    width: 60vw;
+    height: 20vh;
+    border-radius: 13px;
+}
