@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "../createClient";
+import { supabase } from "../../createClient";
 import { ChangeEvent } from "react";
 import "./SignupPage.css";
 
@@ -77,7 +77,12 @@ const SignupPage = () => {
         type="text"
         placeholder="Name"
         id="name-input"
-        className="form-control"
+        className="
+        w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal"
         onChange={handleChange}
       />
       <input
@@ -85,7 +90,12 @@ const SignupPage = () => {
         type="number"
         placeholder="ID Number"
         id="id-input"
-        className="form-control"
+        className="
+        w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal"
         onChange={handleChange}
       />
       <input
@@ -93,14 +103,22 @@ const SignupPage = () => {
         type="email"
         placeholder="Email"
         id="email-input"
-        className="form-control"
+        className="w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal"
         onChange={handleChange}
       />
       <input
         type="password"
         placeholder="Password"
         id="password-input"
-        className="form-control"
+        className="w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal"
         name="password"
         onChange={handleChange}
       />
@@ -108,13 +126,24 @@ const SignupPage = () => {
         type="password"
         placeholder="Confirm Password"
         id="confirm-password-input"
-        className="form-control"
+        className="w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal"
         name="passwordconfirm"
         onChange={handleChange}
       />
       <button
         id="sign-button"
-        className="btn btn-primary"
+        className="bg-gradient-to-r
+          from-[#6B66FB] to-[#000000]
+          text-white
+          font-normal
+          rounded-full
+          w-36 h-10
+          mt-3 justify-center
+          sm:justify-normal sm:self-end"
         onClick={handleSignUp}
       >
         Sign up

@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
-import { supabase } from "../createClient";
+import { supabase } from "../../createClient";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
@@ -39,7 +39,7 @@ const LoginPage = () => {
   return (
     <div
       className="form-container
-    justify-center items-center 
+    justify-between items-center 
     flex flex-col sm:block
     "
     >
@@ -52,6 +52,7 @@ const LoginPage = () => {
         rounded-full
         h-11 p-5 mb-3
         font-normal
+
         "
         name="id"
         onChange={handleChange}
@@ -70,10 +71,42 @@ const LoginPage = () => {
         name="password"
         onChange={handleChange}
       />
-      <button id="forget-pass">Forget Password?</button>
-      <button id="login-button" className="btn" onClick={handleLogIn}>
-        Log In
-      </button>
+      <div
+        className="flex w-full 
+      justify-between flex-col
+      items-stretch
+      "
+      >
+        <button
+          id="forget-pass"
+          className="
+        font-thin text-sm ml-2
+        text-left
+        bg-gradient-to-r
+        from-[#2b24ea] to-[#000000]
+        text-transparent bg-clip-text
+        "
+        >
+          Forget Password?
+        </button>
+        <button
+          id="login-button"
+          className="
+          bg-gradient-to-r
+          from-[#6B66FB] to-[#000000]
+          text-white
+          font-normal
+          rounded-full
+          w-32 h-10
+          mt-3 self-end
+          
+        
+        "
+          onClick={handleLogIn}
+        >
+          Log In
+        </button>
+      </div>
     </div>
   );
 };
