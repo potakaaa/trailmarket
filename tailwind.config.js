@@ -9,7 +9,8 @@ export default {
       colors: {
 
       }, fontFamily: {
-        Inter: ["Inter"]
+        Inter: ["Inter"],
+        Poppins: ["Poppins"]
       }
     },
   container: {
