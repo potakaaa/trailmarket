@@ -82,6 +82,9 @@ const LoginPage = () => {
           className="
         font-thin text-sm ml-2
         text-left
+        bg-gradient-to-r
+        from-[#2b24ea] to-[#000000]
+        text-transparent bg-clip-text
         "
         >
           Forget Password?
@@ -96,6 +99,7 @@ const LoginPage = () => {
           rounded-full
           w-28 h-10
           mt-3 self-end
+          
         
         "
           onClick={handleLogIn}
