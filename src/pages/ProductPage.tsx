@@ -36,9 +36,8 @@ const ProductPage = () => {
                         justify-center
                         items-center
                         h-auto
-                        sm:w-[90vw]
-                        md:w-[80vw]
-                        lg:w-[60vw]
+                        w-[95vw]
+  
                         bg-white
                         rounded-lg
                         shadow-lg
