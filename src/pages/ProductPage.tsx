@@ -85,13 +85,15 @@ const ProductPage = () => {
                     <div className="product-info  
                             flex-[3] 
                             flex 
-                            items-center 
-                            justify-center 
+                            items-start 
+                            justify-start
                             bg-gray-100 
                             rounded-lg 
                             m-2">
-                        info
-                    </div>
+                        <h1>Product Information</h1>
+                        <p>ksadjks </p>
+
+                   </div>
                     <div className="product-reviews  
                             flex-[5] 
                             flex 
