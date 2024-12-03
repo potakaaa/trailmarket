@@ -11,7 +11,7 @@ import LoginPage from "./pages/login_signup/LoginPage";
 const App = () => {
   return (
     <div id="container" className="">
-      <SignOrLoginPage />
+      <ProductPage/>
     </div>
   );
 };
