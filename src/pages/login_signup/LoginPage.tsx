@@ -1,9 +1,16 @@
 import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
+
+  const nav = useNavigate();
+
+  const handleForget = () => {
+    nav("/forget");
+  };
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -29,6 +36,7 @@ const LoginPage = () => {
       const user = data[0];
       if (user.USER_PASS === input.password) {
         alert("Login successful!");
+        nav("/home");
       } else {
         alert("Login failed, invalid username or password");
       }
@@ -87,6 +95,7 @@ const LoginPage = () => {
           font-thin text-sm ml-2
           text-left
           "
+            onClick={handleForget}
           >
             Forget Password?
           </button>

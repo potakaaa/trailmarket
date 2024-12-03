@@ -2,9 +2,25 @@ import "./SignOrLoginPage.css";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import ForgetPass from "./ForgetPass";
+import { useLocation } from "react-router-dom";
 
 const SignOrLoginPage = () => {
   const i = 2;
+
+  const location = useLocation();
+
+  const renderPage = () => {
+    if (location.pathname === "/login") {
+      return <LoginPage />;
+    } else if (location.pathname === "/signup") {
+      return <SignupPage />;
+    } else if (location.pathname === "/forget") {
+      return <ForgetPass />;
+    } else {
+      return <h1>404 - Page Not Found</h1>; // Optional: Handle unknown paths
+    }
+  };
+
   return (
     <div
       className="
@@ -69,7 +85,7 @@ const SignOrLoginPage = () => {
           mt-5 w-full max-w-md
           "
           >
-            {/*i > 1 ? <LoginPage /> : <SignupPage />*/ <ForgetPass />}
+            {renderPage()}
           </div>
         </div>
       </div>

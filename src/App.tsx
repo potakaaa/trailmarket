@@ -1,4 +1,5 @@
 import React from "react";
+
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import NavBar from "./pages/NavBar";
 import HomePage from "./pages/HomePage";
@@ -10,7 +11,7 @@ import LoginPage from "./pages/login_signup/LoginPage";
 const App = () => {
   return (
     <div id="container" className="">
-      <NavBar />
+      <SignOrLoginPage />
     </div>
   );
 };
