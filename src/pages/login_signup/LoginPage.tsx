@@ -77,34 +77,21 @@ const LoginPage = () => {
       items-stretch
       "
       >
-        <div className="flex-row  flex w-full 
-       items-stretch">
-          <button
-            id="sign-up"
-            className="
-          font-thin text-sm ml-2
-          text-left
-          bg-gradient-to-r
-          from-[#2b24ea] to-[#000000]
-          text-transparent bg-clip-text
-          "
-          >
-            Sign Up
-          </button>
+        <div
+          className="flex-row  flex w-full 
+       items-stretch"
+        >
           <button
             id="forget-pass"
             className="
           font-thin text-sm ml-2
           text-left
-          bg-gradient-to-r
-          from-[#2b24ea] to-[#000000]
-          text-transparent bg-clip-text
           "
           >
             Forget Password?
           </button>
         </div>
-        
+
         <button
           id="login-button"
           className="
@@ -115,6 +102,7 @@ const LoginPage = () => {
           rounded-full
           w-32 h-10
           mt-3 self-end
+          shadow-md
           
         
         "
