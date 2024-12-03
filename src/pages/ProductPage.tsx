@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./ProductPage.css"
 const ProductPage = () => {
+    const [count, setCount] = useState(0);
+
+
+
+    const handlePlus = () => {
+        setCount(count + 1);
+      };
+
+      const handleMinus = () => {
+        setCount(count - 1);
+      };
+   
+
     return (
         <div className="app-wrapper 
                 flex 
@@ -193,8 +206,19 @@ const ProductPage = () => {
                             bg-gray-100 
                             rounded-lg 
                             m-2">
-                        <h1 className="mx-2.5 mt-1.5">Product Information</h1>
+                        <h1 className="mx-2.5 mt-1.5 text-4xl">Product Information</h1>
                         <p className="text-xs font-normal mx-2.5 ">Product Details</p>
+                        <div className='flex flex-row space-x-2 m-2'>
+                            <h2 className="mx-2.5 mt-5 text-sm">Categories</h2>
+                            <button className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Bags</button>
+                            <button className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Accessories</button>
+                        </div>
+                        <div className="flex flex-row space-x-2 m-5">
+                            <h3 className="mx-2.5 mt-3 text-sm ">Quantity</h3>
+                            <button onClick={handleMinus} className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">-</button>
+                            <input type="number" className="w-20 text-xs text-center border-2 border-black rounded-full bg-gray " value={count}/>
+                            <button onClick={handlePlus}className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">+</button>
+                        </div>
                     </div>
                     <div className="product-reviews  
                             flex-[5] 
@@ -204,7 +228,7 @@ const ProductPage = () => {
                             rounded-lg 
                             m-2">
                         <div className='flex flex-[1] flex-col'>
-                            <h1 className="mx-2.5 mt-1.5">Costumer Reviews</h1>
+                            <h1 className="mx-2.5 mt-1.5 text-4xl">Costumer Reviews</h1>
                             <div className="flex space-x-1 mx-2.5 mt-1.5">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -287,7 +311,7 @@ const ProductPage = () => {
                             border
                             rounded-lg 
                             m-2"'>
-                                <h1>testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest</h1>
+                                <h1>testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest</h1>
                             </div>
                         </div>
                     </div>

@@ -2,12 +2,13 @@ import "./SignOrLoginPage.css";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import ForgetPass from "./ForgetPass";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SignOrLoginPage = () => {
   const i = 2;
 
   const location = useLocation();
+  const nav = useNavigate();
 
   const renderPage = () => {
     if (location.pathname === "/login") {
@@ -58,6 +59,7 @@ const SignOrLoginPage = () => {
             className="title-container
           flex flex-col justify-center 
           items-center sm:items-start
+          w-full max-w-md 2xl:max-w-xl
           
           "
           >
@@ -68,6 +70,8 @@ const SignOrLoginPage = () => {
               text-5xl font-semibold 
               text-center
               sm:text-left
+              2xl:text-[75px]
+              2xl:text-left
               "
             >
               TrailMarket
@@ -75,17 +79,68 @@ const SignOrLoginPage = () => {
             <p
               className="text-sm 
             font-light ml-2 text-center
-             sm:text-left"
+             sm:text-left
+             2xl:text-[16px]
+             2xl:text-left
+             "
             >
               An exclusive market for Trailblazers of USTP-CDO Campus!
             </p>
           </div>
           <div
             className="form-container
-          mt-5 w-full max-w-md
+          mt-5 w-full max-w-md 2xl:max-w-xl
+          2xl:text-lg
           "
           >
             {renderPage()}
+            <div
+              className="bottom
+          m-5 mt-14
+          "
+            >
+              <div
+                className="col-ctnr
+            flex
+            items-center justify-center
+            "
+              >
+                <h2
+                  className="
+              text-[14px]
+              font-light
+              text-center
+              m-3
+            2xl:text-base
+              "
+                >
+                  {location.pathname === "/login"
+                    ? "Dont have an account?"
+                    : "Already have an account?"}
+                </h2>
+              </div>
+              <button
+                id="signup-button"
+                className="
+                bg-gradient-to-r
+                from-[#6B66FB] to-[#000000]
+                text-white
+                font-normal
+                rounded-full
+                w-full h-12
+                shadow-lg
+              "
+                onClick={() => {
+                  {
+                    location.pathname === "/login"
+                      ? nav("/signup")
+                      : nav("/login");
+                  }
+                }}
+              >
+                {location.pathname === "/login" ? "Sign Up" : "Log In"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
