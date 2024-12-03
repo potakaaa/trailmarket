@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./pages/context/AuthContext";
 
 const App = () => {
-  return (
-    <div id="container">
-      <HomePage />
-    </div>
-  );
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const context = useContext(AuthContext);
 
+  if (!context) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+
+  const { isLoggedIn } = context;
   const nav = useNavigate();
 
   useEffect(() => {
