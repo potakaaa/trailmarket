@@ -1,7 +1,7 @@
 import "./HomePage.css";
-import NavBar from "../pages/NavBar";
+import NavBar from "./navbar/NavBar";
 import HomePageCategories from "./HomePage/HomePageCategories";
-import TopNavBar from "./TopNavBar";
+import TopNavBar from "./navbar/TopNavBar";
 
 const HomePage = () => {
   const CategoryArray = [

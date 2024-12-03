@@ -7,7 +7,7 @@ import App from "./App.tsx";
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
-import TopNavBar from "./pages/TopNavBar.tsx";
+import TopNavBar from "./pages/navbar/TopNavBar.tsx";
 
 const router = createBrowserRouter([
   {
