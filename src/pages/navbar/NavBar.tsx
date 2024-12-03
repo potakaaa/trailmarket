@@ -43,12 +43,9 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   return (
     <div className="NavBar mb-3 flex flex-col mx-4 justify-center items-center w-full">
       <div className="NavBarLeft">
-        <p
-          className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text text-2xl flex flex-col align-center justify-center md:col-span-1 sm:col-span-3 sm:text-center text-center mb-2
-          "
-        >
+        <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:col-span-1 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3">
           TrailMarket
-        </p>
+        </h1>
       </div>
 
       <div className="NavBarMiddleRight flex flex-grow justify-center items-stretch mx-5 w-full">
@@ -59,7 +56,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 className="flex items-center"
                 onClick={toggleCategoryDropdown}
               >
-                <p className="font-medium hidden sm:block text-sm mr-1 sm:text-base lg:text-lg md:p-4">
+                <p className="font-medium hidden sm:block text-sm mr-1 lg:text-lg md:p-1 lg:p-4">
                   {selectedCategory}
                 </p>
                 <img
@@ -106,7 +103,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 className="sm:hidden min-w-5"
               ></img>
             </button>
-            <button className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base md:w-40 md:h-14">
+            <button className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14">
               My Products
             </button>
           </div>
