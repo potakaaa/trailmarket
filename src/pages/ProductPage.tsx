@@ -2,98 +2,110 @@ import React from 'react'
 import "./ProductPage.css"
 const ProductPage = () => {
     return (
-        <div className="product-container 
-                            justify-center 
-                            items-center 
+        <div className="app-wrapper 
+                flex 
+                items-center 
+                justify-center 
+                h-screen 
+                w-screen">
+            <div className="product-container 
+                    flex 
+                    flex-col 
+                    justify-center 
+                    items-center 
+                    h-[60vh] 
+                    w-[60vw] 
+                    m-10 
+                    bg-white 
+                    rounded-lg 
+                    shadow-lg">
+                <div className="product-top 
+                        flex 
+                        flex-row 
+                        flex-[2] 
+                        w-full">
+                    <div className="product-display
+                            flex-[3] 
                             flex 
                             flex-col 
-                            size-full
-                            border-black 
-                            border-2 
-                            m-20 
-                            rounded-2xl 
-                            mb-8
-                            aspect-w-16 aspect-h-9">
-
-            <div className='product-display 
+                            items-center 
+                            space-y-2 
+                            border 
+                            rounded-2xl">
+                        <div className="product-picture
+                                flex-[3] 
                                 justify-center 
-                                items-start 
-                                flex 
-                                flex-col
-                                size-full
-                                border-black 
-                                border-2 
-                                rounded-2xl'>
-
-                <div className='product-picture 
-                                    justify-center 
-                                    items-center 
-                                    flex 
-                                    flex-col 
-                                    size-full
-                                    border-black 
-                                    border-2 
-                                    rounded-2xl
-                                    overflow-hidden
-                                    w-30 h-64
-                                    m-4'>
-
-                    <img className="w-full h-full object-cover" src='https://shop.mango.com/assets/rcs/pics/static/T7/fotos/S/77034451_56_B.jpg?imwidth=2048&imdensity=1&ts=1720625661877'></img>
-
-                </div>
-                <div className='flex 
-                                flex-row'>
-                    <div className="flex space-x-5 overflow-x-auto p-4 bg-white rounded-lg flex-row">
-                        <div className="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg border">
+                                items-center 
+                                border 
+                                rounded-2xl 
+                                overflow-hidden 
+                                w-full">
+                            <img
+                                className="w-full h-full object-contain"
+                                src=""
+                                alt="Product"
+                            />
                         </div>
-                        <div className="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg border">
+                        <div className="gallery grid grid-cols-4 gap-4 p-2 w-full">
+                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
                         </div>
-                        <div className="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg border">
+                    </div>
+                    <div className="product-details
+                            flex-[5] 
+                            flex 
+                            flex-col">
+                        <div className="product-name  
+                                flex-[1] 
+                                items-center 
+                                justify-center 
+                                bg-gray-100 
+                                rounded-lg 
+                                m-2">
+                            Product Name
                         </div>
-                        <div className="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg border">
+                        <div className="product-price  
+                                flex-[1] 
+                                items-center 
+                                justify-center 
+                                bg-gray-100 
+                                rounded-lg 
+                                m-2">
+                            $123.45
                         </div>
                     </div>
                 </div>
-
-
-
-            </div>
-
-            <div className='product-details 
-                                justify-center 
-                                items-center 
-                                flex 
-                                flex-col 
-                                size-full 
-                                border-black 
-                                border-2 rounded-2xl'>
-                <div className='product-name 
-                                    justify-center 
-                                    items-center 
-                                    flex 
-                                    flex-col size-full
-                                    border-black 
-                                    border-2 rounded-2xl'>
-
+                <div className="product-bottom 
+                        flex 
+                        flex-[1]
+                        flex-row
+                        w-full">
+                    <div className="product-info  
+                            flex-[3] 
+                            flex 
+                            items-center 
+                            justify-center 
+                            bg-gray-100 
+                            rounded-lg 
+                            m-2">
+                        info
+                    </div>
+                    <div className="product-reviews  
+                            flex-[5] 
+                            flex 
+                            items-center 
+                            justify-center 
+                            bg-gray-100 
+                            rounded-lg 
+                            m-2">
+                        reviews
+                    </div>
                 </div>
-                <div className='product-price 
-                                    justify-center 
-                                    items-center 
-                                    flex flex-col 
-                                    size-full
-                                    border-black border-2 rounded-2xl'>
-
-                </div>
-
             </div>
-
-            <div className='product-info justify-center items-center flex flex-col size-full 
-  border-black border-2 rounded-2xl'>
-                <div></div>
-                <div></div>
-            </div>
-
         </div>
+
     )
 }
 
