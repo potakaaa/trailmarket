@@ -8,8 +8,8 @@ import ForgetPass from "./pages/login_signup/ForgetPass";
 
 const App = () => {
   return (
-    <div id="container" className="">
-      <NavBar />
+    <div id="container">
+      <HomePage />
     </div>
   );
 };
