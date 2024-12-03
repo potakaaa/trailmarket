@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ChevronDown from "../../assets/ChevronDown.svg";
+import ChevronDown from "../../assets/Chevron.svg";
 import LogOut from "../../assets/LogOut.svg";
 import Person from "../../assets/Person.svg";
 import ShoppingCart from "../../assets/ShoppingCart.svg";
