@@ -1,0 +1,67 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const TopNavBar = () => {
+  const nav = useNavigate();
+
+  return (
+    <div
+      className="main w-full
+    flex justify-between items-center
+    bg-[#202020] text-white
+    border-black border-2 
+    text-[12px] lg:text-[15px]
+    2xl:text-[17px]
+    "
+    >
+      <div
+        className="left
+      flex gap-5 m-2.5 ml-4
+      lg:ml-7 lg:gap-8 lg:m-3
+      2xl:ml-16 2xl:gap-16 2xl:m-4
+        "
+      >
+        <button
+          className="
+        font-normal lg:font-medium
+        "
+          onClick={() => nav("/about")}
+        >
+          About
+        </button>
+        <button
+          className="
+        font-normal lg:font-medium
+        "
+          onClick={() => nav("/contact-us")}
+        >
+          Contact Us
+        </button>
+      </div>
+      <div
+        className="right
+        flex gap-2 m-2 mr-4
+        lg:mr-7 lg:gap-5 lg:m-3
+        2xl:mr-16 2xl:gap-10 2xl:m-4
+        "
+      >
+        <h3
+          className="
+        font-normal lg:font-medium
+        "
+        >
+          img
+        </h3>
+        <h3
+          className="
+        font-normal lg:font-medium
+        "
+        >
+          Welcome V_Gerebise
+        </h3>
+      </div>
+    </div>
+  );
+};
+
+export default TopNavBar;
