@@ -1,6 +1,6 @@
 # 🌟 Welcome to TrailMarket! 🌟
 
-![TrailMarket Banner](https://via.placeholder.com/1000x300.png?text=TrailMarket+-+USTP's+Campus+Marketplace)
+![TrailMarket Banner](https://drive.google.com/file/d/1vmfLYLXT6iEg54DqlDP_iWYEpLt_VFQV/view?usp=sharing)
 
 ### 👋 Hello, USTP Fam!
 
