@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ChevronDown from "../assets/ChevronDown.svg";
-import LogOut from "../assets/LogOut.svg";
-import Person from "../assets/Person.svg";
-import ShoppingCart from "../assets/ShoppingCart.svg";
+import LogOut from "/src/assets/LogOut.svg";
+import Person from "/src/assets/Person.svg";
+import ShoppingCart from "/src/assets/ShoppingCart.svg";
+import Chevron from "/src/assets/Chevron.svg";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
@@ -49,7 +49,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
         <div className="NavBarSearch flex items-center border-2 border-black rounded-full p-2 mr-4">
           <div className="NavBarCategories flex items-center border-r-2 pl-6 pr-6 pt-2 pb-2">
             <button className="flex items-center" onClick={toggleCategoryDropdown}>
-              <img src={ChevronDown} alt="Dropdown" />
+              <img src={Chevron} alt="Dropdown" />
               <p className="font-medium">{selectedCategory}</p>
             </button>
             {dropdownCategoryOpen && (
@@ -95,7 +95,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
 
       <div className="md:hidden relative">
         <button onClick={toggleRightIconsDropdown} className="flex items-center p-2">
-          <img src={ChevronDown} alt="Dropdown" className="w-full h-full" />
+          <img src={Chevron} alt="Dropdown" className="w-full h-full" />
         </button>
 
         {dropdownRightIconsOpen && (
