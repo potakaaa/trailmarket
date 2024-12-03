@@ -2,9 +2,12 @@ import { useState } from "react";
 import { supabase } from "../../createClient";
 import { ChangeEvent } from "react";
 import "./SignupPage.css";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
+
+  const nav = useNavigate();
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -63,6 +66,7 @@ const SignupPage = () => {
         alert("Sign-up failed. Please try again.");
       } else {
         alert("Sign-up successful!");
+        nav("/login");
       }
     } catch (err) {
       console.error("Unexpected error:", err);
