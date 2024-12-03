@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import NavBar from "./pages/NavBar";
 import HomePage from "./pages/HomePage";
@@ -11,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { Sign } from "crypto";
 
 const App = () => {
+  return (
+    <div id="container">
+      <HomePage />
+    </div>
+  );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const nav = useNavigate();
