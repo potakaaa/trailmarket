@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ProductPage.css";
 import TopNavBar from "./navbar/TopNavBar";
+import NavBar from "./navbar/NavBar";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
 
@@ -15,14 +16,18 @@ const ProductPage = () => {
    
 
     return (
+        <div className="flex flex-col">
+        <TopNavBar />
+
         <div className="app-wrapper 
                 flex 
+                
                 items-center 
                 justify-center
                 min-h-screen 
                 overflow-scroll"
     >
-      <TopNavBar />
+     
       <div className="flex justify-center items-center">
         <div
           className="product-container
@@ -369,6 +374,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
