@@ -55,22 +55,14 @@ const LoginPage = () => {
   }
   return (
     <div
-      className="form-container
-    justify-between items-center 
-    flex flex-col sm:block
+      className="form-container justify-between items-center flex flex-col sm:block
     "
     >
       <input
         placeholder="ID Number"
         id="id-input"
         className="
-        w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14
-        "
+        w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         name="id"
         onChange={handleChange}
       />
