@@ -13,7 +13,7 @@ const ProductPage = () => {
                     flex-col 
                     justify-center 
                     items-center 
-                    h-[60vh] 
+                    h-[80vh] 
                     w-[60vw] 
                     m-10 
                     bg-white 
@@ -173,7 +173,6 @@ const ProductPage = () => {
                     </div>
                     <div className="product-reviews  
                             flex-[5] 
-                            flex-auto 
                             items-start 
                             justify-start 
                             bg-gray-100 
@@ -253,17 +252,18 @@ const ProductPage = () => {
                             <h2 className="text-xs mx-2.5">80% of costumers are satisfied</h2>
                             <h3 className="text-xs mx-2.5">3 reviews</h3>
                         </div>
-                        <div className="review-preview
+                        <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all p-4">
+                                <div className='flex-[3] 
                             flex 
-                            flex-[1]
                             flex-col
                             items-start 
                             justify-start
                             bg-gray-100 
-                            rounded-lg 
                             border
-                            m-2">
-                                <h1>test</h1>
+                            rounded-lg 
+                            m-2"'>
+                                    <h1>testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest</h1>
+                                </div>
                         </div>
                     </div>
                 </div>
