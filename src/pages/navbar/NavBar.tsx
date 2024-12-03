@@ -48,7 +48,10 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
       <div className="NavBarMiddle flex items-center justify-center sm:col-span-1">
         <div className="NavBarSearch flex items-center border-2 border-black rounded-full p-2 mr-4">
           <div className="NavBarCategories flex items-center border-r-2 pl-6 pr-6 pt-2 pb-2">
-            <button className="flex items-center" onClick={toggleCategoryDropdown}>
+            <button
+              className="flex items-center"
+              onClick={toggleCategoryDropdown}
+            >
               <img src={ChevronDown} alt="Dropdown" />
               <p className="font-medium">{selectedCategory}</p>
             </button>
@@ -88,13 +91,20 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
             value={icons.IconName}
             className="flex items-center p-2 hover:bg-gray-100"
           >
-            <img src={icons.Icon} alt={icons.IconName} className="min-w-[2rem]" />
+            <img
+              src={icons.Icon}
+              alt={icons.IconName}
+              className="min-w-[2rem]"
+            />
           </button>
         ))}
       </div>
 
       <div className="md:hidden relative">
-        <button onClick={toggleRightIconsDropdown} className="flex items-center p-2">
+        <button
+          onClick={toggleRightIconsDropdown}
+          className="flex items-center p-2"
+        >
           <img src={ChevronDown} alt="Dropdown" className="w-full h-full" />
         </button>
 
