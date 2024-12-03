@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
-import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
-import NavBar from "./pages/NavBar";
-import HomePage from "./pages/HomePage";
+import { useContext, useEffect } from "react";
+
 import "./App.css";
-import ProductPage from "./pages/ProductPage";
-import ForgetPass from "./pages/login_signup/ForgetPass";
-import LoginPage from "./pages/login_signup/LoginPage";
 import { useNavigate } from "react-router-dom";
-import { Sign } from "crypto";
+import { AuthContext } from "./pages/context/AuthContext";
 
 const App = () => {
   return (
-    <div>
+    <div id="container">
       <HomePage />
     </div>
   );
