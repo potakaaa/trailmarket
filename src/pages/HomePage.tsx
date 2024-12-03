@@ -30,15 +30,12 @@ const HomePage = () => {
 
   return (
     <div className="HomePage w-full flex flex-col items-center">
-      <NavBar obj={CategoryArray} />
       <div className="HomePage h-screen flex flex-col items-center">
         <TopNavBar />
         <NavBar obj={CategoryArray} />
         <hr />
         <div className="HomePageCategories w-full">
-          <div
-            className="CategoriesHeader bg-gradient-to-r from-[#282667] to-slate-900 p-7 mx-4 rounded-2xl"
-          >
+          <div className="CategoriesHeader bg-gradient-to-r from-[#282667] to-slate-900 p-7 mx-4 rounded-2xl">
             <h1 className="CategoriesTitle text-4xl text-white text-center font-medium">
               CATEGORIES
             </h1>
