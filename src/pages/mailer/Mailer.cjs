@@ -38,7 +38,75 @@ app.post("/api/send-reset-code", async (req, res) => {
       from: "your-email@gmail.com",
       to: email,
       subject: "Password Reset Code",
-      text: `Your password reset code is: ${resetCode}`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrailMarket Password Reset</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #6B66FB, #282667);
+            color: #fff;
+            padding: 20px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .reset-code {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TrailMarket Password Reset</h1>
+        </div>
+        <div class="content">
+            <p>Hello Trailblazer,</p>
+            <p>We received a request to reset your password for your TrailMarket account. Below is your reset code:</p>
+            <div class="reset-code">${resetCode}</div>
+            <p>If you didn't request this, you can safely ignore this email.</p>
+            <p>Thank you,</p>
+            <p><b>The TrailMarket Support Team</b></p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email from TrailMarket. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>
+    `
     });
 
     res.status(200).send({ message: "Reset code sent to email" });
