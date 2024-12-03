@@ -1,9 +1,16 @@
 import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
+
+  const nav = useNavigate();
+
+  const handleForget = () => {
+    nav("/forget");
+  };
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -29,6 +36,7 @@ const LoginPage = () => {
       const user = data[0];
       if (user.USER_PASS === input.password) {
         alert("Login successful!");
+        nav("/home");
       } else {
         alert("Login failed, invalid username or password");
       }
@@ -77,34 +85,22 @@ const LoginPage = () => {
       items-stretch
       "
       >
-        <div className="flex-row  flex w-full 
-       items-stretch">
-          <button
-            id="sign-up"
-            className="
-          font-thin text-sm ml-2
-          text-left
-          bg-gradient-to-r
-          from-[#2b24ea] to-[#000000]
-          text-transparent bg-clip-text
-          "
-          >
-            Sign Up
-          </button>
+        <div
+          className="flex-row  flex w-full 
+       items-stretch"
+        >
           <button
             id="forget-pass"
             className="
           font-thin text-sm ml-2
           text-left
-          bg-gradient-to-r
-          from-[#2b24ea] to-[#000000]
-          text-transparent bg-clip-text
           "
+            onClick={handleForget}
           >
             Forget Password?
           </button>
         </div>
-        
+
         <button
           id="login-button"
           className="
@@ -115,6 +111,7 @@ const LoginPage = () => {
           rounded-full
           w-32 h-10
           mt-3 self-end
+          shadow-md
           
         
         "
