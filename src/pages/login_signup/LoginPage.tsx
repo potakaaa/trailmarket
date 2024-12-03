@@ -1,10 +1,18 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useContext } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+
+  const { isLoggedIn, setIsLoggedIn } = context;
 
   const nav = useNavigate();
 
@@ -36,6 +44,7 @@ const LoginPage = () => {
       const user = data[0];
       if (user.USER_PASS === input.password) {
         alert("Login successful!");
+        setIsLoggedIn(true);
         nav("/home");
       } else {
         alert("Login failed, invalid username or password");

@@ -1,6 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { AuthProvider } from "./pages/context/AuthContext.tsx"; // Import the AuthProvider
+
 import App from "./App.tsx";
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );
