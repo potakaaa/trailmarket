@@ -86,7 +86,8 @@ const SignupPage = () => {
         border-black border-2
         rounded-full
         h-11 p-5 mb-3
-        font-normal"
+        font-normal
+        2xl:h-14"
         onChange={handleChange}
       />
       <input
@@ -99,7 +100,8 @@ const SignupPage = () => {
         border-black border-2
         rounded-full
         h-11 p-5 mb-3
-        font-normal"
+        font-normal
+        2xl:h-14"
         onChange={handleChange}
       />
       <input
@@ -111,7 +113,8 @@ const SignupPage = () => {
         border-black border-2
         rounded-full
         h-11 p-5 mb-3
-        font-normal"
+        font-normal
+        2xl:h-14"
         onChange={handleChange}
       />
       <input
@@ -122,7 +125,8 @@ const SignupPage = () => {
         border-black border-2
         rounded-full
         h-11 p-5 mb-3
-        font-normal"
+        font-normal
+        2xl:h-14"
         name="password"
         onChange={handleChange}
       />
@@ -134,7 +138,8 @@ const SignupPage = () => {
         border-black border-2
         rounded-full
         h-11 p-5 mb-3
-        font-normal"
+        font-normal
+        2xl:h-14"
         name="passwordconfirm"
         onChange={handleChange}
       />
@@ -147,7 +152,8 @@ const SignupPage = () => {
           rounded-full
           w-36 h-10
           mt-3 justify-center
-          sm:justify-normal sm:self-end"
+          sm:justify-normal sm:self-end
+          2xl:h-12 2xl:w-48"
         onClick={handleSignUp}
       >
         Sign up

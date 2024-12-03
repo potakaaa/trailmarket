@@ -69,7 +69,7 @@ const LoginPage = () => {
         rounded-full
         h-11 p-5 mb-3
         font-normal
-
+        2xl:h-14
         "
         name="id"
         onChange={handleChange}
@@ -84,6 +84,7 @@ const LoginPage = () => {
         rounded-full
         h-11 p-5 mb-3
         font-normal
+        2xl:h-14
         "
         name="password"
         onChange={handleChange}
@@ -102,7 +103,7 @@ const LoginPage = () => {
             id="forget-pass"
             className="
           font-thin text-sm ml-2
-          text-left
+          text-left 2xl:text-base
           "
             onClick={handleForget}
           >
@@ -121,6 +122,7 @@ const LoginPage = () => {
           w-32 h-10
           mt-3 self-end
           shadow-md
+          2xl:h-12 2xl:w-48
           
         
         "
