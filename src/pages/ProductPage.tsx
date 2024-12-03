@@ -85,24 +85,109 @@ const ProductPage = () => {
                     <div className="product-info  
                             flex-[3] 
                             flex 
+                            flex-col
                             items-start 
                             justify-start
                             bg-gray-100 
                             rounded-lg 
                             m-2">
-                        <h1>Product Information</h1>
-                        <p>ksadjks </p>
-
-                   </div>
+                        <h1 className="mx-2.5 mt-1.5">Product Information</h1>
+                        <p className="text-xs font-normal mx-2.5 ">Product Details</p>
+                    </div>
                     <div className="product-reviews  
                             flex-[5] 
-                            flex 
-                            items-center 
-                            justify-center 
+                            flex-auto 
+                            items-start 
+                            justify-start 
                             bg-gray-100 
                             rounded-lg 
                             m-2">
-                        reviews
+                        <div className='flex flex-[1] flex-col'>
+                            <h1 className="mx-2.5 mt-1.5">Costumer Reviews</h1>
+                            <div className="flex space-x-1 mx-2.5 mt-1.5">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    className="h-4 w-4 text-gray-300"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    className="h-4 w-4 text-gray-300"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                            </div>
+                            <h2 className="text-xs mx-2.5">80% of costumers are satisfied</h2>
+                            <h3 className="text-xs mx-2.5">3 reviews</h3>
+                        </div>
+                        <div className="review-preview
+                            flex 
+                            flex-[1]
+                            flex-col
+                            items-start 
+                            justify-start
+                            bg-gray-100 
+                            rounded-lg 
+                            border
+                            m-2">
+                                <h1>test</h1>
+                        </div>
                     </div>
                 </div>
             </div>
