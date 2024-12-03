@@ -64,16 +64,93 @@ const ProductPage = () => {
                                 bg-gray-100 
                                 rounded-lg 
                                 m-2">
-                            Product Name
+                            <h1 className='mx-2.5 mt-1.5 text-4xl'>Product Name</h1>
+                            <h2 className='text-sm font-normal mx-2.5 mt-1.5'>description</h2>
+                            <div className="flex space-x-1 mx-2.5 mt-1.5">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    className="h-4 w-4 text-black"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    className="h-4 w-4 text-gray-300"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    className="h-4 w-4 text-gray-300"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                    />
+                                </svg>
+                            </div>
+                            <h2 className='text-sm font-normal mx-2.5 mt-1.5'>3 reviews</h2>
                         </div>
                         <div className="product-price  
                                 flex-[1] 
                                 items-center 
                                 justify-center 
-                                bg-gray-100 
+                                bg-gray-900 
                                 rounded-lg 
                                 m-2">
-                            $123.45
+                            <h2 className='text-2xl text-gray-100 font-normal mx-4 mt-6'>Item Price</h2>
+                            <h1 className='text-4xl text-gray-100 mx-4'>PHP 400</h1>
+
+                            <div className='mx-4 flex-row space-x-2'>
+                                <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Add to Cart</button>
+                                <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Proceed to Checkout</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,7 +170,7 @@ const ProductPage = () => {
                         <h1>Product Information</h1>
                         <p>ksadjks </p>
 
-                   </div>
+                    </div>
                     <div className="product-reviews  
                             flex-[5] 
                             flex 
