@@ -4,18 +4,21 @@ import TopNavBar from "./navbar/TopNavBar";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
 
-  const handlePlus = () => {
-    setCount(count + 1);
-  };
 
-  const handleMinus = () => {
-    setCount(count - 1);
-  };
+    const handlePlus = () => {
+        setCount(count + 1);
+      };
 
-  return (
-    <div
-      className="app-wrapper 
-                flex flex-col
+      const handleMinus = () => {
+        if(count != 0){setCount(count - 1)};
+      };
+   
+
+    return (
+        <div className="app-wrapper 
+                flex 
+                items-center 
+                justify-center
                 min-h-screen 
                 overflow-scroll"
     >
