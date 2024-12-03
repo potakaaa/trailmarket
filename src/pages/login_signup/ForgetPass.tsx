@@ -1,10 +1,13 @@
 import React from "react";
 import { ChangeEvent, useState } from "react";
 import { supabase } from "../../createClient";
+import { useNavigate } from "react-router-dom";
 
 const ForgetPass = () => {
   const [input, setInput] = useState<Record<string, string>>({});
   const [step, setStep] = useState("prompt"); // this shit has prompt, code, change
+
+  const nav = useNavigate();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -262,6 +265,7 @@ const ForgetPass = () => {
                   font-thin text-sm ml-2
                   text-left
                   "
+              onClick={() => nav("/login")}
             >
               Return to Log In
             </button>
