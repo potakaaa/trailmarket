@@ -1,57 +1,94 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./ProductPage.css"
 const ProductPage = () => {
+    const [count, setCount] = useState(0);
+
+
+
+    const handlePlus = () => {
+        setCount(count + 1);
+      };
+
+      const handleMinus = () => {
+        setCount(count - 1);
+      };
+   
+
     return (
         <div className="app-wrapper 
                 flex 
                 items-center 
-                justify-center 
-                h-screen 
-                w-screen">
+                justify-center
+                min-h-screen 
+                w-screen
+                overflow-scroll">
             <div className="product-container 
                     flex 
                     flex-col 
                     justify-center 
                     items-center 
-                    h-[80vh] 
-                    w-[60vw] 
-                    m-10 
+                    h-auto 
+                    sm:w-[90vw]
+                    md:w-[80vw] 
+                    lg:w-[60vw]
                     bg-white 
                     rounded-lg 
-                    shadow-lg">
+                    shadow-lg
+                    ">
                 <div className="product-top 
                         flex 
-                        flex-row 
+                        flex-col
+                        md:flex-row
                         flex-[2] 
-                        w-full">
+                        w-full
+                        px-1
+                        h-auto
+                        ">
                     <div className="product-display
                             flex-[3] 
                             flex 
-                            flex-col 
-                            items-center 
-                            space-y-2 
-                            border 
-                            rounded-2xl">
-                        <div className="product-picture
-                                flex-[3] 
-                                justify-center 
-                                items-center 
-                                border 
-                                rounded-2xl 
-                                overflow-hidden 
-                                w-full">
+                            flex-col
+                            
+
+                            rounded-2xl ">
+                        <div className="aspect-square bg-gray-200 rounded-lg ">
                             <img
-                                className="w-full h-full object-contain"
-                                src=""
+                                className="h-full w-full object-cover rounded-lg"
+                                src="https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg"
                                 alt="Product"
                             />
                         </div>
-                        <div className="gallery grid grid-cols-4 gap-4 p-2 w-full">
-                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
-                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
-                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
-                            <div className="bg-gray-100 rounded-lg border aspect-square"></div>
+                        <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full">
+                            <div className="bg-gray-100 rounded-lg border aspect-square">
+                                <img
+                                    className="h-full w-full object-cover rounded-lg"
+                                    src="https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg"
+                                    alt="Product"
+                                />
+                            </div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square">
+                                <img
+                                    className="h-full w-full object-cover rounded-lg"
+                                    src="https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg"
+                                    alt="Product"
+                                />
+                            </div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square">
+                                <img
+                                    className="h-full w-full object-cover rounded-lg"
+                                    src="https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg"
+                                    alt="Product"
+                                />
+                            </div>
+                            <div className="bg-gray-100 rounded-lg border aspect-square">
+                                <img
+                                    className="h-full w-full object-cover rounded-lg"
+                                    src="https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg"
+                                    alt="Product"
+                                />
+                            </div>
                         </div>
+
                     </div>
                     <div className="product-details
                             flex-[5] 
@@ -144,10 +181,10 @@ const ProductPage = () => {
                                 bg-gray-900 
                                 rounded-lg 
                                 m-2">
-                            <h2 className='text-2xl text-gray-100 font-normal mx-4 mt-6'>Item Price</h2>
-                            <h1 className='text-4xl text-gray-100 mx-4'>PHP 400</h1>
+                            <h2 className='text-l md:text-2xl text-gray-100 font-normal mx-4 mt-2 md:mt-6'>Item Price</h2>
+                            <h1 className='text-2xl md:text-4xl text-gray-100 mx-4'>PHP 400</h1>
 
-                            <div className='mx-4 flex-row space-x-2'>
+                            <div className='mx-4 flex-row space-x-2 pb-2'>
                                 <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Add to Cart</button>
                                 <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Proceed to Checkout</button>
                             </div>
@@ -157,7 +194,8 @@ const ProductPage = () => {
                 <div className="product-bottom 
                         flex 
                         flex-[1]
-                        flex-row
+                        flex-col
+                        md:flex-row
                         w-full">
                     <div className="product-info  
                             flex-[3] 
@@ -168,8 +206,19 @@ const ProductPage = () => {
                             bg-gray-100 
                             rounded-lg 
                             m-2">
-                        <h1 className="mx-2.5 mt-1.5">Product Information</h1>
+                        <h1 className="mx-2.5 mt-1.5 text-4xl">Product Information</h1>
                         <p className="text-xs font-normal mx-2.5 ">Product Details</p>
+                        <div className='flex flex-row space-x-2 m-2'>
+                            <h2 className="mx-2.5 mt-5 text-sm">Categories</h2>
+                            <button className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Bags</button>
+                            <button className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">Accessories</button>
+                        </div>
+                        <div className="flex flex-row space-x-2 m-5">
+                            <h3 className="mx-2.5 mt-3 text-sm ">Quantity</h3>
+                            <button onClick={handleMinus} className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">-</button>
+                            <input type="number" className="w-20 text-xs text-center border-2 border-black rounded-full bg-gray " value={count}/>
+                            <button onClick={handlePlus}className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300">+</button>
+                        </div>
                     </div>
                     <div className="product-reviews  
                             flex-[5] 
@@ -179,7 +228,7 @@ const ProductPage = () => {
                             rounded-lg 
                             m-2">
                         <div className='flex flex-[1] flex-col'>
-                            <h1 className="mx-2.5 mt-1.5">Costumer Reviews</h1>
+                            <h1 className="mx-2.5 mt-1.5 text-4xl">Costumer Reviews</h1>
                             <div className="flex space-x-1 mx-2.5 mt-1.5">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +302,7 @@ const ProductPage = () => {
                             <h3 className="text-xs mx-2.5">3 reviews</h3>
                         </div>
                         <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all p-4">
-                                <div className='flex-[3] 
+                            <div className='flex-[3] 
                             flex 
                             flex-col
                             items-start 
@@ -262,8 +311,8 @@ const ProductPage = () => {
                             border
                             rounded-lg 
                             m-2"'>
-                                    <h1>testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest</h1>
-                                </div>
+                                <h1>testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest</h1>
+                            </div>
                         </div>
                     </div>
                 </div>
