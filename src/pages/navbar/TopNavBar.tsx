@@ -9,6 +9,7 @@ const TopNavBar = () => {
       className="main w-full
     flex justify-between items-center
     bg-[#202020] text-white
+
     text-[12px] lg:text-[15px]
     2xl:text-[17px]
     "
@@ -39,18 +40,11 @@ const TopNavBar = () => {
       </div>
       <div
         className="right
-        flex gap-2 m-2 mr-4
+        flex gap-3 m-2 mr-4
         lg:mr-7 lg:gap-5 lg:m-3
-        2xl:mr-16 2xl:gap-10 2xl:m-4
+        2xl:mr-16 2xl:gap-8 2xl:m-4
         "
       >
-        <h3
-          className="
-        font-normal lg:font-medium
-        "
-        >
-          img
-        </h3>
         <h3
           className="
         font-normal lg:font-medium
