@@ -25,9 +25,8 @@ const HomePage = () => {
   ]
 
   return (
-    <div className="HomePage h-screen flex flex-col items-center">
+    <div className="HomePage w-fill flex flex-col items-center">
       <NavBar obj={CategoryArray}/>
-      <hr />
       <div className="HomePageCategories">
         <div className="CategoriesHeader bg-gradient-to-r from-[#282667] to-slate-900 p-7 ml-4 mr-4 rounded-2xl">
           <h1 className="CategoriesTitle text-4xl text-white text-center font-medium">CATEGORIES</h1>

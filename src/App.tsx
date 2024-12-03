@@ -11,7 +11,7 @@ import { Sign } from "crypto";
 
 const App = () => {
   return (
-    <div id="container">
+    <div>
       <HomePage />
     </div>
   );
