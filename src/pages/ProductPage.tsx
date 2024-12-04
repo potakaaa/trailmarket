@@ -54,14 +54,14 @@ const ProductPage = () => {
                             "
             >
               <div className="product-display flex-[3] flex flex-col rounded-2xl ">
-                <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4">
+                <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
                     src={kanye}
                     alt="Product"
                   />
                 </div>
-                <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5">
+                <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
                   {kanyeArr.map(() => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
@@ -74,15 +74,19 @@ const ProductPage = () => {
                 </div>
               </div>
               <div className="product-details flex-[5] flex flex-col">
-                <div className="product-name flex-[1] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5">
-                  <h1 className="text-2xl sm:text-3xl">Product Name</h1>
-                  <h2 className="text-sm font-normal ">{loremPlaceholder}</h2>
+                <div className="product-name flex-[1] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl">
+                    Product Name
+                  </h1>
+                  <h2 className="text-sm font-normal md:text-base ">
+                    {loremPlaceholder}
+                  </h2>
                 </div>
                 <div className="product-price flex-[1] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3">
-                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl">
+                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3">
                     PHP 400
                   </h1>
-                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 ">
+                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3">
                     <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal">
                       Add to Cart
                     </button>
@@ -94,12 +98,12 @@ const ProductPage = () => {
               </div>
             </div>
             <div className="product-bottom flex flex-[1] flex-col md:flex-row ">
-              <div className="product-info flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 mx-4 sm:p-1 sm:pt-3">
+              <div className="product-info flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-1 sm:pt-3 md:ml-3 md:mr-1">
                 <h1 className="mx-4 mt-1.5 text-2xl sm:text-2xl">
                   Product Information
                 </h1>
                 <p className="text-xs font-normal mx-4 ">Product Details</p>
-                <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7">
+                <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:mt-6">
                   <h2 className="mx-2.5 text-center text-xs flex justify-center items-center sm:text-sm">
                     Category
                   </h2>
@@ -138,7 +142,7 @@ const ProductPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4">
+              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
                 <div className="flex flex-[1] flex-col mb-3">
                   <h1 className="mx-2.5 mt-1.5 text-2xl">Customer Reviews</h1>
                   <div className="flex space-x-1 mx-2.5 my-1">
@@ -151,7 +155,7 @@ const ProductPage = () => {
                 </div>
                 <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                   <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1">
+                    <div className="w-full flex items-center my-2">
                       <button className="flex gap-2 w-full">
                         <UserIcon className="size-5" />
                         <p className="">User</p>
