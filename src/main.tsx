@@ -8,6 +8,7 @@ import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import TopNavBar from "./pages/navbar/TopNavBar.tsx";
+import SellerPage from "./pages/SellerPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <SignOrLoginPage />,
+  },
+  {
+    path: "/seller",
+    element: <SellerPage />,
   },
   {
     path: "/signup",
