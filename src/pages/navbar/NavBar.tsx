@@ -3,7 +3,6 @@ import ChevronDown from "../../assets/Chevron.svg";
 import LogOut from "../../assets/LogOut.svg";
 import Person from "../../assets/Person.svg";
 import ShoppingCart from "../../assets/ShoppingCart.svg";
-import { UserIcon } from "@heroicons/react/16/solid";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },

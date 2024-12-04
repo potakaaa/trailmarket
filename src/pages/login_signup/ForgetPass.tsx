@@ -176,7 +176,7 @@ const ForgetPass = () => {
       }
 
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("DIM_USER")
           .update({ USER_PASS: newPassword })
           .eq("STUDENT_ID", input.id);

@@ -12,7 +12,7 @@ const LoginPage = () => {
     throw new Error("useContext must be used within an AuthProvider");
   }
 
-  const { isLoggedIn, setIsLoggedIn } = context;
+  const { setIsLoggedIn } = context;
 
   const nav = useNavigate();
 
