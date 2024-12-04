@@ -128,7 +128,7 @@ const ForgetPass = () => {
               id="cancel-btn"
               className="
           font-thin text-sm ml-2
-          text-left
+          text-left 2xl:text-base
           "
               onClick={handleCancel}
             >
@@ -160,12 +160,18 @@ const ForgetPass = () => {
 
   const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState("");
+    const [tempPass, setTempPass] = useState("");
 
     const handleReset = async (event: React.FormEvent) => {
       event.preventDefault();
 
       if (!newPassword) {
         alert("Please enter a new password.");
+        return;
+      }
+
+      if (tempPass != newPassword) {
+        alert("Password doesn't match.");
         return;
       }
 
@@ -180,6 +186,7 @@ const ForgetPass = () => {
           alert("Failed to update password. Please try again.");
         } else {
           alert("Password updated successfully!");
+          nav("/login");
         }
       } catch (error) {
         console.error("Unexpected error:", error);
@@ -188,32 +195,46 @@ const ForgetPass = () => {
     };
     return (
       <div className="form-container flex flex-col">
-        <h2>Reset Your Password</h2>
+        <h2 className="w-full ml-2">Reset Your Password</h2>
         <input
           type="password"
-          placeholder="New Password"
+          placeholder="Password"
+          id="password-input"
           className="w-full
-              border-black border-2
-              rounded-full
-              h-11 p-5 mb-3
-              font-normal 2xl:h-14"
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal
+        2xl:h-14"
+          value={tempPass}
+          onChange={(e) => setTempPass(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          id="confirm-password-input"
+          className="w-full
+        border-black border-2
+        rounded-full
+        h-11 p-5 mb-3
+        font-normal
+        2xl:h-14"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
         <button
           onClick={handleReset}
           className="
-                    bg-gradient-to-r
+                     bg-gradient-to-r
                     from-[#6B66FB] to-[#000000]
                     text-white
                     font-normal
                     rounded-full
-                    w-35 h-10
-                    mt-3 self-end
-                    2xl:h-12 2xl:w-48
+                    w-32 h-10
+                    mt-3 self-end 2xl:h-12 2xl:w-48
                   "
         >
-          Reset Password
+          Reset
         </button>
       </div>
     );
