@@ -39,7 +39,7 @@ const SignOrLoginPage = () => {
         "
         >
           <img
-            src="../src/img/image_1.png"
+            src="src\img\login_bg.png"
             alt="TrailMarket"
             className="w-full h-full 
             object-cover "

@@ -54,14 +54,14 @@ const ProductPage = () => {
                             "
             >
               <div className="product-display flex-[3] flex flex-col rounded-2xl ">
-                <div className="aspect-square bg-gray-200 rounded-lg shadow-md ">
+                <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4">
                   <img
                     className="h-full w- object-cover rounded-lg"
                     src={kanye}
                     alt="Product"
                   />
                 </div>
-                <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full">
+                <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5">
                   {kanyeArr.map(() => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
@@ -74,15 +74,15 @@ const ProductPage = () => {
                 </div>
               </div>
               <div className="product-details flex-[5] flex flex-col">
-                <div className="product-name flex-[1] items-center justify-centerbg-gray-100 rounded-lg m-2">
-                  <h1 className="text-2xl">Product Name</h1>
-                  <h2 className="text-sm font-normal">{loremPlaceholder}</h2>
+                <div className="product-name flex-[1] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5">
+                  <h1 className="text-2xl sm:text-3xl">Product Name</h1>
+                  <h2 className="text-sm font-normal ">{loremPlaceholder}</h2>
                 </div>
-                <div className="product-price flex-[1] items-center justify-center bg-gray-900 rounded-lg my-2 py-4">
-                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4">
+                <div className="product-price flex-[1] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3">
+                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl">
                     PHP 400
                   </h1>
-                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2">
+                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 ">
                     <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal">
                       Add to Cart
                     </button>
@@ -94,49 +94,51 @@ const ProductPage = () => {
               </div>
             </div>
             <div className="product-bottom flex flex-[1] flex-col md:flex-row ">
-              <div className="product-info flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 w-full">
-                <h1 className="mx-4 mt-1.5 text-2xl">Product Information</h1>
+              <div className="product-info flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 mx-4 sm:p-1 sm:pt-3">
+                <h1 className="mx-4 mt-1.5 text-2xl sm:text-2xl">
+                  Product Information
+                </h1>
                 <p className="text-xs font-normal mx-4 ">Product Details</p>
-                <div className="flex flex-row space-x-2 m-2 w-full justify-between">
-                  <h2 className="mx-2.5 text-center text-xs flex justify-center items-center">
+                <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7">
+                  <h2 className="mx-2.5 text-center text-xs flex justify-center items-center sm:text-sm">
                     Category
                   </h2>
-                  <div className="flex gap-3 flex-1 justify-center">
+                  <div className="flex gap-3 flex-1">
                     {/* should be array here */}
-                    <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center">
+                    <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center sm:text-sm">
                       Bags
                     </p>
-                    <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center">
+                    <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center sm:text-sm">
                       Accessories
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-row space-x-2 m-5 justify-between w-full">
-                  <h3 className="text-xs text-center flex justify-center items-center ">
+                <div className="flex flex-row space-x-2 m-5 justify-between gap-10">
+                  <h3 className="text-xs text-center flex justify-center items-center sm:text-sm">
                     Quantity
                   </h3>
-                  <div className="flex gap-2 flex-1 justify-center">
+                  <div className="flex gap-2 flex-1 justify-center ">
                     <button
                       onClick={handleMinus}
-                      className="flex px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300"
+                      className="flex px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 sm:text-sm"
                     >
                       -
                     </button>
                     <input
                       type="number"
-                      className="w-20 text-xs text-center border-2 border-black rounded-full bg-gray "
+                      className="w-20 text-xs text-center border-2 border-black rounded-full bg-gray sm:text-sm"
                       value={count}
                     />
                     <button
                       onClick={handlePlus}
-                      className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300"
+                      className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 sm:text-sm"
                     >
                       +
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2">
+              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4">
                 <div className="flex flex-[1] flex-col mb-3">
                   <h1 className="mx-2.5 mt-1.5 text-2xl">Customer Reviews</h1>
                   <div className="flex space-x-1 mx-2.5 my-1">
