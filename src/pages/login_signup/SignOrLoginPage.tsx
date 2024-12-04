@@ -5,8 +5,6 @@ import ForgetPass from "./ForgetPass";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const SignOrLoginPage = () => {
-  const i = 2;
-
   const location = useLocation();
   const nav = useNavigate();
 

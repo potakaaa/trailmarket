@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./ProductPage.css";
 import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
 import { UserIcon } from "@heroicons/react/16/solid";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
@@ -63,7 +62,7 @@ const ProductPage = () => {
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full">
-                  {kanyeArr.map((index) => (
+                  {kanyeArr.map(() => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
                         className="h-full w-full object-cover rounded-lg"
