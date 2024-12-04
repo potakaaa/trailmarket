@@ -22,7 +22,9 @@ const SellerPage = () => {
                 <div
                     className="flex flex-1 border-dashed border-2 border-black flex-col rounded-xl"
                 >
-                    <p>my products</p>
+                    <div className='[products container flex flex-1 border-dashed border-black h-full p-3'>
+                        <div className='bg-black'></div>
+                    </div>
                 </div>
             </div>
         </div>
