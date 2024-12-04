@@ -106,6 +106,7 @@ const ForgetPass = () => {
         rounded-full
         h-11 p-5 mb-3
         font-normal
+        2xl:h-14
 
         "
           name="code"
@@ -136,7 +137,7 @@ const ForgetPass = () => {
           </div>
 
           <button
-            id="login-button"
+            id="verify"
             className="
           bg-gradient-to-r
           from-[#6B66FB] to-[#000000]
@@ -145,7 +146,7 @@ const ForgetPass = () => {
           rounded-full
           w-32 h-10
           mt-3 self-end
-          shadow-md
+          shadow-md 2xl:h-12 2xl:w-48
           
         "
             onClick={handleVerify}
@@ -195,7 +196,7 @@ const ForgetPass = () => {
               border-black border-2
               rounded-full
               h-11 p-5 mb-3
-              font-normal"
+              font-normal 2xl:h-14"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
@@ -209,6 +210,7 @@ const ForgetPass = () => {
                     rounded-full
                     w-35 h-10
                     mt-3 self-end
+                    2xl:h-12 2xl:w-48
                   "
         >
           Reset Password
@@ -234,7 +236,7 @@ const ForgetPass = () => {
                   border-black border-2
                   rounded-full
                   h-11 p-5 mb-3
-                  font-normal
+                  font-normal 2xl:h-14
                   "
             name="id"
             onChange={handleChange}
@@ -249,7 +251,7 @@ const ForgetPass = () => {
                   border-black border-2
                   rounded-full
                   h-11 p-5 mb-3
-                  font-normal
+                  font-normal 2xl:h-14
                   "
             name="email"
           />
@@ -263,7 +265,7 @@ const ForgetPass = () => {
               id="return-login"
               className="
                   font-thin text-sm ml-2
-                  text-left
+                  text-left 2xl:text-base
                   "
               onClick={() => nav("/login")}
             >
@@ -279,7 +281,7 @@ const ForgetPass = () => {
                     font-normal
                     rounded-full
                     w-32 h-10
-                    mt-3 self-end
+                    mt-3 self-end 2xl:h-12 2xl:w-48
                   "
             >
               Submit

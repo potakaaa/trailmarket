@@ -128,7 +128,7 @@ const SignOrLoginPage = () => {
                 font-normal
                 rounded-full
                 w-full h-12
-                shadow-lg
+                shadow-lg 2xl:h-14
               "
                 onClick={() => {
                   {
