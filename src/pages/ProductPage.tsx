@@ -212,7 +212,7 @@ const ProductPage = () => {
                 <p className="text-xs font-normal mx-4 xl:text-sm xl:ml-[18px]">
                   Product Details
                 </p>
-                <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:mt-6 flex-wrap">
+                <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:gap-3 md:mt-6 flex-wrap">
                   <h2 className="mx-2.5 text-center text-xs flex justify-center items-center sm:text-sm ">
                     Category
                   </h2>
@@ -226,11 +226,11 @@ const ProductPage = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-row space-x-2 m-5 justify-between gap-10 flex-wrap">
+                <div className="flex flex-row space-x-2 m-5 justify-between gap-10 md:gap-3 flex-wrap">
                   <h3 className="text-xs text-center flex justify-center items-center sm:text-sm">
                     Quantity
                   </h3>
-                  <div className="flex gap-2 flex-1 justify-center">
+                  <div className="flex gap-2 flex-1">
                     <button
                       onClick={handleMinus}
                       className="flex px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 sm:text-sm"
