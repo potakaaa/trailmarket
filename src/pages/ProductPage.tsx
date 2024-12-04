@@ -49,11 +49,8 @@ const ProductPage = () => {
       <div className="app-wrapper flex items-center justify-center min-h-screen overflow-scroll">
         <div className="flex justify-center items-center">
           <div className="product-cntnr flex flex-col justify-center items-center h-auto w-[95vw] bg-white rounded-lg shadow-lg">
-            <div
-              className="product-top flex flex-col md:flex-row flex-[2] w-full px-1 h-auto
-                            "
-            >
-              <div className="product-display flex-[3] flex flex-col rounded-2xl ">
+            <div className="product-top flex flex-col md:flex-row flex-[3] w-full px-1 h-auto">
+              <div className="product-display flex-[3] flex flex-col rounded-2xl 2xl:flex-[3] xl:m-4">
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
@@ -61,7 +58,7 @@ const ProductPage = () => {
                     alt="Product"
                   />
                 </div>
-                <div className="gallery grid grid-cols-4 md:grid-cols-2 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
+                <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
                   {kanyeArr.map(() => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
@@ -73,36 +70,38 @@ const ProductPage = () => {
                   ))}
                 </div>
               </div>
-              <div className="product-details flex-[5] flex flex-col">
-                <div className="product-name flex-[1] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl">
+              <div className="product-details flex-[5] flex flex-col xl:my-4 xl:mr-4">
+                <div className="product-name flex-[1] 2xl:flex-[0] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
                     Product Name
                   </h1>
-                  <h2 className="text-sm font-normal md:text-base ">
+                  <h2 className="text-sm font-normal md:text-base xl:mt-3 xl:text-lg 2xl:text-xl">
                     {loremPlaceholder}
                   </h2>
                 </div>
-                <div className="product-price flex-[1] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3">
-                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3">
+                <div className="product-price flex-[1] 2xl:flex-[0] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3">
+                  <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3 xl:text-5xl 2xl:text-[4rem] 2xl:my-5">
                     PHP 400
                   </h1>
-                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3">
-                    <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal">
+                  <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3 xl:my-5 2xl:my-8">
+                    <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl">
                       Add to Cart
                     </button>
-                    <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal">
+                    <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm 2xl:text-xl">
                       Proceed to Checkout
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="product-bottom flex flex-[1] flex-col md:flex-row ">
-              <div className="product-info flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-1 sm:pt-3 md:ml-3 md:mr-1">
-                <h1 className="mx-4 mt-1.5 text-2xl sm:text-2xl">
+            <div className="product-bottom flex flex-[1] flex-col md:flex-row xl:ml-4 xl:mr-4 2xl:hidden">
+              <div className="product-info flex-[1] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-1 sm:pt-3 md:ml-3 md:mr-1 md:h-60 ">
+                <h1 className="mx-4 mt-1.5 text-2xl sm:text-2xl xl:text-3xl">
                   Product Information
                 </h1>
-                <p className="text-xs font-normal mx-4 ">Product Details</p>
+                <p className="text-xs font-normal mx-4 xl:text-sm xl:ml-[18px]">
+                  Product Details
+                </p>
                 <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:mt-6">
                   <h2 className="mx-2.5 text-center text-xs flex justify-center items-center sm:text-sm">
                     Category
@@ -144,21 +143,25 @@ const ProductPage = () => {
               </div>
               <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
                 <div className="flex flex-[1] flex-col mb-3">
-                  <h1 className="mx-2.5 mt-1.5 text-2xl">Customer Reviews</h1>
+                  <h1 className="mx-2.5 mt-1.5 text-2xl xl:text-3xl">
+                    Customer Reviews
+                  </h1>
                   <div className="flex space-x-1 mx-2.5 my-1">
                     {renderStars()}
-                    <h3 className="text-xs font-medium">{"(3 reviews)"}</h3>
+                    <h3 className="text-xs font-medium xl:text-sm">
+                      {"(3 reviews)"}
+                    </h3>
                   </div>
-                  <h2 className="text-[11px] mx-2.5 font-medium">
+                  <h2 className="text-[11px] mx-2.5 font-medium xl:text-sm">
                     80% of costumers are satisfied
                   </h2>
                 </div>
                 <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                   <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-2">
+                    <div className="w-full flex items-center my-1 xl:my-2">
                       <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5" />
-                        <p className="">User</p>
+                        <UserIcon className="size-5 xl:size-7" />
+                        <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
                         {renderStars()}
@@ -169,10 +172,10 @@ const ProductPage = () => {
                 </div>
                 <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                   <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1">
+                    <div className="w-full flex items-center my-1 xl:my-2">
                       <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5" />
-                        <p className="">User</p>
+                        <UserIcon className="size-5 xl:size-7" />
+                        <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
                         {renderStars()}
@@ -183,10 +186,10 @@ const ProductPage = () => {
                 </div>
                 <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                   <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1">
+                    <div className="w-full flex items-center my-1 xl:my-2">
                       <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5" />
-                        <p className="">User</p>
+                        <UserIcon className="size-5 xl:size-7" />
+                        <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
                         {renderStars()}
