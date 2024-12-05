@@ -40,9 +40,9 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   };
 
   return (
-    <div className="NavBar mb-3 flex flex-col mx-4 justify-center items-center w-full">
+    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center w-full">
       <div className="NavBarLeft">
-        <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:col-span-1 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3">
+        <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:row-span-2 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3 xl:pl-[20px]">
           TrailMarket
         </h1>
       </div>
