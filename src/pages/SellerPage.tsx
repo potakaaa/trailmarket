@@ -59,7 +59,7 @@ const SellerPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18182b] rounded-xl flex-col pt-24 p-7 space-y-6'>
+                    <div className='flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18181b] rounded-xl flex-col pt-24 p-7 space-y-6'>
                         
                         <h2 className='text-white font-normal text-xs'>Quick stats</h2>
                         <div>
