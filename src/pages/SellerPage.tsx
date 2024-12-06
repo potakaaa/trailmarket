@@ -61,7 +61,7 @@ const SellerPage = () => {
                     </div>
                     <div className='flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18181b] rounded-xl flex-col pt-24 p-7 space-y-6'>
                         
-                        <h2 className='text-white font-normal text-xs'>Quick stats</h2>
+                        <h2 className='text-white font-normal text-xs'>Quick stat</h2>
                         <div>
                             <h1 className='text-white text-3xl'>PHP 100000</h1>
                             <h2 className='text-white font-normal text-xs'>Total Sales</h2>
