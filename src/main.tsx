@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import TopNavBar from "./pages/navbar/TopNavBar.tsx";
 import SellerPage from "./pages/SellerPage.tsx";
+import AboutUs from "./pages/AboutUs.tsx";
 
 const router = createHashRouter([
   {
@@ -48,6 +49,7 @@ const router = createHashRouter([
 
   {
     path: "/about",
+    element: <AboutUs />,
     errorElement: <div>404 Not Found</div>,
   },
   {
@@ -56,6 +58,11 @@ const router = createHashRouter([
   },
   {
     path: "/profile",
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/myprofile",
+    element: <SellerPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);
