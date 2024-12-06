@@ -52,14 +52,14 @@ const SellerPage = () => {
                                         <input id="PaymentOption2" className="flex-[5] flex rounded-tr-xl rounded-br-xl p-1  border-black border-2   " />
                                     </div>
                                     <div className='flex flex-row w-full '>
-                                        <div className='flex-[1] flex rounded-tl-xl rounded-bl-xl border-2 border-black '></div>
+                                        <div className='flex-[1] flex rounded-tl-xl rounded-bl-xl border-2 border-black  '></div>
                                         <input id="PaymentOption3" className="flex-[5] flex rounded-tr-xl rounded-br-xl border-2 p-1  border-black " />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18181b] rounded-xl flex-col pt-24 p-7 space-y-6'>
+                    <div className='flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18182b] rounded-xl flex-col pt-24 p-7 space-y-6'>
                         
                         <h2 className='text-white font-normal text-xs'>Quick stats</h2>
                         <div>
