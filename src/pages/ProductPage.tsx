@@ -46,9 +46,9 @@ const ProductPage = () => {
     <div className="flex flex-col">
       <TopNavBar />
 
-      <div className="app-wrapper flex items-center justify-center min-h-screen overflow-scroll">
+      <div className="app-wrapper flex items-center justify-center min-h-screen overflow-scroll ">
         <div className="flex justify-center items-center">
-          <div className="product-cntnr flex flex-col justify-center items-center h-auto w-[95vw] bg-white rounded-lg shadow-lg">
+          <div className="product-cntnr flex flex-col justify-center items-center h-auto w-[95vw] bg-white rounded-lg shadow-lg pb-2 2xl:pb-5">
             <div className="product-top flex flex-col md:flex-row flex-[3] w-full px-1 h-auto">
               <div className="product-display flex-[3] flex flex-col rounded-2xl 2xl:flex-[3] xl:m-4">
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
