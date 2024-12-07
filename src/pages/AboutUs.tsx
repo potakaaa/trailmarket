@@ -33,7 +33,7 @@ const AboutUs = () => {
             </div>
             <div className="img-container w-full mt-1 sm:px-5 sm:pb-5 md:px-8 lg:p-0">
               <img
-                src="src\img\ustp.jpg"
+                src="public\img\ustp.jpg"
                 alt="TrailMarket"
                 className="size-full object-cover rounded-xl shadow-md w-full lg:rounded-l-none"
               />
@@ -53,7 +53,7 @@ const AboutUs = () => {
               <div className="links-container-1 flex justify-center gap-2 xl:gap-4">
                 <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
                   <img
-                    src="src\assets\fb.svg"
+                    src="public\assets\fb.svg"
                     className="w-7 sm:my-1 xl:w-8 text-red"
                   />
                   <p className="hidden sm:flex text-center text-sm xl:text-lg">
@@ -62,7 +62,7 @@ const AboutUs = () => {
                 </button>
                 <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
                   <img
-                    src="src\assets\github.svg"
+                    src="public\assets\github.svg"
                     className="w-7 sm:my-1 xl:w-8"
                   />
                   <p className="hidden sm:flex text-center text-sm xl:text-lg">
@@ -73,7 +73,7 @@ const AboutUs = () => {
               <div className="links-container-2 flex justify-center gap-2 xl:gap-4">
                 <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
                   <img
-                    src="src\assets\twitter.svg"
+                    src="public\assets\twitter.svg"
                     className="w-7 sm:my-1 xl:w-8"
                   />
                   <p className="hidden sm:flex text-center text-sm xl:text-lg">
@@ -82,7 +82,7 @@ const AboutUs = () => {
                 </button>
                 <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
                   <img
-                    src="src\assets\email.svg"
+                    src="public\assets\email.svg"
                     className="w-7 sm:my-1 xl:w-8"
                   />
                   <p className="hidden sm:flex text-center text-sm xl:text-lg">

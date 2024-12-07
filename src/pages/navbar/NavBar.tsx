@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ChevronDown from "../../assets/Chevron.svg";
-import LogOut from "../../assets/LogOut.svg";
-import Person from "../../assets/Person.svg";
-import ShoppingCart from "../../assets/ShoppingCart.svg";
+import ChevronDown from "../../../public/assets/Chevron.svg";
+import LogOut from "../../../public/assets/LogOut.svg";
+import Person from "../../../public/assets/Person.svg";
+import ShoppingCart from "../../../public/assets/ShoppingCart.svg";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
@@ -40,7 +40,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   };
 
   return (
-    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center  lg:px-5 2xl:px-10">
+    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center  lg:px-5 2xl:px-10 w-full">
       <div className="NavBarLeft">
         <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:row-span-2 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3 xl:pl-[20px]">
           TrailMarket

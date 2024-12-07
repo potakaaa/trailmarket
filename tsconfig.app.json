@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "postcss.config.js"]
+  "include": ["src", "postcss.config.js", "src/pages/navbar/TopNavBar.tsx"]
 }
