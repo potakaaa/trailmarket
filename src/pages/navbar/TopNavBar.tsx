@@ -26,15 +26,7 @@ const TopNavBar = () => {
         "
           onClick={() => nav("/about")}
         >
-          About
-        </button>
-        <button
-          className="
-        font-normal lg:font-medium
-        "
-          onClick={() => nav("/contact-us")}
-        >
-          Contact Us
+          About Us
         </button>
       </div>
       <div
