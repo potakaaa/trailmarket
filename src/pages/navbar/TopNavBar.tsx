@@ -8,7 +8,7 @@ const TopNavBar = () => {
       className="main w-full
     flex justify-between items-center
     bg-[#202020] text-white mb-3
-
+    md:px-3
     text-[12px] lg:text-[15px]
     2xl:text-[17px]
     "
@@ -22,7 +22,7 @@ const TopNavBar = () => {
       >
         <button
           className="
-        font-normal lg:font-medium
+        font-normal lg:font-medium md:text-sm
         "
           onClick={() => nav("/about")}
         >
@@ -38,7 +38,7 @@ const TopNavBar = () => {
       >
         <h3
           className="
-        font-normal lg:font-medium
+        font-normal lg:font-medium md:text-sm
         "
         >
           Welcome V_Gerebise
