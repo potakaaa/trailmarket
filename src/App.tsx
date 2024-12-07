@@ -1,16 +1,10 @@
 import { useContext, useEffect } from "react";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./pages/context/AuthContext";
+import { useAuthContext } from "./pages/context/AuthContext";
 
 const App = () => {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error("useContext must be used within an AuthProvider");
-  }
-
-  const { isLoggedIn } = context;
+  const { isLoggedIn } = useAuthContext();
   const nav = useNavigate();
 
   useEffect(() => {
