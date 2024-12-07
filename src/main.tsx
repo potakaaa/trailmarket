@@ -60,6 +60,10 @@ const router = createHashRouter([
         element: <SearchResults />,
         errorElement: <div>404 Not Found</div>,
       },
+      {
+        path: "cart",
+        errorElement: <div>404 Not Found</div>,
+      },
     ],
   },
   {
