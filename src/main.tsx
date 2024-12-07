@@ -11,6 +11,7 @@ import TopNavBar from "./pages/navbar/TopNavBar";
 import SellerPage from "./pages/SellerPage";
 import AboutUs from "./pages/AboutUs";
 import PrivateRoute from "./pages/context/PrivateRoute";
+import SearchResults from "./pages/SearchResults";
 
 const router = createHashRouter([
   {
@@ -54,6 +55,11 @@ const router = createHashRouter([
         element: <SellerPage />,
         errorElement: <div>404 Not Found</div>,
       },
+      {
+        path: "search",
+        element: <SearchResults />,
+        errorElement: <div>404 Not Found</div>,
+      },
     ],
   },
   {
@@ -67,6 +73,38 @@ const router = createHashRouter([
   {
     path: "/forget",
     element: <SignOrLoginPage />,
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/product",
+    element: <ProductPage />,
+  },
+  {
+    path: "/navbar2",
+    element: <TopNavBar />,
+  },
+
+  {
+    path: "/about",
+    element: <AboutUs />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/contact-us",
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/profile",
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/myprofile",
+    element: <SellerPage />,
+    errorElement: <div>404 Not Found</div>,
   },
 ]);
 
