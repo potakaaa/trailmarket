@@ -10,6 +10,7 @@ import ProductPage from "./pages/ProductPage.tsx";
 import TopNavBar from "./pages/navbar/TopNavBar.tsx";
 import SellerPage from "./pages/SellerPage.tsx";
 import AboutUs from "./pages/AboutUs.tsx";
+import SearchResults from "./pages/SearchResults.tsx";
 
 const router = createHashRouter([
   {
@@ -41,6 +42,10 @@ const router = createHashRouter([
   {
     path: "/product",
     element: <ProductPage />,
+  },
+  {
+    path: "/search",
+    element: <SearchResults />,
   },
   {
     path: "/navbar2",
