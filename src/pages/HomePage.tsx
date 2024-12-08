@@ -20,15 +20,21 @@ const HomePage = () => {
             </p>
           </div>
           <div className="CategoriesBody sm:grid-cols-1 grid md:grid-cols-2 lg:grid-cols-4 gap">
-            {CategoryArray.map((category, index) => (
-              <HomePageCategories
-                key={index}
-                name={category.CategoryName}
-                desc={category.CategoryDesc}
-                price={category.CategoryStartPrice}
-                image={category.CategoryImage}
-              />
-            ))}
+            {CategoryArray.map((category, index) => {
+              if (index === 0) {
+                return;
+              } else {
+                return (
+                  <HomePageCategories
+                    key={index}
+                    name={category.CategoryName}
+                    desc={category.CategoryDesc}
+                    price={category.CategoryStartPrice}
+                    image={category.CategoryImage}
+                  />
+                );
+              }
+            })}
           </div>
         </div>
       </div>

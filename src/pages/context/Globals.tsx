@@ -1,4 +1,12 @@
+import { useState } from "react";
+
 export const CategoryArray = [
+  {
+    CategoryName: "All Categories",
+    CategoryDesc: "",
+    CategoryStartPrice: 0,
+    CategoryImage: "",
+  },
   {
     CategoryName: "Bags",
     CategoryDesc: "Carry your stuff that matter the most.",

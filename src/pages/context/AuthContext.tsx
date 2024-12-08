@@ -10,6 +10,8 @@ import React, {
 interface AuthContextType {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
+  selectedCategory: string;
+  setSelectedCategory: (value: string) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -28,13 +30,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const storedValue = localStorage.getItem("isLoggedIn");
     return storedValue ? JSON.parse(storedValue) : false;
   });
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        selectedCategory,
+        setSelectedCategory,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
