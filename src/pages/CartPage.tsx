@@ -2,6 +2,7 @@ import TopNavbar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 import { useState } from "react";
 
+
 const CartPage = () => {
     const cartItems = [
         {
