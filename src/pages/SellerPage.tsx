@@ -1,9 +1,14 @@
+import TopNavBar from "./navbar/TopNavBar";
+import NavBar from "./navbar/NavBar";
+import { CategoryArray } from "./context/Globals";
 const kanye =
   "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
 
 const SellerPage = () => {
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
+      <TopNavBar />
+      <NavBar obj={CategoryArray} />
       <div className="seller-page p-6 flex flex-col flex-1 h-full w-full rounded-xl overflow-hidden">
         <div className="top-seller-page md:flex-row border flex flex-[5] flex-col rounded-xl p-4 border-gray-300">
           <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-6 flex-col">
