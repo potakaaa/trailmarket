@@ -4,6 +4,8 @@ import { ChangeEvent } from "react";
 import "./SignupPage.css";
 import { useNavigate } from "react-router-dom";
 
+const AddSignup = () => {};
+
 const SignupPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
 
@@ -81,13 +83,7 @@ const SignupPage = () => {
         type="text"
         placeholder="Name"
         id="name-input"
-        className="
-        w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         onChange={handleChange}
       />
       <input
@@ -95,13 +91,7 @@ const SignupPage = () => {
         type="number"
         placeholder="ID Number"
         id="id-input"
-        className="
-        w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14"
+        className=" w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         onChange={handleChange}
       />
       <input
@@ -109,24 +99,14 @@ const SignupPage = () => {
         type="email"
         placeholder="Email"
         id="email-input"
-        className="w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         onChange={handleChange}
       />
       <input
         type="password"
         placeholder="Password"
         id="password-input"
-        className="w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         name="password"
         onChange={handleChange}
       />
@@ -134,26 +114,13 @@ const SignupPage = () => {
         type="password"
         placeholder="Confirm Password"
         id="confirm-password-input"
-        className="w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         name="passwordconfirm"
         onChange={handleChange}
       />
       <button
         id="sign-button"
-        className="bg-gradient-to-r
-          from-[#6B66FB] to-[#000000]
-          text-white
-          font-normal
-          rounded-full
-          w-36 h-10
-          mt-3 justify-center
-          sm:justify-normal sm:self-end
-          2xl:h-12 2xl:w-48"
+        className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-36 h-10 mt-3 justify-center sm:justify-normal sm:self-end 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition-all duration-300"
         onClick={handleSignUp}
       >
         Sign up

@@ -1,26 +1,38 @@
-import "./HomePage.css";
 import NavBar from "./navbar/NavBar";
 import HomePageCategories from "./HomePage/HomePageCategories";
 import TopNavBar from "./navbar/TopNavBar";
-import { CategoryArray, fetchCategories } from "./context/Globals";
+import {
+  CategoryArray,
+  fetchCategories,
+  fetchProducts,
+} from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "./Loader/LoadingSpinner";
+import Product from "./Product";
+import { Product as ProductType } from "./context/Globals";
 
 const HomePage = () => {
   const { isFetched, setIsFetched } = useAuthContext();
+  const [products, setProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchCategories();
+      const fetchedProducts = await fetchProducts();
+      if (fetchedProducts) {
+        setProducts(fetchedProducts);
+      }
       setIsFetched(true);
     };
 
     fetchData();
-  }, []);
+  }, [setIsFetched]);
 
   if (!isFetched) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
+
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
       <TopNavBar />
@@ -48,6 +60,17 @@ const HomePage = () => {
               )
             )}
           </div>
+        </div>
+        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2">
+          {products.map((product, index) => (
+            <Product
+              key={index}
+              name={product.name}
+              price={product.price}
+              stock={product.stock}
+              imageUrl={product.imageUrl}
+            />
+          ))}
         </div>
       </div>
     </div>

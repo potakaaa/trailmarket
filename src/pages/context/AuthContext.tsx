@@ -14,6 +14,8 @@ interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   setSelectedCategory: (value: string) => void;
+  userArr: Record<string, any>;
+  setUserArr: (value: Record<string, any>) => void;
   isFetched: boolean;
   setIsFetched: (value: boolean) => void;
 }
@@ -21,6 +23,12 @@ interface AuthContextType {
 interface User {
   id: string;
   name: string;
+  age: number;
+  pass: string;
+  contact_num: number;
+  fb: string;
+  email: string;
+  image: string;
 }
 // Create the context with a default value of `undefined`
 // We later provide the context in the `AuthProvider`
@@ -39,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const [userArr, setUserArr] = useState<Record<string, any>>({});
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
@@ -64,6 +74,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggedIn,
         selectedCategory,
         setSelectedCategory,
+        userArr,
+        setUserArr,
         user,
         setUser,
         isFetched,
