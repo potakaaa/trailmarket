@@ -7,10 +7,9 @@ import { useAuthContext } from "./context/AuthContext";
 import TopNavBar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 
-const kanye =
-  "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
+const placeholder = "https://via.placeholder.com/150";
 
-const kanyeArr = Array(4).fill(kanye);
+const placeholderArr = Array(4).fill(placeholder);
 
 const ProductPost = () => {
   const [input, setInput] = useState({
@@ -194,19 +193,19 @@ const ProductPost = () => {
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
-                    src={kanye}
+                    src={placeholder}
                     alt="Product"
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {kanyeArr.map((kanye, index) => (
+                  {placeholderArr.map((placeholder, index) => (
                     <div
                       key={index}
                       className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
                     >
                       <img
                         className="h-full w-full object-cover rounded-lg"
-                        src={kanye}
+                        src={placeholder}
                         alt="Product"
                       />
                     </div>
