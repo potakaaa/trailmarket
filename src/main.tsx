@@ -13,6 +13,7 @@ import AboutUs from "./pages/AboutUs";
 import PrivateRoute from "./pages/context/PrivateRoute";
 import SearchResults from "./pages/SearchResults";
 import ProductPost from "./pages/ProductPost";
+import AdminPage from "./pages/AdminPage";
 
 const router = createHashRouter([
   {
@@ -68,6 +69,11 @@ const router = createHashRouter([
       },
       {
         path: "cart",
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "admin",
+        element: <AdminPage />,
         errorElement: <div>404 Not Found</div>,
       },
     ],
