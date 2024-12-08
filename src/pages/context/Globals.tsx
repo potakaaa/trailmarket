@@ -1,5 +1,4 @@
 import { supabase } from "../../createClient";
-import { useAuthContext } from "./AuthContext";
 
 // Exported global variable to store categories (useful for debugging or advanced cases)
 export let CategoryArray = [
