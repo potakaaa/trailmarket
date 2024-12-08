@@ -64,29 +64,23 @@ const SearchResults = () => {
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
                   options={categories}
-                >
-                  Tags
-                </Dropdown>
+                ></Dropdown>
               </div>
               <div className="p-4">
                 <Dropdown
                   buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
-                  options={["High to Low", "Low to High"]}
-                >
-                  Price
-                </Dropdown>
+                  options={["Price", "High to Low", "Low to High"]}
+                ></Dropdown>
               </div>
               <div className="p-4">
                 <Dropdown
                   buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
-                  options={["Latest to Oldest", "Oldest to Latest"]}
-                >
-                  Date
-                </Dropdown>
+                  options={["Date", "Latest to Oldest", "Oldest to Latest"]}
+                ></Dropdown>
               </div>
             </div>
           </div>

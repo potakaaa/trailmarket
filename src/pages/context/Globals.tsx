@@ -1,9 +1,9 @@
 import { supabase } from "../../createClient";
-import { useAuthContext } from "./AuthContext";
 
 // Exported global variable to store categories (useful for debugging or advanced cases)
 export let CategoryArray = [
   {
+    CategoryID: 0,
     CategoryName: "All Categories",
     CategoryDesc: "",
     CategoryStartPrice: 0,
@@ -28,12 +28,14 @@ export const fetchCategories = async () => {
 
     CategoryArray = [
       {
+        CategoryID: 0,
         CategoryName: "All Categories",
         CategoryDesc: "",
         CategoryStartPrice: 0,
         CategoryImage: "",
       },
       ...data.map((category: any) => ({
+        CategoryID: category.CATEGORY_ID,
         CategoryName: category.CATEGORY_NAME,
         CategoryDesc: category.CATEGORY_DESC || "",
         CategoryStartPrice: category.CategoryStartPrice || 0,
