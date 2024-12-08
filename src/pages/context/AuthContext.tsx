@@ -6,20 +6,6 @@ import React, {
   useEffect,
 } from "react";
 
-// Define types for the context value
-interface AuthContextType {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
-  selectedCategory: string;
-  user: User | null;
-  setUser: (user: User | null) => void;
-  setSelectedCategory: (value: string) => void;
-  userArr: Record<string, any>;
-  setUserArr: (value: Record<string, any>) => void;
-  isFetched: boolean;
-  setIsFetched: (value: boolean) => void;
-}
-
 interface User {
   id: string;
   name: string;
@@ -30,6 +16,30 @@ interface User {
   email: string;
   image: string;
 }
+
+interface CartProd {
+  prod_id: number;
+  name: string;
+  price: number;
+  condition: string;
+  category: string;
+  seller: string;
+}
+
+// Define types for the context value
+interface AuthContextType {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+  selectedCategory: string;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  setSelectedCategory: (value: string) => void;
+  isFetched: boolean;
+  setIsFetched: (value: boolean) => void;
+  cartProd: CartProd | null;
+  setCartProd: (cartProd: CartProd | null) => void;
+}
+
 // Create the context with a default value of `undefined`
 // We later provide the context in the `AuthProvider`
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -48,8 +58,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
-  const [userArr, setUserArr] = useState<Record<string, any>>({});
-
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
@@ -67,6 +75,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [user]);
 
+  const [cartProd, setCartProd] = useState<CartProd | null>(null);
+
   return (
     <AuthContext.Provider
       value={{
@@ -74,12 +84,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggedIn,
         selectedCategory,
         setSelectedCategory,
-        userArr,
-        setUserArr,
         user,
         setUser,
         isFetched,
         setIsFetched,
+        cartProd,
+        setCartProd,
       }}
     >
       {children}

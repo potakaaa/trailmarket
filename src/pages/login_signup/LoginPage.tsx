@@ -7,7 +7,7 @@ import { fetchCategories } from "../context/Globals";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, userArr, setUserArr, setUser } = useAuthContext();
+  const { setIsLoggedIn, setUser } = useAuthContext();
 
   const nav = useNavigate();
 
