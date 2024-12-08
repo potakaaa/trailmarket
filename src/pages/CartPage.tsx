@@ -1,9 +1,10 @@
 import TopNavbar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
+    const nav = useNavigate();
     const cartItems = [
         {
             cartItemId: 1,
@@ -46,15 +47,12 @@ const CartPage = () => {
         }
     ];
 
-  const payment = {
-    paymentTransactionId: "NX93842",
-    paymentTotal: 0,
-  };
+    const payment = {
+        paymentTransactionId: "NX93842",
+        paymentTotal: 0
+    }
 
     const [cartItemsState, setCartItemsState] = useState(cartItems);
-
-    const deliveryLocationOptions = ["CITC", "CEA", "Study Shed 2", "Study Shed 1", "CSM", "Gym Lobby", "Old CSM"];
-    const deliveryMethodOptions = ["Pickup", "Delivery"];
 
     return (
         <div className="mb-5">
@@ -80,8 +78,8 @@ const CartPage = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="CartItemMiddle border-b-2 border-gray-400 pb-[15px]">
-                                        <h1 className="text-2xl">{item.productName}</h1>
+                                    <div className="CartItemMiddle">
+                                        <h1 className="text-2xl border-b-2 border-gray-400 pb-4">{item.productName}</h1>
                                         <div className="CartItemsPriceConfig flex pt-[15px] justify-between">
                                             <div className="CartItemsUnitPrice w-1/3">
                                                 <p className="text-sm font-medium">Unit Price</p>
@@ -109,54 +107,6 @@ const CartPage = () => {
                                                 <p className="text-sm font-medium">Total Price</p>
                                                 <h1 className="text-2xl">{item.unitPrice * item.quantity}</h1>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="CartItemButtom flex items-end lg:justify-between md:justify-start gap-2 flex-wrap max-w-[500px]">
-                                        <div className="CartItemProductLocation lg:w-1/3 md:w-1/2">
-                                            <p className="text-sm font-medium">Delivery Location</p>
-                                            <select 
-                                                value={item.deliveryLocation}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    setCartItemsState(cartItemsState.map(cartItem => cartItem.cartItemId === item.cartItemId ? { ...cartItem, deliveryLocation: value } : cartItem));
-                                                }}
-                                                className="w-full border-[2px] border-black rounded-2xl px-4"
-                                            >
-                                                {
-                                                    deliveryLocationOptions.map((option, index) => (
-                                                        <option key={index} value={option}>{option}</option>
-                                                    ))
-                                                }
-                                            </select>
-                                        </div>
-                                        <div className="CartItemDeliveryMethod lg:w-1/4 md:w-1/3">
-                                            <p className="text-sm font-medium">Delivery Method</p>
-                                            <select 
-                                                value={item.deliveryMethodOptions}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    setCartItemsState(cartItemsState.map(cartItem => cartItem.cartItemId === item.cartItemId ? { ...cartItem, deliveryMethodOptions: value } : cartItem));
-                                                }}
-                                                className="w-full border-[2px] border-black rounded-2xl px-4"
-                                            >
-                                                {
-                                                    deliveryMethodOptions.map((option, index) => (
-                                                        <option key={index} value={option}>{option}</option>
-                                                    ))
-                                                }
-                                            </select>
-                                        </div>
-                                        <div className="CartItemDeliveryTime lg:w-1/3 md:w-2/4">
-                                            <p className="text-sm font-medium">Delivery Time</p>
-                                            <input 
-                                                type="time" 
-                                                value={item.deliveryTime}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    setCartItemsState(cartItemsState.map(cartItem => cartItem.cartItemId === item.cartItemId ? { ...cartItem, deliveryTime: value } : cartItem));
-                                                }}
-                                                className="w-full border-[2px] border-black rounded-2xl px-4 sm:w-full"
-                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -192,12 +142,11 @@ const CartPage = () => {
                             </div>
                         </div>
                         <div className="PaymentButton w-full">
-                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full">
+                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full" onClick={() => nav("./checkout")}>
                             Proceed to Payment
                         </button>
                     </div>
                     </div>
-                    
                 </div>   
             </div>
         </div>
