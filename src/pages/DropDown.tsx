@@ -1,20 +1,20 @@
 import React, { useState } from "react";
+
 interface DropdownProps {
   options: string[];
   onSelect: (value: string) => void;
-  children: React.ReactNode;
   buttonStyle: string;
   optionStyle: string;
 }
+
 const Dropdown: React.FC<DropdownProps> = ({
   options,
   onSelect,
-  children,
   buttonStyle,
   optionStyle,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(children);
+  const [selectedOption, setSelectedOption] = useState<string>(options[0]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);

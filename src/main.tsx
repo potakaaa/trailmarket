@@ -15,6 +15,7 @@ import SearchResults from "./pages/SearchResults";
 import ProductPost from "./pages/ProductPost";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
+import Product from "./pages/Product";
 
 const router = createHashRouter([
   {
@@ -124,8 +125,7 @@ const router = createHashRouter([
     element: <SellerPage />,
     errorElement: <div>404 Not Found</div>,
   },
-  ]
-);
+]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

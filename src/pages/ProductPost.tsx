@@ -1,63 +1,69 @@
-import Dropdown from "./DropDown";
-import react from "react";
-import { supabase } from "../createClient";
-import { useState } from "react";
-import { ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../createClient";
+import Dropdown from "./DropDown";
+import { fetchCategories, CategoryArray } from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
+import TopNavBar from "./navbar/TopNavBar";
+import NavBar from "./navbar/NavBar";
 
-const kanye =
-  "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
+const placeholder = "https://via.placeholder.com/150";
 
-const kanyeArr = Array(4).fill(kanye);
+const placeholderArr = Array(4).fill(placeholder);
 
 const ProductPost = () => {
-  const { user } = useAuthContext();
-  const nav = useNavigate();
   const [input, setInput] = useState({
     name: "",
     description: "",
     short_desc: "",
     price: "",
     stock: "",
-    category: "",
+    category: 0, // Store category ID as a number
     condition: "",
-    newcategory: "",
   });
 
-  const handleCategorySelect = (selectedCategory: string) => {
-    setInput((prevFormData) => ({
-      ...prevFormData,
-      category: selectedCategory,
-    }));
-  };
+  const { user } = useAuthContext();
+  const nav = useNavigate();
 
-  async function handleChange(
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  ) => {
     const { id, value } = event.target;
-
     setInput((prevFormData) => ({
       ...prevFormData,
       [id]: value,
     }));
-  }
+  };
 
-  async function handleAddCategory() {
-    const { error: insertError } = await supabase.from("DIM_CATEGORY").insert([
-      {
-        CATEGORY_NAME: input.newcategory,
-      },
-    ]);
-
-    if (insertError) {
-      alert("Error fetching data:" + insertError.message);
-    } else {
-      alert("Category Added!");
+  const handleCategorySelect = (selectedCategoryName: string) => {
+    const selectedCategory = CategoryArray.find(
+      (category) => category.CategoryName === selectedCategoryName
+    );
+    if (selectedCategory) {
+      setInput((prevFormData) => ({
+        ...prevFormData,
+        category: selectedCategory.CategoryID,
+      }));
     }
-  }
+  };
 
-  async function handlePost() {
+  const handlePost = async () => {
+    console.log("Submitting form with data:", input); // Debugging
+
+    if (!input.name) {
+      alert("Please enter a product name.");
+      return;
+    }
+
+    if (input.category === 0) {
+      alert("Please select a category.");
+      return;
+    }
+
     const { error: insertError } = await supabase.from("DIM_PRODUCT").insert([
       {
         PROD_NAME: input.name,
@@ -67,21 +73,25 @@ const ProductPost = () => {
         PROD_DESC: input.description,
         PROD_SHORTDESC: input.short_desc,
         SELLER_ID: user?.id,
+        PROD_CATEGORY: input.category, // Ensure this is a number
       },
-      nav("/home"),
     ]);
 
     if (insertError) {
       alert("Error fetching data: " + insertError.message);
+    } else {
+      nav("/home");
     }
-  }
+  };
+
+  const options = CategoryArray.map((category) => category.CategoryName);
+
   return (
     <div className="app-wrapper bg-white flex flex-col items-center justify-center min-h-screen overflow-y-auto">
+      <TopNavBar />
+      <NavBar obj={CategoryArray} />
       <div className="post-page p-6 flex flex-col flex-1 h-full w-full rounded-xl">
-        <div
-          className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b]
-          text-white rounded-xl p-4"
-        >
+        <div className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b] text-white rounded-xl p-4">
           <h1 className="text-xl">Post a Product</h1>
         </div>
         <div className="main-app flex w-full flex-col justify-center space-y-2 lg:flex-row space-x-2">
@@ -90,7 +100,7 @@ const ProductPost = () => {
               <h1 className="text-xl">General Information</h1>
               <form className="space-y-4">
                 <div className="flex flex-col">
-                  <label className="">Name of Product</label>
+                  <label htmlFor="name">Name of Product</label>
                   <input
                     id="name"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
@@ -100,7 +110,7 @@ const ProductPost = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="">Full Description</label>
+                  <label htmlFor="description">Full Description</label>
                   <textarea
                     id="description"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y text-wrap"
@@ -109,12 +119,12 @@ const ProductPost = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="">Short Description</label>
+                  <label htmlFor="short_desc">Short Description</label>
                   <input
                     id="short_desc"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                     type="text"
-                    placeholder="Be concise, but poingnant"
+                    placeholder="Be concise, but poignant"
                     onChange={handleChange}
                   />
                 </div>
@@ -151,13 +161,9 @@ const ProductPost = () => {
                     <Dropdown
                       buttonStyle="px-6 py-1 bg-white border-2 border-black rounded-xl h-full"
                       optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
-                      onSelect={() => {
-                        handleCategorySelect;
-                      }}
-                      options={["Category 1", "Category 2", "Category 3"]}
-                    >
-                      Select Category
-                    </Dropdown>
+                      onSelect={handleCategorySelect}
+                      options={options}
+                    ></Dropdown>
                   </div>
                 </div>
               </div>
@@ -187,19 +193,19 @@ const ProductPost = () => {
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
-                    src={kanye}
+                    src={placeholder}
                     alt="Product"
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {kanyeArr.map((kanye, index) => (
+                  {placeholderArr.map((placeholder, index) => (
                     <div
                       key={index}
                       className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
                     >
                       <img
                         className="h-full w-full object-cover rounded-lg"
-                        src={kanye}
+                        src={placeholder}
                         alt="Product"
                       />
                     </div>
