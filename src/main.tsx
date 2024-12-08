@@ -132,6 +132,16 @@ const router = createHashRouter([
     element: <SellerPage />,
     errorElement: <div>404 Not Found</div>,
   },
+  {
+    path: "/myprofile",
+    element: <SellerPage />,
+    errorElement: <div>404 Not Found</div>,
+  }, 
+  {
+    path: "/product",
+    element: <Product name="Sample Product" price={0} stock={0} imageUrl="" />,
+    errorElement: <div>404 Not Found</div>,
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(
