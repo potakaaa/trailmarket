@@ -37,7 +37,7 @@ const SignOrLoginPage = () => {
         {/* Right Container */}
         <div className="right-container flex flex-1 flex-col justify-center items-center m-8">
           <div className="title-container flex flex-col justify-center items-center sm:items-start w-full max-w-md 2xl:max-w-xl">
-            <h1 className="bg-gradient-to-r from-[#6B66FB] to-[#000000] text-transparent bg-clip-text text-5xl font-semibold text-center sm:text-left 2xl:text-[75px] 2xl:text-left">
+            <h1 className="bg-gradient-to-r from-[#191847] to-[#000000] text-transparent bg-clip-text text-5xl font-semibold text-center sm:text-left 2xl:text-[75px] 2xl:text-left">
               TrailMarket
             </h1>
             <p className="text-sm font-light ml-2 text-center sm:text-left 2xl:text-[16px] 2xl:text-left">
@@ -62,7 +62,7 @@ const SignOrLoginPage = () => {
               </div>
               <button
                 id="signup-button"
-                className="bg-gradient-to-r from-[#6B66FB] to-[#000000] text-white font-normal rounded-full w-full h-12 shadow-lg 2xl:h-14"
+                className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-12 shadow-lg 2xl:h-14  transition duration-300"
                 onClick={() => {
                   {
                     location.pathname === "/login"

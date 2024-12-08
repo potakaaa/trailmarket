@@ -14,18 +14,21 @@ interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   setSelectedCategory: (value: string) => void;
-<<<<<<< HEAD
   userArr: Record<string, any>;
   setUserArr: (value: Record<string, any>) => void;
-=======
   isFetched: boolean;
   setIsFetched: (value: boolean) => void;
->>>>>>> a32408b65886f6892f2a43d9260707eae2a77f0c
 }
 
 interface User {
   id: string;
   name: string;
+  age: number;
+  pass: string;
+  contact_num: number;
+  fb: string;
+  email: string;
+  image: string;
 }
 // Create the context with a default value of `undefined`
 // We later provide the context in the `AuthProvider`
@@ -71,15 +74,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggedIn,
         selectedCategory,
         setSelectedCategory,
-<<<<<<< HEAD
         userArr,
         setUserArr,
-=======
         user,
         setUser,
         isFetched,
         setIsFetched,
->>>>>>> a32408b65886f6892f2a43d9260707eae2a77f0c
       }}
     >
       {children}

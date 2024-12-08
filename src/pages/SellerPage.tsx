@@ -1,10 +1,13 @@
 import TopNavBar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 import { CategoryArray } from "./context/Globals";
+import { useAuthContext } from "./context/AuthContext";
 const kanye =
   "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
 
 const SellerPage = () => {
+  const { user } = useAuthContext();
+
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
       <TopNavBar />
@@ -14,11 +17,14 @@ const SellerPage = () => {
           <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-6 flex-col">
             <div className="nameandpic flex flex-row ">
               <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
-                <img className="object-cover h-full w-full" src={kanye}></img>
+                <img
+                  className="object-cover h-full w-full"
+                  src={user?.image}
+                ></img>
               </div>
               <div className="flex flex-col ml-4">
                 <p className=" font-normal text-sm">Seller Dashboard</p>
-                <h1 className=" text-2xl">KanyeWest</h1>
+                <h1 className=" text-2xl">{user?.name}</h1>
               </div>
             </div>
 
@@ -30,6 +36,7 @@ const SellerPage = () => {
                     id="name"
                     className="flex-1 rounded-xl border-2 border-black p-1"
                     type="text"
+                    value={user?.name}
                   />
                 </div>
                 <div className="flex flex-row items-center">
@@ -38,6 +45,7 @@ const SellerPage = () => {
                     id="contact"
                     className="flex-1 rounded-xl border-2 border-black p-1"
                     type="text"
+                    value={user?.contact_num}
                   />
                 </div>
                 <div className="flex flex-row items-center">
@@ -46,6 +54,7 @@ const SellerPage = () => {
                     id="email"
                     className="flex-1 rounded-xl border-2 border-black p-1"
                     type="email"
+                    value={user?.email}
                   />
                 </div>
               </form>

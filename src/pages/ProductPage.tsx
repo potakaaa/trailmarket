@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./ProductPage.css";
 import TopNavBar from "./navbar/TopNavBar";
 import { UserIcon } from "@heroicons/react/16/solid";
 const ProductPage = () => {
