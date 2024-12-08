@@ -1,10 +1,10 @@
-import "./HomePage.css";
 import NavBar from "./navbar/NavBar";
 import HomePageCategories from "./HomePage/HomePageCategories";
 import TopNavBar from "./navbar/TopNavBar";
 import { CategoryArray, fetchCategories } from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
 import { useEffect } from "react";
+import LoadingSpinner from "./Loader/LoadingSpinner";
 
 const HomePage = () => {
   const { isFetched, setIsFetched } = useAuthContext();
@@ -19,7 +19,7 @@ const HomePage = () => {
   }, []);
 
   if (!isFetched) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">

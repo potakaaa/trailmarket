@@ -2,18 +2,12 @@ import { useState, ChangeEvent, useContext } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 import { fetchCategories } from "../context/Globals";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error("useContext must be used within an AuthProvider");
-  }
-
-  const { setIsLoggedIn, setUser } = context;
+  const { setIsLoggedIn, userArr, setUserArr, setUser } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -48,6 +42,12 @@ const LoginPage = () => {
         const fetchedUser = {
           id: user.STUDENT_ID,
           name: user.USER_NAME,
+          age: user.USER_AGE,
+          pass: user.USER_PASS,
+          contact_num: user.CONTACT_NUM,
+          fb: user.USER_FB,
+          email: user.USER_EMAIL,
+          image: user.USER_IMAGE,
         };
 
         setIsLoggedIn(true);
@@ -113,19 +113,7 @@ const LoginPage = () => {
 
         <button
           id="login-button"
-          className="
-          bg-gradient-to-r
-          from-[#6B66FB] to-[#000000]
-          text-white
-          font-normal
-          rounded-full
-          w-32 h-10
-          mt-3 self-end
-          shadow-md
-          2xl:h-12 2xl:w-48
-          
-        
-        "
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-32 h-10 mt-3 self-end shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
           onClick={handleLogIn}
         >
           Log In
