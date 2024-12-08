@@ -62,11 +62,11 @@ const CartPage = () => {
             <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl mb-5 2xl:mx-8 text-white text-center">
                 <p>Shopping Cart</p>
             </div>
-            <div className="CartBody flex flex-col lg:flex-row h-full">
+            <div className="CartBody flex flex-col lg:flex-row h-full m-4">
                 <div className="CartItemList lg:w-2/3 sm:w-full">
                     {
                         cartItemsState.map((item) => (
-                            <div key={item.cartItemId} className="CartItem shadow-xl shadow-[0_0_15px_rgba(0,0,0,0.3)] flex m-5 rounded-xl">
+                            <div key={item.cartItemId} className="CartItem shadow-xl shadow-[0_0_15px_rgba(0,0,0,0.3)] flex m-5 rounded-xl 2xl:max-h-[300px]">
                                 <div className="CartItemImage w-[30%] overflow-hidden rounded-xl">
                                     <img src={item.cartItemImage} alt={item.productName} className="Image w-full h-full object-cover"/>
                                 </div>
@@ -110,8 +110,8 @@ const CartPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="CartItemButtom flex items-end gap-3 flex-wrap just">
-                                        <div className="CartItemProductLocation lg:w-1/4 sm:w-1/3">
+                                    <div className="CartItemButtom flex items-end justify-between gap-2 flex-wrap max-w-[500px]">
+                                        <div className="CartItemProductLocation lg:w-1/3 sm:w-1/2">
                                             <p className="text-sm font-medium">Delivery Location</p>
                                             <select 
                                                 value={item.deliveryLocation}
@@ -145,7 +145,7 @@ const CartPage = () => {
                                                 }
                                             </select>
                                         </div>
-                                        <div className="CartItemDeliveryTime lg:w-1/4 sm:w-2/3">
+                                        <div className="CartItemDeliveryTime lg:w-1/4 sm:w-2/4">
                                             <p className="text-sm font-medium">Delivery Time</p>
                                             <input 
                                                 type="time" 
@@ -184,15 +184,15 @@ const CartPage = () => {
                                 </h1>
                             </div>
                             <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 p-2 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
-                                <p className="text-sm font-normal ">Total Amount</p>
+                                <p className="text-sm font-normal">Total Amount</p>
                                 <h1 className="text-2xl font-semibold">
                                     {cartItemsState.reduce((total, item) => total + (item.unitPrice * item.quantity) + item.shippingFee, 0)}
                                 </h1>
                             </div>
                         </div>
                     </div>
-                    <div className="PaymentButton w-full p-4">
-                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 sm:p-4 rounded-2xl 2xl:mx-8 text-white text-center w-full">
+                    <div className="PaymentButton p-4">
+                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl mx-auto text-white text-center w-full">
                             Proceed to Payment
                         </button>
                     </div>
