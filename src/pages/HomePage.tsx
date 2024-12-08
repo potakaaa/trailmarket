@@ -2,9 +2,25 @@ import "./HomePage.css";
 import NavBar from "./navbar/NavBar";
 import HomePageCategories from "./HomePage/HomePageCategories";
 import TopNavBar from "./navbar/TopNavBar";
-import { CategoryArray } from "./context/Globals";
+import { CategoryArray, fetchCategories } from "./context/Globals";
+import { useAuthContext } from "./context/AuthContext";
+import { useEffect } from "react";
 
 const HomePage = () => {
+  const { isFetched, setIsFetched } = useAuthContext();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchCategories();
+      setIsFetched(true);
+    };
+
+    fetchData();
+  }, []);
+
+  if (!isFetched) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
       <TopNavBar />
@@ -20,21 +36,17 @@ const HomePage = () => {
             </p>
           </div>
           <div className="CategoriesBody sm:grid-cols-1 grid md:grid-cols-2 lg:grid-cols-4 gap">
-            {CategoryArray.map((category, index) => {
-              if (index === 0) {
-                return;
-              } else {
-                return (
-                  <HomePageCategories
-                    key={index}
-                    name={category.CategoryName}
-                    desc={category.CategoryDesc}
-                    price={category.CategoryStartPrice}
-                    image={category.CategoryImage}
-                  />
-                );
-              }
-            })}
+            {CategoryArray.filter((_, index) => index !== 0).map(
+              (category, index) => (
+                <HomePageCategories
+                  key={index}
+                  name={category.CategoryName}
+                  desc={category.CategoryDesc}
+                  price={category.CategoryStartPrice}
+                  image={category.CategoryImage}
+                />
+              )
+            )}
           </div>
         </div>
       </div>

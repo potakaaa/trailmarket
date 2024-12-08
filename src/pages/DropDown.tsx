@@ -14,15 +14,22 @@ const Dropdown: React.FC<DropdownProps> = ({
   optionStyle,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(children);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleSelect = (option: string) => {
+    setSelectedOption(option);
+    onSelect(option);
+    setIsOpen(false);
+  };
+
   return (
     <div className="relative">
       <button className={buttonStyle} onClick={toggleDropdown}>
-        {children}
+        {selectedOption}
       </button>
 
       {isOpen && (
@@ -30,9 +37,8 @@ const Dropdown: React.FC<DropdownProps> = ({
           {options.map((option, index) => (
             <a
               key={index}
-              href="#"
-              onClick={() => onSelect(option)}
-              className="block px-4 py-2 hover:bg-gray-100"
+              onClick={() => handleSelect(option)}
+              className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
             >
               {option}
             </a>

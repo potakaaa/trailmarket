@@ -2,7 +2,12 @@ import { useState, ChangeEvent, useContext } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { AuthContext, useAuthContext } from "../context/AuthContext";
+=======
+import { AuthContext } from "../context/AuthContext";
+import { fetchCategories } from "../context/Globals";
+>>>>>>> a32408b65886f6892f2a43d9260707eae2a77f0c
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
@@ -11,7 +16,11 @@ const LoginPage = () => {
     throw new Error("useContext must be used within an AuthProvider");
   }
 
+<<<<<<< HEAD
   const { setIsLoggedIn, userArr, setUserArr } = useAuthContext();
+=======
+  const { setIsLoggedIn, setUser } = context;
+>>>>>>> a32408b65886f6892f2a43d9260707eae2a77f0c
 
   const nav = useNavigate();
 
@@ -43,7 +52,14 @@ const LoginPage = () => {
       const user = data[0];
       if (user.USER_PASS === input.password) {
         alert("Login successful!");
+        const fetchedUser = {
+          id: user.STUDENT_ID,
+          name: user.USER_NAME,
+        };
+
         setIsLoggedIn(true);
+        setUser(fetchedUser);
+        fetchCategories();
         nav("/home");
       } else {
         alert("Login failed, invalid username or password");
