@@ -2,49 +2,11 @@ import React, { useState } from "react";
 import TopNavBar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 import { CategoryArray } from "./context/Globals";
+import Dropdown from "./DropDown";
 const kanye =
   "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
 
 const categories = ["Bags", "Accessories", "Clothes", "Gadgets"];
-interface DropdownProps {
-  options: string[];
-  onSelect: (value: string) => void;
-  children: React.ReactNode;
-}
-
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="relative">
-      <button
-        className="md:hidden px-6 py-1 bg-white border-2 border-black rounded-3xl"
-        onClick={toggleDropdown}
-      >
-        {children}
-      </button>
-
-      {isOpen && (
-        <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50">
-          {options.map((option, index) => (
-            <a
-              key={index}
-              href="#"
-              onClick={() => onSelect(option)}
-              className="block px-4 py-2 hover:bg-gray-100"
-            >
-              {option}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 const SearchResults = () => {
   const handleSelect = (value: string) => {
@@ -97,21 +59,29 @@ const SearchResults = () => {
             </div>
             <div className="flex flex-row justify-evenly">
               <div className="p-4">
-                <Dropdown onSelect={handleSelect} options={categories}>
+                <Dropdown
+                  buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
+                  optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
+                  onSelect={handleSelect}
+                  options={categories}
+                >
                   Tags
                 </Dropdown>
               </div>
               <div className="p-4">
                 <Dropdown
+                  buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
+                  optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
                   options={["High to Low", "Low to High"]}
                 >
                   Price
                 </Dropdown>
               </div>
-
               <div className="p-4">
                 <Dropdown
+                  buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
+                  optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
                   options={["Latest to Oldest", "Oldest to Latest"]}
                 >

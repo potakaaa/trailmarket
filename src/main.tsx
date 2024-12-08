@@ -12,6 +12,7 @@ import SellerPage from "./pages/SellerPage";
 import AboutUs from "./pages/AboutUs";
 import PrivateRoute from "./pages/context/PrivateRoute";
 import SearchResults from "./pages/SearchResults";
+import ProductPost from "./pages/ProductPost";
 
 const router = createHashRouter([
   {
@@ -58,6 +59,11 @@ const router = createHashRouter([
       {
         path: "search",
         element: <SearchResults />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "post",
+        element: <ProductPost />,
         errorElement: <div>404 Not Found</div>,
       },
       {
