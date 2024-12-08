@@ -56,7 +56,7 @@ const CartPage = () => {
     const deliveryMethodOptions = ["Pickup", "Delivery"];
 
     return (
-        <>
+        <div className="overflow-hidden">
             <TopNavbar />
             <NavBar obj={[]} />
             <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl mb-5 2xl:mx-8 text-white text-center">
@@ -191,14 +191,14 @@ const CartPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="PaymentButton w-full">
-                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl 2xl:mx-8 text-white text-center w-full">
+                    <div className="PaymentButton w-full p-4">
+                        <button className="bg-gradient-to-r from-[#282667] to-slate-900 sm:p-4 rounded-2xl 2xl:mx-8 text-white text-center w-full">
                             Proceed to Payment
                         </button>
                     </div>
                 </div>   
             </div>
-        </>
+        </div>
     );
 }
 
