@@ -26,7 +26,8 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   const [dropdownCategoryOpen, setDropdownCategoryOpen] = useState(false);
   const [dropdownRightIconsOpen, setDropdownRightIconsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const { selectedCategory, setSelectedCategory } = useAuthContext();
 
   const { isLoggedIn, setIsLoggedIn } = useAuthContext();
 
@@ -83,17 +84,25 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
               </button>
               {dropdownCategoryOpen && (
                 <div className="absolute top-full left-0 sm:left-14 bg-slate-50 shadow-md rounded-md w-20 sm:w-28 md:w-36">
-                  {obj.map((category, index) => (
-                    <button
-                      key={index}
-                      className="flex items-center p-2 hover:bg-gray-100 w-full"
-                      onClick={() => handleCategoryClick(category.CategoryName)}
-                    >
-                      <p className="text-[12px] font-medium text-center flex-grow sm:text-sm md:text-base lg:text-lg">
-                        {category.CategoryName}
-                      </p>
-                    </button>
-                  ))}
+                  {obj.map((category, index) => {
+                    if (selectedCategory === category.CategoryName) {
+                      return null;
+                    } else {
+                      return (
+                        <button
+                          key={index}
+                          className="flex items-center p-2 hover:bg-gray-100 w-full"
+                          onClick={() =>
+                            handleCategoryClick(category.CategoryName)
+                          }
+                        >
+                          <p className="text-[12px] font-medium text-center flex-grow sm:text-sm md:text-base lg:text-lg">
+                            {category.CategoryName}
+                          </p>
+                        </button>
+                      );
+                    }
+                  })}
                 </div>
               )}
             </div>
