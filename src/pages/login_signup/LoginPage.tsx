@@ -3,6 +3,7 @@ import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { fetchCategories } from "../context/Globals";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
@@ -12,7 +13,7 @@ const LoginPage = () => {
     throw new Error("useContext must be used within an AuthProvider");
   }
 
-  const { setIsLoggedIn } = context;
+  const { setIsLoggedIn, setUser } = context;
 
   const nav = useNavigate();
 
@@ -44,7 +45,14 @@ const LoginPage = () => {
       const user = data[0];
       if (user.USER_PASS === input.password) {
         alert("Login successful!");
+        const fetchedUser = {
+          id: user.STUDENT_ID,
+          name: user.USER_NAME,
+        };
+
         setIsLoggedIn(true);
+        setUser(fetchedUser);
+        fetchCategories();
         nav("/home");
       } else {
         alert("Login failed, invalid username or password");

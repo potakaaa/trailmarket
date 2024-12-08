@@ -1,31 +1,66 @@
-import { useState } from "react";
+import { supabase } from "../../createClient";
+import { useAuthContext } from "./AuthContext";
 
-export const CategoryArray = [
+// Exported global variable to store categories (useful for debugging or advanced cases)
+export let CategoryArray = [
   {
     CategoryName: "All Categories",
     CategoryDesc: "",
     CategoryStartPrice: 0,
     CategoryImage: "",
   },
-  {
-    CategoryName: "Bags",
-    CategoryDesc: "Carry your stuff that matter the most.",
-    CategoryStartPrice: 900,
-    CategoryImage:
-      "https://cdn.thewirecutter.com/wp-content/media/2022/09/backpacks-2048px.jpg?auto=webp&quality=75&crop=1.91:1&width=1200",
-  },
-  {
-    CategoryName: "Clothes",
-    CategoryDesc: "Match the aesthetic of what your heart desires.",
-    CategoryStartPrice: 150,
-    CategoryImage:
-      "https://solink.com/wp-content/uploads/2023/11/how-to-sell-retail-clothing.jpg",
-  },
-  {
-    CategoryName: "Gadgets",
-    CategoryDesc: "Be tech-y before classes start.",
-    CategoryStartPrice: 150,
-    CategoryImage:
-      "https://cdn.prod.website-files.com/653d19cfb904e4d4a5e5d7da/6612754285b5798ac6bb9a5d_Gadgets-MQ.jpg",
-  },
 ];
+
+export const fetchCategories = async () => {
+  console.log("Fetching categories...");
+  const { data, error } = await supabase
+    .from("DIM_CATEGORY")
+    .select("*")
+    .order("CATEGORY_ID", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching categories:", error.message);
+    return [];
+  }
+
+  if (data) {
+    console.log("Fetched categories:", data);
+
+    CategoryArray = [
+      {
+        CategoryName: "All Categories",
+        CategoryDesc: "",
+        CategoryStartPrice: 0,
+        CategoryImage: "",
+      },
+      ...data.map((category: any) => ({
+        CategoryName: category.CATEGORY_NAME,
+        CategoryDesc: category.CATEGORY_DESC || "",
+        CategoryStartPrice: category.CategoryStartPrice || 0,
+        CategoryImage: category.CATEGORY_IMAGE || "",
+      })),
+    ];
+    return CategoryArray;
+  }
+};
+
+export const addCategory = async (newCategory: string) => {
+  if (CategoryArray.some((category) => category.CategoryName === newCategory)) {
+    alert("Category already exists!");
+    return false;
+  }
+
+  const { data, error } = await supabase.from("DIM_CATEGORY").insert([
+    {
+      CATEGORY_NAME: newCategory,
+    },
+  ]);
+
+  if (error) {
+    console.error("Error adding category:", error.message);
+    return false;
+  }
+
+  console.log("Category added:", data);
+  return true; // Indicate success
+};

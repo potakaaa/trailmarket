@@ -1,9 +1,80 @@
-import React from "react";
 import Dropdown from "./DropDown";
+import react from "react";
+import { supabase } from "../createClient";
+import { useState } from "react";
+import { ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "./context/AuthContext";
+
 const kanye =
   "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
+
 const kanyeArr = Array(4).fill(kanye);
+
 const ProductPost = () => {
+  const { user } = useAuthContext();
+  const nav = useNavigate();
+  const [input, setInput] = useState({
+    name: "",
+    description: "",
+    short_desc: "",
+    price: "",
+    stock: "",
+    category: "",
+    condition: "",
+    newcategory: "",
+  });
+
+  const handleCategorySelect = (selectedCategory: string) => {
+    setInput((prevFormData) => ({
+      ...prevFormData,
+      category: selectedCategory,
+    }));
+  };
+
+  async function handleChange(
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const { id, value } = event.target;
+
+    setInput((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
+  }
+
+  async function handleAddCategory() {
+    const { error: insertError } = await supabase.from("DIM_CATEGORY").insert([
+      {
+        CATEGORY_NAME: input.newcategory,
+      },
+    ]);
+
+    if (insertError) {
+      alert("Error fetching data:" + insertError.message);
+    } else {
+      alert("Category Added!");
+    }
+  }
+
+  async function handlePost() {
+    const { error: insertError } = await supabase.from("DIM_PRODUCT").insert([
+      {
+        PROD_NAME: input.name,
+        PROD_PRICE: input.price,
+        PROD_CONDITION: input.condition,
+        PROD_STOCKS: input.stock,
+        PROD_DESC: input.description,
+        PROD_SHORTDESC: input.short_desc,
+        SELLER_ID: user?.id,
+      },
+      nav("/home"),
+    ]);
+
+    if (insertError) {
+      alert("Error fetching data: " + insertError.message);
+    }
+  }
   return (
     <div className="app-wrapper bg-white flex flex-col items-center justify-center min-h-screen overflow-y-auto">
       <div className="post-page p-6 flex flex-col flex-1 h-full w-full rounded-xl">
@@ -25,14 +96,16 @@ const ProductPost = () => {
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                     type="text"
                     placeholder="Make the product name stand out!"
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-col">
                   <label className="">Full Description</label>
                   <textarea
                     id="description"
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y "
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y text-wrap"
                     placeholder="Enter the full description"
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-col">
@@ -42,12 +115,13 @@ const ProductPost = () => {
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                     type="text"
                     placeholder="Be concise, but poingnant"
+                    onChange={handleChange}
                   />
                 </div>
               </form>
             </div>
             <div className="pricing-stock flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
-              <h1 className="text-xl">Pricing and Stock</h1>
+              <h1 className="text-xl">Details</h1>
               <form className="flex flex-row space-x-2">
                 <div className="flex flex-col">
                   <label className="">Base Pricing</label>
@@ -56,6 +130,7 @@ const ProductPost = () => {
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 w-full"
                     type="number"
                     placeholder="Input a number"
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-col">
@@ -65,6 +140,7 @@ const ProductPost = () => {
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500  w-full"
                     type="number"
                     placeholder="Input a number"
+                    onChange={handleChange}
                   />
                 </div>
               </form>
@@ -74,25 +150,31 @@ const ProductPost = () => {
                   <div className=" flex-col md:flex-row flex space-y-2 md:space-x-2">
                     <Dropdown
                       buttonStyle="px-6 py-1 bg-white border-2 border-black rounded-xl h-full"
-                      optionStyle="absolute bottom-full mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
-                      onSelect={() => {}}
+                      optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
+                      onSelect={() => {
+                        handleCategorySelect;
+                      }}
                       options={["Category 1", "Category 2", "Category 3"]}
                     >
                       Select Category
                     </Dropdown>
-
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h1>Condition</h1>
+                <div className=" category-container flex flex-col space gap-x-2 space-y-3 md:flex-row justify-start items-start">
+                  <div className=" flex-col md:flex-row flex space-y-2 md:space-x-2">
                     <form className="flex flex-row space-x-2 mt-0 justify-center items-center h-full">
                       <div className="flex flex-col items-center">
                         <input
-                          id="name"
+                          id="condition"
                           className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                           type="text"
-                          placeholder="New Category"
+                          placeholder="Set Condition"
+                          onChange={handleChange}
                         />
                       </div>
-                      <button className="border-2 flex border-black rounded-xl px-3 py-1">
-                        Add Category
-                      </button>
                     </form>
                   </div>
                 </div>
@@ -110,8 +192,11 @@ const ProductPost = () => {
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {kanyeArr.map(() => (
-                    <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
+                  {kanyeArr.map((kanye, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
+                    >
                       <img
                         className="h-full w-full object-cover rounded-lg"
                         src={kanye}
@@ -133,8 +218,10 @@ const ProductPost = () => {
                 listings that violate these terms.
               </p>
             </div>
-
-            <button className="bg-gradient-to-r from-[#26245f] to-[#18181b] text-white font-normal rounded-full w-full h-10 mt-3 self-end shadow-md">
+            <button
+              onClick={handlePost}
+              className="bg-gradient-to-r from-[#26245f] to-[#18181b] text-white font-normal rounded-full w-full h-10 mt-3 self-end shadow-md"
+            >
               Add Product
             </button>
           </div>

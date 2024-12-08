@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 const TopNavBar = () => {
   const nav = useNavigate();
@@ -41,7 +42,7 @@ const TopNavBar = () => {
         font-normal lg:font-medium md:text-sm
         "
         >
-          Welcome V_Gerebise
+          Welcome {useAuthContext().user?.name}
         </h3>
       </div>
     </div>

@@ -29,11 +29,14 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
 
   const { selectedCategory, setSelectedCategory } = useAuthContext();
 
-  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+  const { setIsLoggedIn, setUser } = useAuthContext();
 
   const navArr = [
     () => {
       setIsLoggedIn(false);
+      setUser(null);
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("user");
       nav("/login");
     },
     () => nav("/myprofile"),

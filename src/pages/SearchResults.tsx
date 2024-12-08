@@ -16,7 +16,7 @@ const SearchResults = () => {
   return (
     <div className="flex flex-col">
       <TopNavBar />
-      <NavBar />
+      <NavBar obj={CategoryArray} />
       <div className="app-wrapper flex flex-col items-center justify-start min-h-screen w-full overflow-y-visible px-3">
         <div className="search-wrapper flex flex-col h-full w-full space-y-6 md:space-y-0 md:flex-row space-x-2 p-4">
           <div className="filter-sort flex flex-[1] bg-gray-50 h-full drop-shadow-xl rounded-xl p-4 z-10 justify-center">
