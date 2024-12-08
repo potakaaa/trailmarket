@@ -2,17 +2,16 @@ import { useState, ChangeEvent, useContext } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext, useAuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const context = useContext(AuthContext);
 
   if (!context) {
     throw new Error("useContext must be used within an AuthProvider");
   }
 
-  const { setIsLoggedIn } = context;
+  const { setIsLoggedIn, userArr, setUserArr } = useAuthContext();
 
   const nav = useNavigate();
 

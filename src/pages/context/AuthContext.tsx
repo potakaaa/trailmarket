@@ -12,6 +12,8 @@ interface AuthContextType {
   setIsLoggedIn: (value: boolean) => void;
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
+  userArr: Record<string, any>;
+  setUserArr: (value: Record<string, any>) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -32,6 +34,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
+  const [userArr, setUserArr] = useState<Record<string, any>>({});
+
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
@@ -43,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggedIn,
         selectedCategory,
         setSelectedCategory,
+        userArr,
+        setUserArr,
       }}
     >
       {children}
