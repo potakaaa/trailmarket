@@ -17,13 +17,14 @@ interface User {
   image: string;
 }
 
-interface CartProd {
+export interface CartProd {
   prod_id: number;
   name: string;
   price: number;
   condition: string;
   category: string;
   seller: string;
+  img: string | null;
 }
 
 // Define types for the context value
@@ -38,6 +39,8 @@ interface AuthContextType {
   setIsFetched: (value: boolean) => void;
   cartProd: CartProd | null;
   setCartProd: (cartProd: CartProd | null) => void;
+  cart: CartProd[];
+  setCart: (cart: CartProd[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -76,6 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user]);
 
   const [cartProd, setCartProd] = useState<CartProd | null>(null);
+  const [cart, setCart] = useState<CartProd[]>([]);
 
   return (
     <AuthContext.Provider
@@ -90,6 +94,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsFetched,
         cartProd,
         setCartProd,
+        cart,
+        setCart,
       }}
     >
       {children}

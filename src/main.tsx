@@ -16,6 +16,7 @@ import ProductPost from "./pages/ProductPost";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
 import Product from "./pages/Product";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const router = createHashRouter([
   {
@@ -75,12 +76,18 @@ const router = createHashRouter([
         errorElement: <div>404 Not Found</div>,
       },
       {
-        path: "admin",
-        element: <AdminPage />,
+        path: "checkout",
+        element: <CheckoutPage cartItems={[]} />,
         errorElement: <div>404 Not Found</div>,
-      },
+      }
     ],
   },
+  {
+    path: "admin",
+    element: <AdminPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+
   {
     path: "/login",
     element: <SignOrLoginPage />,
@@ -125,6 +132,16 @@ const router = createHashRouter([
     element: <SellerPage />,
     errorElement: <div>404 Not Found</div>,
   },
+  {
+    path: "/myprofile",
+    element: <SellerPage />,
+    errorElement: <div>404 Not Found</div>,
+  }, 
+  {
+    path: "/product",
+    element: <Product name="Sample Product" price={0} stock={0} imageUrl="" />,
+    errorElement: <div>404 Not Found</div>,
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(

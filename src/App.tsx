@@ -17,7 +17,6 @@ const App = () => {
       nav("/login"); // Redirect to login
     }
   }, [isLoggedIn, nav]);
-
   return <div id="container" className=""></div>;
 };
 
