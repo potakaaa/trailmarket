@@ -1,8 +1,10 @@
 import { useState } from "react";
-import ChevronDown from "../../assets/Chevron.svg";
-import LogOut from "../../assets/LogOut.svg";
-import Person from "../../assets/Person.svg";
-import ShoppingCart from "../../assets/ShoppingCart.svg";
+import ChevronDown from "../../../public/assets/Chevron.svg";
+import LogOut from "../../../public/assets/LogOut.svg";
+import Person from "../../../public/assets/Person.svg";
+import ShoppingCart from "../../../public/assets/ShoppingCart.svg";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
@@ -26,6 +28,17 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   const [dropdownRightIconsOpen, setDropdownRightIconsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
+  const { isLoggedIn, setIsLoggedIn } = useAuthContext();
+
+  const navArr = [
+    () => {
+      setIsLoggedIn(false);
+      nav("/login");
+    },
+    () => nav("/myprofile"),
+    () => nav("/cart"),
+  ];
+
   const toggleCategoryDropdown = () => {
     setDropdownCategoryOpen((prev) => !prev);
   };
@@ -39,15 +52,17 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
     setDropdownCategoryOpen(false);
   };
 
+  const nav = useNavigate();
+
   return (
-    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center w-full px-2 lg:px-5 2xl:px-10">
-      <div className="NavBarLeft">
+    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center  lg:px-5 2xl:px-10 w-full">
+      <button className="NavBarLeft" onClick={() => nav("/")}>
         <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:row-span-2 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3 xl:pl-[20px]">
           TrailMarket
         </h1>
-      </div>
+      </button>
 
-      <div className="NavBarMiddleRight flex flex-grow justify-center items-stretch mx-5 w-full">
+      <div className="NavBarMiddleRight flex flex-grow justify-center items mx-5 w-full">
         <div className="NavBarMiddle flex items-center justify-center gap-2 w-full ml-5">
           <div className="NavBarSearchBar flex border border-black rounded-full h-9 sm:h-12 md:h-14 px-5 w-full">
             <div className="NavBarCategories flex relative">
@@ -102,7 +117,10 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 className="sm:hidden min-w-5"
               ></img>
             </button>
-            <button className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14">
+            <button
+              className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14"
+              onClick={() => nav("/myprofile")}
+            >
               My Products
             </button>
           </div>
@@ -117,6 +135,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 key={index}
                 value={icons.IconName}
                 className="flex items-center p-2 hover:bg-gray-100 rounded-full"
+                onClick={navArr[index]}
               >
                 <img
                   src={icons.Icon}
@@ -148,6 +167,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                     value={icons.IconName}
                     className="flex items-center self-start p-2
                    hover:bg-gray-100 w-full font-light"
+                    onClick={navArr[index]}
                   >
                     <img src={icons.Icon} alt={icons.IconName} />
                     <p className="font-normal text-[12px] sm:text-sm items-center flex-grow">
