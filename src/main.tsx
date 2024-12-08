@@ -12,6 +12,9 @@ import SellerPage from "./pages/SellerPage";
 import AboutUs from "./pages/AboutUs";
 import PrivateRoute from "./pages/context/PrivateRoute";
 import SearchResults from "./pages/SearchResults";
+import ProductPost from "./pages/ProductPost";
+import AdminPage from "./pages/AdminPage";
+import CartPage from "./pages/CartPage";
 
 const router = createHashRouter([
   {
