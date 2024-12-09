@@ -1,8 +1,5 @@
-import { useEffect } from "react";
 import "./App.css";
-import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "./pages/context/AuthContext";
-import { fetchCategories } from "./pages/context/Globals";
 import { Outlet } from "react-router-dom";
 import NavBar from "./pages/navbar/NavBar";
 import TopNavBar from "./pages/navbar/TopNavBar";
@@ -11,20 +8,10 @@ import SearchResults from "./pages/SearchResults";
 import LoadingSpinner from "./pages/Loader/LoadingSpinner";
 
 const App = () => {
-  const { isLoggedIn, searchState, isLoading } = useAuthContext();
-  const nav = useNavigate();
-
-  useEffect(() => {
-    fetchCategories();
-    if (isLoggedIn) {
-      nav("/home"); // Redirect to home
-    } else {
-      nav("/login"); // Redirect to login
-    }
-  }, [isLoggedIn, nav]);
+  const { searchState, isLoading } = useAuthContext();
 
   return (
-    <div className="main-layout">
+    <div className="main-layout size-full justify-center items-center">
       {isLoading && <LoadingSpinner />}
       <TopNavBar />
       <NavBar obj={CategoryArray} />

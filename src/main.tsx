@@ -28,58 +28,65 @@ const router = createHashRouter([
         path: "",
         element: <App />,
         errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "home",
-        element: <HomePage />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "product",
-        element: <ProductPage />,
-      },
-      {
-        path: "navbar2",
-        element: <TopNavBar />,
-      },
-      {
-        path: "about",
-        element: <AboutUs />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "contact-us",
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "profile",
-        element: <SellerPage />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "myprofile",
-        element: <SellerPage />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "search",
-        element: <SearchResults />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "post",
-        element: <ProductPost />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "cart",
-        element: <CartPage />,
-        errorElement: <div>404 Not Found</div>,
-      },
-      {
-        path: "checkout",
-        element: <CheckoutPage />,
-        errorElement: <div>404 Not Found</div>,
+        children: [
+          {
+            path: "",
+            element: <HomePage />, // Default route to HomePage
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "home",
+            element: <HomePage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "product/:id",
+            element: <ProductPage />,
+          },
+          {
+            path: "navbar2",
+            element: <TopNavBar />,
+          },
+          {
+            path: "about",
+            element: <AboutUs />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "contact-us",
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "profile",
+            element: <SellerPage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "myprofile",
+            element: <SellerPage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "search",
+            element: <SearchResults />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "post",
+            element: <ProductPost />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "cart",
+            element: <CartPage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "checkout",
+            element: <CheckoutPage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+        ],
       },
     ],
   },
@@ -88,55 +95,24 @@ const router = createHashRouter([
     element: <AdminPage />,
     errorElement: <NotFound404 />,
   },
-
   {
-    path: "/login",
+    path: "login",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
   },
   {
-    path: "/adminlogin",
+    path: "adminlogin",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
   },
   {
-    path: "/signup",
+    path: "signup",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
   },
   {
-    path: "/forget",
+    path: "forget",
     element: <SignOrLoginPage />,
-    errorElement: <NotFound404 />,
-  },
-
-  {
-    path: "/navbar2",
-    element: <TopNavBar />,
-    errorElement: <NotFound404 />,
-  },
-
-  {
-    path: "/about",
-    element: <AboutUs />,
-    errorElement: <NotFound404 />,
-  },
-  {
-    path: "/contact-us",
-    errorElement: <NotFound404 />,
-  },
-  {
-    path: "/profile",
-    errorElement: <NotFound404 />,
-  },
-  {
-    path: "/myprofile",
-    element: <SellerPage />,
-    errorElement: <NotFound404 />,
-  },
-  {
-    path: "/myprofile",
-    element: <SellerPage />,
     errorElement: <NotFound404 />,
   },
 ]);

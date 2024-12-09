@@ -1,12 +1,6 @@
-import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
-import { CategoryArray } from "./context/Globals";
-
 const AdminPage = () => {
   return (
     <div className="flex flex-col">
-      <TopNavBar />
-      <NavBar obj={CategoryArray} />
       <div className="app-wrapper flex flex-col items-center justify-start min-h-screen w-full overflow-y-visible px-3">
         <div className="admin-page w-full space-y-2">
           <div

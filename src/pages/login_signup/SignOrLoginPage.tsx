@@ -74,7 +74,9 @@ const SignOrLoginPage = () => {
                   }
                 }}
               >
-                {location.pathname === "/login" ? "Sign Up" : "Log In"}
+                {(location.pathname === "/login" && "Sign Up") ||
+                  (location.pathname === "/signup" && "Log In") ||
+                  (location.pathname === "/adminlogin" && "Back to Log In")}
               </button>
               {location.pathname === "/adminlogin" || (
                 <button

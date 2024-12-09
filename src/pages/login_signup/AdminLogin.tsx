@@ -10,10 +10,6 @@ const AdminLogin = () => {
 
   const nav = useNavigate();
 
-  const handleForget = () => {
-    nav("/forget");
-  };
-
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
 

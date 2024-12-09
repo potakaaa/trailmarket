@@ -79,13 +79,11 @@ const CheckoutPage = () => {
 
   return (
     <div>
-      <TopNavbar />
-      <NavBar obj={[]} />
       <div className="OrderHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
         <p>Checkout</p>
       </div>
       <div className="OrderBody flex flex-col lg:flex-row h-full m-5  min-h-screen">
-        <div className="OrderItemList shadow-xl shadow-[0px_0px_50px_10px_rgba(0,0,0,0.5)] flex flex-col items-stretch lg:w-2/3 sm:w-full h-full rounded-xl px-4">
+        <div className="OrderItemList shadow-xl flex flex-col items-stretch lg:w-2/3 sm:w-full h-full rounded-xl px-4">
           {orderItemsState.map((item) => (
             <div
               key={item.orderItemId}

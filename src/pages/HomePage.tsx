@@ -8,8 +8,6 @@ import { useAuthContext } from "./context/AuthContext";
 import { useEffect, useState } from "react";
 import Product from "./Product";
 import { Product as ProductType } from "./context/Globals";
-import NavBar from "./navbar/NavBar";
-import TopNavBar from "./navbar/TopNavBar";
 
 const HomePage = () => {
   const { setIsFetched } = useAuthContext();
@@ -32,9 +30,7 @@ const HomePage = () => {
   }, [setIsFetched]);
 
   return (
-    <div className="HomePage size-full flex flex-col justify-center items-center">
-      <TopNavBar />
-      <NavBar obj={[]} />
+    <div className="HomePage size-full flex flex-col">
       <div className="size-full px-3">
         <div className="HomePageCategories w-full">
           <div className="CategoriesHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 sm:p-7 mx-4 rounded-2xl">

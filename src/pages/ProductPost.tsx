@@ -4,8 +4,6 @@ import { supabase } from "../createClient";
 import Dropdown from "./DropDown";
 import { fetchCategories, CategoryArray } from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
-import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
 
 const placeholder = "https://via.placeholder.com/150";
 
@@ -88,8 +86,6 @@ const ProductPost = () => {
 
   return (
     <div className="app-wrapper bg-white flex flex-col items-center justify-center min-h-screen overflow-y-auto">
-      <TopNavBar />
-      <NavBar obj={CategoryArray} />
       <div className="post-page p-6 flex flex-col flex-1 h-full w-full rounded-xl">
         <div className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b] text-white rounded-xl p-4">
           <h1 className="text-xl">Post a Product</h1>

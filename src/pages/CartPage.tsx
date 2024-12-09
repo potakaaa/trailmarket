@@ -1,5 +1,3 @@
-import TopNavbar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
@@ -105,8 +103,6 @@ const CartPage = () => {
 
   return (
     <div className="mb-5">
-      <TopNavbar />
-      <NavBar obj={[]} />
       <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
         <p className="text-xl sm:text-3xl text-white text-center font-semibold">
           Shopping Cart
