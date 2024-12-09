@@ -36,7 +36,7 @@ const ForgetPass = () => {
 
         try {
           const response = await fetch(
-            "http://localhost:5000/api/send-reset-code",
+            "https://trailmarket.onrender.com/api/send-reset-code",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -72,7 +72,7 @@ const ForgetPass = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/verify-reset-code",
+          "https://trailmarket.onrender.com/api/verify-reset-code",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
