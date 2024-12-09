@@ -105,7 +105,7 @@ const SearchResults = () => {
           </div>
           <div className="search-results flex flex-[3] bg-gray-50 drop-shadow-xl rounded-xl p-2 flex-col space-y-3">
             <h1>Search Results for :INPUTTED SEARCH:</h1>
-            <div className=" result-container w-full flex items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
+            <div className=" result-container w-full flex flex-col items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
               {products.map((product, index) => (
                 <Product
                   key={index}
