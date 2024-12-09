@@ -1,15 +1,28 @@
 import { useEffect, useState } from "react";
 import Dropdown from "./DropDown";
 import { useAuthContext } from "./context/AuthContext";
-import { fetchCategories, fetchProducts } from "./context/Globals";
+import {
+  CategoryArray,
+  fetchCategories,
+  fetchProducts,
+} from "./context/Globals";
 import { Product as ProductType } from "./context/Globals";
 import Product from "./Product";
 
-const categories = ["Bags", "Accessories", "Clothes", "Gadgets"];
+const categories = CategoryArray.map((category) => category.CategoryName);
 
 const SearchResults = () => {
   const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
+
+  const { searchState } = useAuthContext();
+  if (!searchState) {
+    return null; // Do not render anything if searchState is empty
+  }
+  const handleSelect = (value: string) => {
+    console.log("Selected:", value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,13 +37,16 @@ const SearchResults = () => {
     fetchData();
   }, [setIsFetched]);
 
-  const { searchState } = useAuthContext();
-  if (!searchState) {
-    return null; // Do not render anything if searchState is empty
-  }
-  const handleSelect = (value: string) => {
-    console.log("Selected:", value);
-  };
+  useEffect(() => {
+    if (searchState) {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(searchState.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [searchState, products]);
 
   return (
     <div className="flex flex-col">
@@ -103,8 +119,8 @@ const SearchResults = () => {
           </div>
           <div className="search-results flex flex-[3] bg-gray-50 drop-shadow-xl rounded-xl p-2 flex-col space-y-3">
             <h1>Search Results for :INPUTTED SEARCH:</h1>
-            <div className=" result-container w-full flex flex-col items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
-              {products.map((product, index) => (
+            <div className=" result-container w-full flex items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
+              {filteredProducts.map((product, index) => (
                 <Product
                   key={index}
                   id={product.id}
