@@ -3,6 +3,7 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import ForgetPass from "./ForgetPass";
 import { useLocation, useNavigate } from "react-router-dom";
+import AdminLogin from "./AdminLogin";
 
 const SignOrLoginPage = () => {
   const location = useLocation();
@@ -15,6 +16,8 @@ const SignOrLoginPage = () => {
       return <SignupPage />;
     } else if (location.pathname === "/forget") {
       return <ForgetPass />;
+    } else if (location.pathname === "/adminlogin") {
+      return <AdminLogin />;
     } else {
       return <h1>404 - Page Not Found</h1>; // Optional: Handle unknown paths
     }
@@ -73,6 +76,18 @@ const SignOrLoginPage = () => {
               >
                 {location.pathname === "/login" ? "Sign Up" : "Log In"}
               </button>
+              {location.pathname === "/adminlogin" || (
+                <button
+                  className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-12 shadow-lg 2xl:h-14  transition duration-300 mt-3"
+                  onClick={() => {
+                    {
+                      nav("/adminlogin");
+                    }
+                  }}
+                >
+                  Admin Access
+                </button>
+              )}
             </div>
           </div>
         </div>

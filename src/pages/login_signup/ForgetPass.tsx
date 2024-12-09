@@ -2,10 +2,12 @@ import React from "react";
 import { ChangeEvent, useState } from "react";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 const ForgetPass = () => {
   const [input, setInput] = useState<Record<string, string>>({});
   const [step, setStep] = useState("prompt"); // this shit has prompt, code, change
+  const { setIsLoading } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -21,6 +23,7 @@ const ForgetPass = () => {
   const handleForget = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    setIsLoading(true);
     const { data, error } = await supabase
       .from("DIM_USER")
       .select("*")
@@ -46,6 +49,7 @@ const ForgetPass = () => {
           const data = await response.json();
 
           if (response.ok) {
+            setIsLoading(false);
             alert(data.message);
           } else {
           }
@@ -129,10 +133,7 @@ const ForgetPass = () => {
           >
             <button
               id="cancel-btn"
-              className="
-          font-thin text-sm ml-2
-          text-left 2xl:text-base
-          "
+              className="font-thin text-sm ml-2 text-left 2xl:text-base"
               onClick={handleCancel}
             >
               Cancel
@@ -141,16 +142,7 @@ const ForgetPass = () => {
 
           <button
             id="verify"
-            className="
-          bg-gradient-to-r from-[#191847] to-[#000000]
-          text-white
-          font-normal
-          rounded-full
-          w-32 h-10
-          mt-3 self-end
-          shadow-md 2xl:h-12 2xl:w-48
-          
-        "
+            className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-32 h-10 mt-3 self-end shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
             onClick={handleVerify}
           >
             Verify Code
@@ -226,14 +218,7 @@ const ForgetPass = () => {
         />
         <button
           onClick={handleReset}
-          className="
-                     bg-gradient-to-r from-[#191847] to-[#000000]
-                    text-white
-                    font-normal
-                    rounded-full
-                    w-32 h-10
-                    mt-3 self-end 2xl:h-12 2xl:w-48
-                  "
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-32 h-10 mt-3 self-end shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
         >
           Reset
         </button>
@@ -296,14 +281,7 @@ const ForgetPass = () => {
             <button
               id="submit-button"
               onClick={handleForget}
-              className="
-                   bg-gradient-to-r from-[#191847] to-[#000000]
-                    text-white
-                    font-normal
-                    rounded-full
-                    w-32 h-10
-                    mt-3 self-end 2xl:h-12 2xl:w-48
-                  "
+              className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-32 h-10 mt-3 self-end shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
             >
               Submit
             </button>

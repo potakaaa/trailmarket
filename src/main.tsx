@@ -80,7 +80,7 @@ const router = createHashRouter([
         path: "checkout",
         element: <CheckoutPage />,
         errorElement: <div>404 Not Found</div>,
-      }
+      },
     ],
   },
   {
@@ -91,6 +91,11 @@ const router = createHashRouter([
 
   {
     path: "/login",
+    element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
+  },
+  {
+    path: "/adminlogin",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
   },

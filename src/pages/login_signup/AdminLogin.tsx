@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { fetchCategories } from "../context/Globals";
 
-const LoginPage = () => {
+const AdminLogin = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, setUser } = useAuthContext();
+  const { setIsLoggedIn, setEmp } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -27,30 +27,39 @@ const LoginPage = () => {
     event.preventDefault();
 
     const { data, error } = await supabase
-      .from("DIM_USER")
+      .from("DIM_EMPLOYEE")
       .select("*")
-      .eq("STUDENT_ID", input.id); // Fetch rows where STUDENT_ID matches the input
+      .eq("EMP_EMAIL", input.email); // Fetch rows where STUDENT_ID matches the input
 
     if (error) {
       console.error("Error fetching data:", error.message); // Log error if one occurs
     }
     if (data && data.length > 0) {
-      const user = data[0];
-      if (user.USER_PASS === input.password) {
+      const emp = data[0];
+      if (emp.EMP_PASS === input.password) {
         alert("Login successful!");
-        const fetchedUser = {
-          id: user.STUDENT_ID,
-          name: user.USER_NAME,
-          age: user.USER_AGE,
-          pass: user.USER_PASS,
-          contact_num: user.CONTACT_NUM,
-          fb: user.USER_FB,
-          email: user.USER_EMAIL,
-          image: user.USER_IMAGE,
+        const fetchedEmp = {
+          id: emp.EMP_ID,
+          name: emp.EMP_NAME,
+          age: emp.EMP_AGE,
+          pass: emp.EMP_PASS,
+          contact_num: emp.EMP_CONTACTNUM,
+          email: emp.EMP_EMAIL,
+          role: emp.EMP_ROLE,
+          emergency_contact: emp.EMP_EMERGENCY_CONTACT_NUM,
+          emergency_name: emp.EMERGENCY_NAME,
+          sss: emp.EMP_SSS,
+          philhealkh: emp.EMP_PHILHEALTH,
+          pagibig: emp.EMP_PAGIBIG,
+          tin: emp.EMP_TIN,
+          housenum: emp.EMP_HOUSENUM,
+          street: emp.EMP_STREET,
+          city: emp.EMP_CITY,
         };
 
         setIsLoggedIn(true);
-        setUser(fetchedUser);
+        setEmp(fetchedEmp);
+        console.log(fetchedEmp);
         fetchCategories();
 
         nav("/home");
@@ -67,10 +76,11 @@ const LoginPage = () => {
     "
     >
       <input
-        placeholder="ID Number"
+        type="email"
+        placeholder="Email"
         id="id-input"
         className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
-        name="id"
+        name="email"
         onChange={handleChange}
       />
       <input
@@ -81,28 +91,7 @@ const LoginPage = () => {
         name="password"
         onChange={handleChange}
       />
-      <div
-        className="flex w-full 
-      justify-between flex-col
-      items-stretch
-      "
-      >
-        <div
-          className="flex-row  flex w-full 
-       items-stretch"
-        >
-          <button
-            id="forget-pass"
-            className="
-          font-thin text-sm ml-2
-          text-left 2xl:text-base
-          "
-            onClick={handleForget}
-          >
-            Forget Password?
-          </button>
-        </div>
-
+      <div className="flex w-full  justify-between flex-col items-stretch">
         <button
           id="login-button"
           className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-32 h-10 mt-3 self-end shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
@@ -115,4 +104,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AdminLogin;
