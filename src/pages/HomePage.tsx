@@ -11,7 +11,7 @@ import Product from "./Product";
 import { Product as ProductType } from "./context/Globals";
 
 const HomePage = () => {
-  const { isFetched, setIsFetched } = useAuthContext();
+  const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
