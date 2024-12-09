@@ -28,11 +28,7 @@ const HomePage = () => {
     };
 
     fetchData();
-  }, [setIsFetched, setIsLoading]);
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  }, [setIsFetched]);
 
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
