@@ -1,5 +1,4 @@
 import { useState } from "react";
-import TopNavBar from "./navbar/TopNavBar";
 import { UserIcon } from "@heroicons/react/16/solid";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
@@ -43,8 +42,6 @@ const ProductPage = () => {
 
   return (
     <div className="flex flex-col">
-      <TopNavBar />
-
       <div className="app-wrapper flex items-center justify-center min-h-screen overflow-scroll ">
         <div className="flex justify-center items-center">
           <div className="product-cntnr flex flex-col justify-center items-center h-auto w-[95vw] bg-white rounded-lg shadow-lg pb-2 2xl:pb-5">
