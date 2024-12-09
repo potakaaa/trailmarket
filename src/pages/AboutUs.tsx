@@ -1,12 +1,6 @@
-import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
-import { CategoryArray } from "./context/Globals";
-
 const AboutUs = () => {
   return (
     <div className="app-wrapper">
-      <TopNavBar />
-      <NavBar obj={CategoryArray} />
       <div className="main-container px-3 ">
         <div className="AboutHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 sm:p-7 mx-4 rounded-2xl mb-5 2xl:mx-8">
           <h1 className="AboutTitle text-2xl sm:text-4xl text-white text-center font-medium">

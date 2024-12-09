@@ -5,6 +5,7 @@ import Person from "../../../public/assets/Person.svg";
 import ShoppingCart from "../../../public/assets/ShoppingCart.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { ChangeEvent } from "react";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
@@ -27,7 +28,8 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   const [dropdownCategoryOpen, setDropdownCategoryOpen] = useState(false);
   const [dropdownRightIconsOpen, setDropdownRightIconsOpen] = useState(false);
 
-  const { selectedCategory, setSelectedCategory } = useAuthContext();
+  const { selectedCategory, setSelectedCategory, setSearchState } =
+    useAuthContext();
 
   const { setIsLoggedIn, setUser } = useAuthContext();
 
@@ -42,6 +44,10 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
     () => nav("/myprofile"),
     () => nav("/cart"),
   ];
+
+  const handleSearch = (value: string) => {
+    setSearchState(value);
+  };
 
   const toggleCategoryDropdown = () => {
     setDropdownCategoryOpen((prev) => !prev);
@@ -114,6 +120,9 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 type="text"
                 placeholder="Search in the market"
                 className="bg-transparent border-none focus:outline-none pl-4 p-3 text-sm font-medium w-full sm:text-base md:text-lg md:pl-6"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleSearch(e.target.value)
+                }
               />
             </div>
           </div>
