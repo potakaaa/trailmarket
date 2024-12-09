@@ -44,6 +44,8 @@ interface AuthContextType {
   setCart: (cart: CartProd[]) => void;
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
+  searchState: string;
+  setSearchState: (value: string) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -63,6 +65,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const [searchState, setSearchState] = useState("");
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
@@ -102,6 +106,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setCart,
         isLoading,
         setIsLoading,
+        searchState,
+        setSearchState,
       }}
     >
       {children}

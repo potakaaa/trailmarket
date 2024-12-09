@@ -5,7 +5,7 @@ import { useAuthContext } from "./pages/context/AuthContext";
 import { fetchCategories } from "./pages/context/Globals";
 
 const App = () => {
-  const { isLoggedIn } = useAuthContext();
+  const { isLoggedIn, searchState } = useAuthContext();
   const nav = useNavigate();
 
   useEffect(() => {
@@ -17,6 +17,13 @@ const App = () => {
       nav("/login"); // Redirect to login
     }
   }, [isLoggedIn, nav]);
+
+  useEffect(() => {
+    if (searchState) {
+      nav("/search");
+    }
+  }, [searchState, nav]);
+
   return <div id="container" className="size-full"></div>;
 };
 

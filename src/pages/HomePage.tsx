@@ -1,6 +1,4 @@
-import NavBar from "./navbar/NavBar";
 import HomePageCategories from "./HomePage/HomePageCategories";
-import TopNavBar from "./navbar/TopNavBar";
 import {
   CategoryArray,
   fetchCategories,
@@ -13,7 +11,7 @@ import { Product as ProductType } from "./context/Globals";
 import LoadingSpinner from "./Loader/LoadingSpinner";
 
 const HomePage = () => {
-  const { isFetched, setIsFetched } = useAuthContext();
+  const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
   const { isLoading, setIsLoading } = useAuthContext();
 
@@ -38,8 +36,6 @@ const HomePage = () => {
 
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
-      <TopNavBar />
-      <NavBar obj={CategoryArray} />
       <div className="size-full px-3">
         <div className="HomePageCategories w-full">
           <div className="CategoriesHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 sm:p-7 mx-4 rounded-2xl">
