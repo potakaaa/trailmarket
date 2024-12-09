@@ -27,66 +27,60 @@ const router = createHashRouter([
       {
         path: "",
         element: <App />,
-        children: [
-          {
-            path: "home",
-            element: <HomePage />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "product",
-            element: <ProductPage />,
-          },
-          {
-            path: "about",
-            element: <AboutUs />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "contact-us",
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "profile",
-            element: <SellerPage />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "myprofile",
-            element: <SellerPage />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "search",
-            element: <SearchResults />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "post",
-            element: <ProductPost />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "cart",
-            element: <CartPage />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "checkout",
-            element: <CheckoutPage cartItems={[]} />,
-            errorElement: <NotFound404 />,
-          },
-          {
-            path: "/product",
-            element: <ProductPage />,
-          },
-          {
-            path: "/product/:id",
-            element: <ProductPage />,
-            errorElement: <NotFound404 />,
-          },
-        ],
+        errorElement: <div>404 Not Found</div>,
       },
+      {
+        path: "home",
+        element: <HomePage />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "product",
+        element: <ProductPage />,
+      },
+      {
+        path: "navbar2",
+        element: <TopNavBar />,
+      },
+      {
+        path: "about",
+        element: <AboutUs />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "contact-us",
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "profile",
+        element: <SellerPage />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "myprofile",
+        element: <SellerPage />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "search",
+        element: <SearchResults />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "post",
+        element: <ProductPost />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "cart",
+        element: <CartPage />,
+        errorElement: <div>404 Not Found</div>,
+      },
+      {
+        path: "checkout",
+        element: <CheckoutPage />,
+        errorElement: <div>404 Not Found</div>,
+      }
     ],
   },
   {
