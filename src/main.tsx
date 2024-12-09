@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./pages/context/AuthContext"; // Import the AuthProvider
 
-import App from "./App";
+
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
@@ -15,9 +15,8 @@ import SearchResults from "./pages/SearchResults";
 import ProductPost from "./pages/ProductPost";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import Product from "./pages/Product";
 import CheckoutPage from "./pages/CheckoutPage";
-import MainLayout from "./pages/MainLayout";
+import App from "./App";
 
 const router = createHashRouter([
   {
@@ -26,7 +25,7 @@ const router = createHashRouter([
     children: [
       {
         path: "",
-        element: <MainLayout />,
+        element: <App />,
         children: [
           {
             path: "home",
@@ -97,11 +96,6 @@ const router = createHashRouter([
   {
     path: "/forget",
     element: <SignOrLoginPage />,
-  },
-  {
-    path: "/home",
-    element: <HomePage />,
-    errorElement: <div>404 Not Found</div>,
   },
   {
     path: "/product",

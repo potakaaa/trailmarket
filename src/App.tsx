@@ -3,6 +3,11 @@ import "./App.css";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "./pages/context/AuthContext";
 import { fetchCategories } from "./pages/context/Globals";
+import { Outlet } from "react-router-dom";
+import NavBar from "./pages/navbar/NavBar";
+import TopNavBar from "./pages/navbar/TopNavBar";
+import { CategoryArray } from "./pages/context/Globals";
+import SearchResults from "./pages/SearchResults";
 
 const App = () => {
   const { isLoggedIn, searchState } = useAuthContext();
@@ -10,7 +15,6 @@ const App = () => {
 
   useEffect(() => {
     fetchCategories();
-    // Redirect based on `isLoggedIn` state
     if (isLoggedIn) {
       nav("/home"); // Redirect to home
     } else {
@@ -18,13 +22,15 @@ const App = () => {
     }
   }, [isLoggedIn, nav]);
 
-  useEffect(() => {
-    if (searchState) {
-      nav("/search");
-    }
-  }, [searchState, nav]);
-
-  return <div id="container" className="size-full"></div>;
+  return (
+    <div className="main-layout">
+      <TopNavBar />
+      <NavBar obj={CategoryArray} />
+      <div className="content">
+        {searchState ? <SearchResults /> : <Outlet />}
+      </div>
+    </div>
+  );
 };
 
 export default App;
