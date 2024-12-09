@@ -43,10 +43,12 @@ const CartPage = () => {
     paymentTotal: 0,
   };
 
-  const [cartItemsState, setCartItemsState] = useState(cartItems);
-  const [quantity, setQuantity] = useState(1);
+  const [cartItemsState] = useState(cartItems);
+  const [quantity, setQuantity] = useState(0);
 
-  const { cart, setCart, user } = useAuthContext();
+  const { cart, setCart } = useAuthContext();
+
+  console.log(quantity);
 
   const getOrders = async () => {
     const { data, error } = await supabase.from("DIM_CART").select(`
@@ -71,11 +73,10 @@ const CartPage = () => {
     }
 
     const tempData = data[0].FACT_CART_PROD;
-    const productDets: DIM_PRODUCT = tempData?.[1]?.DIM_PRODUCT;
 
     if (data) {
       const tempCart: CartProd[] = tempData.map((cartItem: any, index) => {
-        const productDets: DIM_PRODUCT = tempData?.[index]?.DIM_PRODUCT;
+        const productDets: any = tempData?.[index]?.DIM_PRODUCT;
 
         return {
           prod_id: tempData[index].PRODUCT_FK,
@@ -84,15 +85,14 @@ const CartPage = () => {
           condition: productDets?.PROD_CONDITION,
           category: productDets?.PROD_CATEGORY,
           seller: productDets?.DIM_USER?.USER_NAME,
-          img: null,
+          img: undefined,
           quantity: tempData[index].CART_QUANTITY,
         };
+        console.log(cartItem);
       });
 
       console.log("Raw Data: ", data);
       console.log("Raw Data 0: ", data[0]);
-      console.log("DIM PRODUCT: ", productDets?.PROD_NAME);
-      console.log("DIM USER: ", productDets?.DIM_USER?.USER_NAME);
 
       setCart(tempCart);
       console.log(cart[0]?.name);
@@ -108,7 +108,9 @@ const CartPage = () => {
       <TopNavbar />
       <NavBar obj={[]} />
       <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
-        <p>Shopping Cart</p>
+        <p className="text-xl sm:text-3xl text-white text-center font-semibold">
+          Shopping Cart
+        </p>
       </div>
       <div className="CartBody flex flex-col lg:flex-row h-full m-5  min-h-screen">
         <div className="CartItemList flex flex-col items-stretch lg:w-2/3 sm:w-full gap-5 h-full">
@@ -150,10 +152,7 @@ const CartPage = () => {
                           value={item?.quantity}
                           min="1"
                           onChange={(e) => {
-                            const value = parseInt(e.target.value);
-                            if (value > 0) {
-                              setQuantity(value);
-                            }
+                            setQuantity(parseInt(e.target.value));
                           }}
                           className="w-1/2 border-[2px] border-black rounded-2xl px-4 text-center"
                           onKeyDown={(e) => e.preventDefault()}
@@ -163,7 +162,7 @@ const CartPage = () => {
                     <div className="CartItemsTotalPrice w-1/3">
                       <p className="text-sm font-medium">Total Price</p>
                       <h1 className="text-2xl">
-                        {item?.price * item.quantity}
+                        {item?.price * item?.quantity}
                       </h1>
                     </div>
                   </div>
@@ -195,17 +194,16 @@ const CartPage = () => {
                 <p className="text-sm font-medium">Shipping Fee</p>
                 <h1 className="pb-4 text-2xl">
                   {cartItemsState.reduce(
-                    (total, item) => total + item.shippingFee,
+                    (total, item) => total + item?.quantity,
                     0
                   )}
                 </h1>
               </div>
-              <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 p-2 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
+              <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
                 <p className="text-sm font-normal">Total Amount</p>
                 <h1 className="text-2xl font-semibold">
                   {cartItemsState.reduce(
-                    (total, item) =>
-                      total + item.unitPrice * item.quantity + item.shippingFee,
+                    (total, item) => total + item.unitPrice * item.quantity,
                     0
                   )}
                 </h1>

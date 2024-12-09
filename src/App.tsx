@@ -24,7 +24,7 @@ const App = () => {
     }
   }, [searchState, nav]);
 
-  return <div id="container" className=""></div>;
+  return <div id="container" className="size-full"></div>;
 };
 
 export default App;

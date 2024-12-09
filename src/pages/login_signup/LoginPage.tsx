@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useContext } from "react";
+import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
@@ -69,8 +69,7 @@ const LoginPage = () => {
       <input
         placeholder="ID Number"
         id="id-input"
-        className="
-        w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         name="id"
         onChange={handleChange}
       />
@@ -78,14 +77,7 @@ const LoginPage = () => {
         type="password"
         placeholder="Password"
         id="password-input"
-        className="
-        w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14
-        "
+        className=" w-full border-black border-2 rounded-full h p-5 mb-3 font-normal 2xl:h-14 "
         name="password"
         onChange={handleChange}
       />

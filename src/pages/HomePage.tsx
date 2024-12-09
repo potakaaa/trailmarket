@@ -27,10 +27,6 @@ const HomePage = () => {
     fetchData();
   }, [setIsFetched]);
 
-  if (!isFetched) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
       <div className="size-full px-3">
@@ -57,10 +53,11 @@ const HomePage = () => {
             )}
           </div>
         </div>
-        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2">
+        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4">
           {products.map((product, index) => (
             <Product
               key={index}
+              id={product.id}
               name={product.name}
               price={product.price}
               stock={product.stock}
