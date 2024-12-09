@@ -77,7 +77,7 @@ const router = createHashRouter([
       },
       {
         path: "checkout",
-        element: <CheckoutPage cartItems={[]} />,
+        element: <CheckoutPage />,
         errorElement: <div>404 Not Found</div>,
       }
     ],
