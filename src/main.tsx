@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./pages/context/AuthContext"; // Import the AuthProvider
 
-
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
@@ -17,11 +16,13 @@ import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import App from "./App";
+import NotFound404 from "./pages/NotFound404";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <PrivateRoute />,
+    errorElement: <NotFound404 />,
     children: [
       {
         path: "",
@@ -30,7 +31,7 @@ const router = createHashRouter([
           {
             path: "home",
             element: <HomePage />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "product",
@@ -39,41 +40,41 @@ const router = createHashRouter([
           {
             path: "about",
             element: <AboutUs />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "contact-us",
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "profile",
             element: <SellerPage />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "myprofile",
             element: <SellerPage />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "search",
             element: <SearchResults />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "post",
             element: <ProductPost />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "cart",
             element: <CartPage />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "checkout",
             element: <CheckoutPage cartItems={[]} />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
           {
             path: "/product",
@@ -82,7 +83,7 @@ const router = createHashRouter([
           {
             path: "/product/:id",
             element: <ProductPage />,
-            errorElement: <div>404 Not Found</div>,
+            errorElement: <NotFound404 />,
           },
         ],
       },
@@ -91,49 +92,53 @@ const router = createHashRouter([
   {
     path: "admin",
     element: <AdminPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "/login",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/signup",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/forget",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "/navbar2",
     element: <TopNavBar />,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "/about",
     element: <AboutUs />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/contact-us",
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/profile",
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/myprofile",
     element: <SellerPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/myprofile",
     element: <SellerPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
 ]);
 
