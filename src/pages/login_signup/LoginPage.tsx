@@ -4,10 +4,11 @@ import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { fetchCategories } from "../context/Globals";
+import LoadingSpinner from "../Loader/LoadingSpinner";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, setUser } = useAuthContext();
+  const { setIsLoggedIn, setUser, isFetched } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -53,6 +54,7 @@ const LoginPage = () => {
         setIsLoggedIn(true);
         setUser(fetchedUser);
         fetchCategories();
+
         nav("/home");
       } else {
         alert("Login failed, invalid username or password");
@@ -77,7 +79,7 @@ const LoginPage = () => {
         type="password"
         placeholder="Password"
         id="password-input"
-        className=" w-full border-black border-2 rounded-full h p-5 mb-3 font-normal 2xl:h-14 "
+        className=" w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14 "
         name="password"
         onChange={handleChange}
       />

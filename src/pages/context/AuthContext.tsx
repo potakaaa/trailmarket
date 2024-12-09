@@ -42,6 +42,8 @@ interface AuthContextType {
   setCartProd: (cartProd: CartProd | null) => void;
   cart: CartProd[];
   setCart: (cart: CartProd[]) => void;
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -81,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [cartProd, setCartProd] = useState<CartProd | null>(null);
   const [cart, setCart] = useState<CartProd[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <AuthContext.Provider
@@ -97,6 +100,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setCartProd,
         cart,
         setCart,
+        isLoading,
+        setIsLoading,
       }}
     >
       {children}
