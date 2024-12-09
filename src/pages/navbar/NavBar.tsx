@@ -134,15 +134,15 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
             <button>
               <img
                 src={Person}
-                alt="My Products"
+                alt="Post Product"
                 className="sm:hidden min-w-5"
               ></img>
             </button>
             <button
               className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14"
-              onClick={() => nav("/myprofile")}
+              onClick={() => nav("/post")}
             >
-              My Products
+              Post Product
             </button>
           </div>
         </div>
