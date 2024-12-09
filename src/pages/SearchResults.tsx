@@ -1,14 +1,31 @@
-import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
-import { CategoryArray } from "./context/Globals";
+import { useEffect, useState } from "react";
 import Dropdown from "./DropDown";
 import { useAuthContext } from "./context/AuthContext";
+import { fetchCategories, fetchProducts } from "./context/Globals";
+import { Product as ProductType } from "./context/Globals";
+import Product from "./Product";
 const kanye =
   "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
 
 const categories = ["Bags", "Accessories", "Clothes", "Gadgets"];
 
 const SearchResults = () => {
+  const { setIsFetched } = useAuthContext();
+  const [products, setProducts] = useState<ProductType[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchCategories();
+      const fetchedProducts = await fetchProducts();
+      if (fetchedProducts) {
+        setProducts(fetchedProducts);
+      }
+      setIsFetched(true);
+    };
+
+    fetchData();
+  }, [setIsFetched]);
+
   const { searchState } = useAuthContext();
   if (!searchState) {
     return null; // Do not render anything if searchState is empty
@@ -89,37 +106,16 @@ const SearchResults = () => {
           <div className="search-results flex flex-[3] bg-gray-50 drop-shadow-xl rounded-xl p-2 flex-col space-y-3">
             <h1>Search Results for :INPUTTED SEARCH:</h1>
             <div className=" result-container w-full flex items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
-              <div className="PRODUCT-CONTAINER w-full space-y-3 flex flex-col">
-                <div className="flex flex-[5] rounded-xl overflow-hidden aspect-square ">
-                  <img src={kanye} className="object-cover"></img>
-                </div>
-                <div className="flex flex-[2] bg-zinc-900 rounded-xl p-4 flex-row">
-                  <div className="left-side flex-[3] flex flex-col align-top">
-                    <div className="flex flex-row align-middle space-x-2">
-                      <div className="w-4 h-4 rounded-full overflow-hidden border border-black">
-                        <img
-                          className="object-cover h-full w-full"
-                          src={kanye}
-                        ></img>
-                      </div>
-                      <p className="text-xs align-middle text-white">
-                        Username
-                      </p>
-                    </div>
-                    <h2 className="text-white font-normal text-sm">
-                      Product Name
-                    </h2>
-                  </div>
-                  <div className="right-side flex flex-[2] flex-col justify-start text-right">
-                    <h2 className="text-white text-2xl md:text-lg xl:text-2xl">
-                      PHP $$$
-                    </h2>
-                    <h2 className="text-white font-normal text-sm md:text-xs xl:text-sm">
-                      Stock available
-                    </h2>
-                  </div>
-                </div>
-              </div>
+              {products.map((product, index) => (
+                <Product
+                  key={index}
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  stock={product.stock}
+                  imageUrl={product.imageUrl}
+                />
+              ))}
             </div>
           </div>
         </div>
