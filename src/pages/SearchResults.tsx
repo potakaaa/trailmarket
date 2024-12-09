@@ -4,8 +4,6 @@ import { useAuthContext } from "./context/AuthContext";
 import { fetchCategories, fetchProducts } from "./context/Globals";
 import { Product as ProductType } from "./context/Globals";
 import Product from "./Product";
-const kanye =
-  "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
 
 const categories = ["Bags", "Accessories", "Clothes", "Gadgets"];
 

@@ -3,13 +3,10 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import ForgetPass from "./ForgetPass";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context/AuthContext";
 
 const SignOrLoginPage = () => {
   const location = useLocation();
   const nav = useNavigate();
-
-  const { isFetched } = useAuthContext();
 
   const renderPage = () => {
     if (location.pathname === "/login") {

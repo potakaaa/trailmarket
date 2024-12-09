@@ -4,11 +4,10 @@ import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { fetchCategories } from "../context/Globals";
-import LoadingSpinner from "../Loader/LoadingSpinner";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, setUser, isFetched } = useAuthContext();
+  const { setIsLoggedIn, setUser } = useAuthContext();
 
   const nav = useNavigate();
 
