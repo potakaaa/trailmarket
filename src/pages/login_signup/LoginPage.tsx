@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useContext } from "react";
+import { useState, ChangeEvent } from "react";
 import "./LoginPage.css";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { fetchCategories } from "../context/Globals";
 
 const LoginPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, userArr, setUserArr, setUser } = useAuthContext();
+  const { setIsLoggedIn, setUser } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -53,6 +53,7 @@ const LoginPage = () => {
         setIsLoggedIn(true);
         setUser(fetchedUser);
         fetchCategories();
+
         nav("/home");
       } else {
         alert("Login failed, invalid username or password");
@@ -69,8 +70,7 @@ const LoginPage = () => {
       <input
         placeholder="ID Number"
         id="id-input"
-        className="
-        w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
+        className="w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14"
         name="id"
         onChange={handleChange}
       />
@@ -78,14 +78,7 @@ const LoginPage = () => {
         type="password"
         placeholder="Password"
         id="password-input"
-        className="
-        w-full
-        border-black border-2
-        rounded-full
-        h-11 p-5 mb-3
-        font-normal
-        2xl:h-14
-        "
+        className=" w-full border-black border-2 rounded-full h-11 p-5 mb-3 font-normal 2xl:h-14 "
         name="password"
         onChange={handleChange}
       />

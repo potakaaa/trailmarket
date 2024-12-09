@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./pages/context/AuthContext"; // Import the AuthProvider
 
-import App from "./App";
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
@@ -15,13 +14,15 @@ import SearchResults from "./pages/SearchResults";
 import ProductPost from "./pages/ProductPost";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import Product from "./pages/Product";
 import CheckoutPage from "./pages/CheckoutPage";
+import App from "./App";
+import NotFound404 from "./pages/NotFound404";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <PrivateRoute />,
+    errorElement: <NotFound404 />,
     children: [
       {
         path: "",
@@ -77,7 +78,7 @@ const router = createHashRouter([
       },
       {
         path: "checkout",
-        element: <CheckoutPage />,
+        element: <CheckoutPage cartItems={[]} />,
         errorElement: <div>404 Not Found</div>,
       }
     ],
@@ -85,63 +86,54 @@ const router = createHashRouter([
   {
     path: "admin",
     element: <AdminPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "/login",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/signup",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/forget",
     element: <SignOrLoginPage />,
+    errorElement: <NotFound404 />,
   },
-  {
-    path: "/home",
-    element: <HomePage />,
-    errorElement: <div>404 Not Found</div>,
-  },
-  {
-    path: "/product",
-    element: <ProductPage />,
-  },
+
   {
     path: "/navbar2",
     element: <TopNavBar />,
+    errorElement: <NotFound404 />,
   },
 
   {
     path: "/about",
     element: <AboutUs />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/contact-us",
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/profile",
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/myprofile",
     element: <SellerPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <NotFound404 />,
   },
   {
     path: "/myprofile",
     element: <SellerPage />,
-    errorElement: <div>404 Not Found</div>,
-  }, 
-  {
-    path: "/product",
-    element: <Product name="Sample Product" price={0} stock={0} imageUrl="" />,
-    errorElement: <div>404 Not Found</div>,
-  }
+    errorElement: <NotFound404 />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(

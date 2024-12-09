@@ -5,6 +5,7 @@ import Person from "../../../public/assets/Person.svg";
 import ShoppingCart from "../../../public/assets/ShoppingCart.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { ChangeEvent } from "react";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
@@ -27,7 +28,8 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   const [dropdownCategoryOpen, setDropdownCategoryOpen] = useState(false);
   const [dropdownRightIconsOpen, setDropdownRightIconsOpen] = useState(false);
 
-  const { selectedCategory, setSelectedCategory } = useAuthContext();
+  const { selectedCategory, setSelectedCategory, setSearchState } =
+    useAuthContext();
 
   const { setIsLoggedIn, setUser } = useAuthContext();
 
@@ -42,6 +44,10 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
     () => nav("/myprofile"),
     () => nav("/cart"),
   ];
+
+  const handleSearch = (value: string) => {
+    setSearchState(value);
+  };
 
   const toggleCategoryDropdown = () => {
     setDropdownCategoryOpen((prev) => !prev);
@@ -60,7 +66,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
 
   return (
     <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center  lg:px-5 2xl:px-10 w-full">
-      <button className="NavBarLeft" onClick={() => nav("/")}>
+      <button className="NavBarLeft" onClick={() => nav("/home")}>
         <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:row-span-2 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3 xl:pl-[20px]">
           TrailMarket
         </h1>
@@ -114,6 +120,9 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 type="text"
                 placeholder="Search in the market"
                 className="bg-transparent border-none focus:outline-none pl-4 p-3 text-sm font-medium w-full sm:text-base md:text-lg md:pl-6"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleSearch(e.target.value)
+                }
               />
             </div>
           </div>
@@ -125,15 +134,15 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
             <button>
               <img
                 src={Person}
-                alt="My Products"
+                alt="Post Product"
                 className="sm:hidden min-w-5"
               ></img>
             </button>
             <button
               className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14"
-              onClick={() => nav("/myprofile")}
+              onClick={() => nav("/post")}
             >
-              My Products
+              Post Product
             </button>
           </div>
         </div>

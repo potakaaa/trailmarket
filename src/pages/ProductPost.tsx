@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 import Dropdown from "./DropDown";

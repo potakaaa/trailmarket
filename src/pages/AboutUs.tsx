@@ -1,12 +1,6 @@
-import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
-import { CategoryArray } from "./context/Globals";
-
 const AboutUs = () => {
   return (
     <div className="app-wrapper">
-      <TopNavBar />
-      <NavBar obj={CategoryArray} />
       <div className="main-container px-3 ">
         <div className="AboutHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 sm:p-7 mx-4 rounded-2xl mb-5 2xl:mx-8">
           <h1 className="AboutTitle text-2xl sm:text-4xl text-white text-center font-medium">
@@ -51,7 +45,13 @@ const AboutUs = () => {
                 Contact Links
               </p>
               <div className="links-container-1 flex justify-center gap-2 xl:gap-4">
-                <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
+                <button
+                  className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2"
+                  onClick={() => {
+                    window.location.href =
+                      "https://www.facebook.com/hansdmGOAT";
+                  }}
+                >
                   <img
                     src="public\assets\fb.svg"
                     className="w-7 sm:my-1 xl:w-8 text-red"
@@ -60,7 +60,13 @@ const AboutUs = () => {
                     Facebook
                   </p>
                 </button>
-                <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
+                <button
+                  className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2"
+                  onClick={() => {
+                    window.location.href =
+                      "https://github.com/potakaaa/trailmarket";
+                  }}
+                >
                   <img
                     src="public\assets\github.svg"
                     className="w-7 sm:my-1 xl:w-8"

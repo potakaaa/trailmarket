@@ -6,20 +6,6 @@ import React, {
   useEffect,
 } from "react";
 
-// Define types for the context value
-interface AuthContextType {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
-  selectedCategory: string;
-  user: User | null;
-  setUser: (user: User | null) => void;
-  setSelectedCategory: (value: string) => void;
-  userArr: Record<string, any>;
-  setUserArr: (value: Record<string, any>) => void;
-  isFetched: boolean;
-  setIsFetched: (value: boolean) => void;
-}
-
 interface User {
   id: string;
   name: string;
@@ -30,6 +16,38 @@ interface User {
   email: string;
   image: string;
 }
+
+export interface CartProd {
+  prod_id: number;
+  name: string;
+  price: number;
+  condition: string;
+  category: string;
+  seller: string;
+  img: string | undefined;
+  quantity: number;
+}
+
+// Define types for the context value
+interface AuthContextType {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+  selectedCategory: string;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  setSelectedCategory: (value: string) => void;
+  isFetched: boolean;
+  setIsFetched: (value: boolean) => void;
+  cartProd: CartProd | null;
+  setCartProd: (cartProd: CartProd | null) => void;
+  cart: CartProd[];
+  setCart: (cart: CartProd[]) => void;
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
+  searchState: string;
+  setSearchState: (value: string) => void;
+}
+
 // Create the context with a default value of `undefined`
 // We later provide the context in the `AuthProvider`
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -48,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
-  const [userArr, setUserArr] = useState<Record<string, any>>({});
+  const [searchState, setSearchState] = useState("");
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
@@ -67,6 +85,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [user]);
 
+  const [cartProd, setCartProd] = useState<CartProd | null>(null);
+  const [cart, setCart] = useState<CartProd[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <AuthContext.Provider
       value={{
@@ -74,12 +96,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoggedIn,
         selectedCategory,
         setSelectedCategory,
-        userArr,
-        setUserArr,
         user,
         setUser,
         isFetched,
         setIsFetched,
+        cartProd,
+        setCartProd,
+        cart,
+        setCart,
+        isLoading,
+        setIsLoading,
+        searchState,
+        setSearchState,
       }}
     >
       {children}
