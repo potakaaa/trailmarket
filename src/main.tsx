@@ -79,7 +79,7 @@ const router = createHashRouter([
         path: "checkout",
         element: <CheckoutPage cartItems={[]} />,
         errorElement: <div>404 Not Found</div>,
-      }
+      },
     ],
   },
   {
@@ -136,12 +136,12 @@ const router = createHashRouter([
     path: "/myprofile",
     element: <SellerPage />,
     errorElement: <div>404 Not Found</div>,
-  }, 
+  },
   {
-    path: "/product",
-    element: <Product name="Sample Product" price={0} stock={0} imageUrl="" />,
+    path: "/product/:id",
+    element: <ProductPage />,
     errorElement: <div>404 Not Found</div>,
-  }
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(

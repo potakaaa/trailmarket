@@ -24,7 +24,8 @@ export interface CartProd {
   condition: string;
   category: string;
   seller: string;
-  img: string | null;
+  img: string | undefined;
+  quantity: number;
 }
 
 // Define types for the context value

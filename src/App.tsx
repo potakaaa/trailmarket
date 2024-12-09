@@ -17,7 +17,7 @@ const App = () => {
       nav("/login"); // Redirect to login
     }
   }, [isLoggedIn, nav]);
-  return <div id="container" className=""></div>;
+  return <div id="container" className="size-full"></div>;
 };
 
 export default App;

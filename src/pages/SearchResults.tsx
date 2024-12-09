@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import TopNavBar from "./navbar/TopNavBar";
 import NavBar from "./navbar/NavBar";
 import { CategoryArray } from "./context/Globals";

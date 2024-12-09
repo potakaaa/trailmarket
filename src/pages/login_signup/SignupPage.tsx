@@ -4,7 +4,9 @@ import { ChangeEvent } from "react";
 import "./SignupPage.css";
 import { useNavigate } from "react-router-dom";
 
-const AddSignup = () => {};
+{
+  /*const AddSignup = () => {};*/
+}
 
 const SignupPage = () => {
   const [input, setInput] = useState<Record<string, string>>({});
