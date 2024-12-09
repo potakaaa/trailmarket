@@ -1,5 +1,4 @@
 import { useState } from "react";
-import TopNavBar from "./navbar/TopNavBar";
 import { UserIcon } from "@heroicons/react/16/solid";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
