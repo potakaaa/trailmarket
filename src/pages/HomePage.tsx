@@ -8,12 +8,11 @@ import { useAuthContext } from "./context/AuthContext";
 import { useEffect, useState } from "react";
 import Product from "./Product";
 import { Product as ProductType } from "./context/Globals";
-import LoadingSpinner from "./Loader/LoadingSpinner";
 
 const HomePage = () => {
   const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
-  const { isLoading, setIsLoading } = useAuthContext();
+  const { setIsLoading } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
