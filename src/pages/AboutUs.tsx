@@ -60,7 +60,13 @@ const AboutUs = () => {
                     Facebook
                   </p>
                 </button>
-                <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
+                <button
+                  className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2"
+                  onClick={() => {
+                    window.location.href =
+                      "https://github.com/potakaaa/trailmarket";
+                  }}
+                >
                   <img
                     src="public\assets\github.svg"
                     className="w-7 sm:my-1 xl:w-8"

@@ -29,10 +29,6 @@ const HomePage = () => {
     fetchData();
   }, [setIsFetched]);
 
-  if (!isFetched) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <div className="HomePage size-full flex flex-col justify-center items-center">
       <TopNavBar />
