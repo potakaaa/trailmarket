@@ -8,7 +8,8 @@ export default {
     extend: {
       colors: {
 
-      }, fontFamily: {
+      }, 
+      fontFamily: {
         Inter: ["Inter"],
         Poppins: ["Poppins"]
       }
