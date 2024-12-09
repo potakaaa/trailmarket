@@ -56,7 +56,7 @@ const HomePage = () => {
             )}
           </div>
         </div>
-        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4">
+        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4 justify-center">
           {products.map((product, index) => (
             <Product
               key={index}
