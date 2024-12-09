@@ -8,9 +8,10 @@ import NavBar from "./pages/navbar/NavBar";
 import TopNavBar from "./pages/navbar/TopNavBar";
 import { CategoryArray } from "./pages/context/Globals";
 import SearchResults from "./pages/SearchResults";
+import LoadingSpinner from "./pages/Loader/LoadingSpinner";
 
 const App = () => {
-  const { isLoggedIn, searchState } = useAuthContext();
+  const { isLoggedIn, searchState, isLoading } = useAuthContext();
   const nav = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const App = () => {
 
   return (
     <div className="main-layout">
+      {isLoading && <LoadingSpinner />}
       <TopNavBar />
       <NavBar obj={CategoryArray} />
       <div className="content">

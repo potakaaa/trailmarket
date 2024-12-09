@@ -6,22 +6,25 @@ import {
 } from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "./Loader/LoadingSpinner";
 import Product from "./Product";
 import { Product as ProductType } from "./context/Globals";
+import LoadingSpinner from "./Loader/LoadingSpinner";
 
 const HomePage = () => {
   const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
+  const { isLoading, setIsLoading } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       await fetchCategories();
       const fetchedProducts = await fetchProducts();
       if (fetchedProducts) {
         setProducts(fetchedProducts);
       }
       setIsFetched(true);
+      setIsLoading(false);
     };
 
     fetchData();

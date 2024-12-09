@@ -45,7 +45,13 @@ const AboutUs = () => {
                 Contact Links
               </p>
               <div className="links-container-1 flex justify-center gap-2 xl:gap-4">
-                <button className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2">
+                <button
+                  className="border-2 shadow-md border-black p-1 px-5 rounded-full w-full flex justify-center items-center gap-2"
+                  onClick={() => {
+                    window.location.href =
+                      "https://www.facebook.com/hansdmGOAT";
+                  }}
+                >
                   <img
                     src="public\assets\fb.svg"
                     className="w-7 sm:my-1 xl:w-8 text-red"

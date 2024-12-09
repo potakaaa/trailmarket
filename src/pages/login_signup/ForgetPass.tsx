@@ -85,6 +85,9 @@ const ForgetPass = () => {
           alert(data.message);
           setStep("change");
         }
+        if (!response.ok) {
+          alert(data.message);
+        }
       } catch (error) {
         console.error("Error:", error);
       }
@@ -139,8 +142,7 @@ const ForgetPass = () => {
           <button
             id="verify"
             className="
-          bg-gradient-to-r
-          from-[#6B66FB] to-[#000000]
+          bg-gradient-to-r from-[#191847] to-[#000000]
           text-white
           font-normal
           rounded-full
@@ -225,8 +227,7 @@ const ForgetPass = () => {
         <button
           onClick={handleReset}
           className="
-                     bg-gradient-to-r
-                    from-[#6B66FB] to-[#000000]
+                     bg-gradient-to-r from-[#191847] to-[#000000]
                     text-white
                     font-normal
                     rounded-full
@@ -296,8 +297,7 @@ const ForgetPass = () => {
               id="submit-button"
               onClick={handleForget}
               className="
-                    bg-gradient-to-r
-                    from-[#6B66FB] to-[#000000]
+                   bg-gradient-to-r from-[#191847] to-[#000000]
                     text-white
                     font-normal
                     rounded-full
