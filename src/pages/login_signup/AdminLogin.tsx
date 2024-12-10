@@ -2,11 +2,10 @@ import { useState, ChangeEvent } from "react";
 import { supabase } from "../../createClient";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { fetchCategories } from "../context/Globals";
 
 const AdminLogin = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsAdminLoggedIn, setEmp, emp } = useAuthContext();
+  const { setIsAdminLoggedIn, setEmp } = useAuthContext();
 
   const nav = useNavigate();
 

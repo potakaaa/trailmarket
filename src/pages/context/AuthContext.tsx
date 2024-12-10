@@ -25,8 +25,8 @@ export interface Emp {
   city: string;
 }
 
-interface User {
-  id: string;
+export interface User {
+  id: number;
   name: string;
   age: number;
   pass: string | null;
@@ -34,10 +34,10 @@ interface User {
   fb: string;
   email: string;
   image: string;
-  prods: Prod[] | null;
+  prods: Prod[];
 }
 
-interface Prod {
+export interface Prod {
   id: number;
   name: string;
   price: number;

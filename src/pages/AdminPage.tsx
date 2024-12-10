@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
-import AdminPrivateRoute from "./context/PrivateRouteAdmin";
 import TopNavBar from "./navbar/TopNavBar";
-import NavBar from "./navbar/NavBar";
-import { CategoryArray } from "./context/Globals";
 import AdminNavBar from "./navbar/AdminNavBar";
 
-const issueType = ["Bug", "Feedback", "Feature"];
 const issueStat = ["Not Started", "In Progress", "Done"];
 
 const AdminPage = () => {
@@ -109,7 +105,7 @@ const AdminPage = () => {
 
   const fetchTaxes = async () => {
     try {
-      const { data, error } = await supabase.from("DIM_TAX").select("*");
+      const { data } = await supabase.from("DIM_TAX").select("*");
       if (data) {
         const tempTaxes: Tax[] = data.map((tax: any) => ({
           id: tax.TAX_ID,
