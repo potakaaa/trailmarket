@@ -120,22 +120,60 @@ const AdminPage = () => {
     "David Lee",
   ]);
 
-  const handleStatChange = (index: number, newStat: any) => {
+  const handleStatChange = async (index: number, newStat: any) => {
     // Create a copy of the array to avoid mutating state directly
     const updatedIssues = [...issues];
     // Update the stat of the specific issue
     updatedIssues[index].status = newStat;
     // Set the updated array to state
     setIssues(updatedIssues);
+
+    const issueId = updatedIssues[index].id;
+
+    try {
+      const { data, error } = await supabase
+        .from("FACT_ISSUE_TRACKER")
+        .update({ ISSUE_STAT: newStat })
+        .eq("ISSUE_ID", issueId);
+
+      if (error) {
+        console.error("Error updating data:", error.message);
+      }
+
+      if (data) {
+        console.log("Updated data:", data);
+      }
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
 
-  const handleEmpChange = (index: number, newEmp: string) => {
+  const handleEmpChange = async (index: number, newEmp: string) => {
     // Create a copy of the array to avoid mutating state directly
     const updatedIssues = [...issues];
     // Update the stat of the specific issue
     updatedIssues[index].assigned = newEmp;
     // Set the updated array to state
     setIssues(updatedIssues);
+
+    const issueId = updatedIssues[index].id;
+
+    try {
+      const { data, error } = await supabase
+        .from("FACT_ISSUE_TRACKER")
+        .update({ ASSIGNED_EMP: newEmp })
+        .eq("ISSUE_ID", issueId);
+
+      if (error) {
+        console.error("Error updating data:", error.message);
+      }
+
+      if (data) {
+        console.log("Updated data:", data);
+      }
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
 
   return (
@@ -187,75 +225,81 @@ const AdminPage = () => {
             </thead>
             {/* Table Body */}
             <tbody>
-              {issues.map((issue, index) => (
-                <tr key={index} className="border-t">
-                  <td className="text-xs font-normal px-2 py-1 self-center">
-                    <input type="checkbox" name={`isdone${issue?.id}`} />
-                  </td>
-                  <td className="text-xs font-normal px-2 py-1">{issue?.id}</td>
-                  <td
-                    className={`text-xs font-normal px-2 py-1 ${
-                      issue?.category === "Bug"
-                        ? "text-red-500"
-                        : issue?.category === "Feature"
-                        ? "text-green-500"
-                        : issue?.category === "Feedback"
-                        ? "text-blue-500"
-                        : ""
-                    }`}
-                  >
-                    {issue?.category}
-                  </td>
-                  <td className="text-xs font-normal px-2 py-2">
-                    <select
-                      className={`${
-                        issue?.status === issueStat[0]
-                          ? "bg-blue-200"
-                          : issue?.status === issueStat[1]
-                          ? "bg-yellow-200"
-                          : issue?.status === issueStat[2]
-                          ? "bg-green-200"
+              {issues
+                .sort((a, b) => a.id - b.id) // Sort by 'id' in ascending order
+                .map((issue, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="text-xs font-normal px-2 py-1 self-center">
+                      <input type="checkbox" name={`isdone${issue?.id}`} />
+                    </td>
+                    <td className="text-xs font-normal px-2 py-1">
+                      {issue?.id}
+                    </td>
+                    <td
+                      className={`text-xs font-normal px-2 py-1 ${
+                        issue?.category === "Bug"
+                          ? "text-red-500"
+                          : issue?.category === "Feature"
+                          ? "text-green-500"
+                          : issue?.category === "Feedback"
+                          ? "text-blue-500"
                           : ""
-                      } px-2 rounded-full text-xs focus:outline-none`}
-                      value={issue?.status} // Set the current value
-                      onChange={(e) => handleStatChange(index, e.target.value)}
+                      }`}
                     >
-                      {issueStat.map((statOption, optionIndex) => (
-                        <option
-                          className="bg-slate-100 font-normal"
-                          key={optionIndex}
-                          value={statOption}
-                        >
-                          {statOption}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="text-xs font-normal px-2 py-1">
-                    <select
-                      value={issue?.assigned}
-                      onChange={(e) => handleEmpChange(index, e.target.value)}
-                      className="bg-slate-50 p-1 rounded-full focus:outline-none"
-                    >
-                      {empList.map((_, index) => (
-                        <option
-                          className="bg-slate-100 font-normal"
-                          key={empList[index].id}
-                          value={empList[index].id}
-                        >
-                          {empList[index].name}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="text-xs font-normal px-2 py-1">
-                    {issue?.desc}
-                  </td>
-                  <td className="text-xs font-normal px-2 py-1">
-                    {issue?.prod_id}
-                  </td>
-                </tr>
-              ))}
+                      {issue?.category}
+                    </td>
+                    <td className="text-xs font-normal px-2 py-2">
+                      <select
+                        className={`${
+                          issue?.status === issueStat[0]
+                            ? "bg-blue-200"
+                            : issue?.status === issueStat[1]
+                            ? "bg-yellow-200"
+                            : issue?.status === issueStat[2]
+                            ? "bg-green-200"
+                            : ""
+                        } px-2 rounded-full text-xs focus:outline-none`}
+                        value={issue?.status} // Set the current value
+                        onChange={(e) =>
+                          handleStatChange(index, e.target.value)
+                        }
+                      >
+                        {issueStat.map((statOption, optionIndex) => (
+                          <option
+                            className="bg-slate-100 font-normal"
+                            key={optionIndex}
+                            value={statOption}
+                          >
+                            {statOption}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="text-xs font-normal px-2 py-1">
+                      <select
+                        value={issue?.assigned}
+                        onChange={(e) => handleEmpChange(index, e.target.value)}
+                        className="bg-slate-50 p-1 rounded-full focus:outline-none"
+                      >
+                        {empList.map((emp) => (
+                          <option
+                            className="bg-slate-100 font-normal"
+                            key={emp.id}
+                            value={emp.id}
+                          >
+                            {emp.name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="text-xs font-normal px-2 py-1">
+                      {issue?.desc}
+                    </td>
+                    <td className="text-xs font-normal px-2 py-1">
+                      {issue?.prod_id}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
