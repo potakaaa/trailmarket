@@ -4,10 +4,27 @@ import { useParams } from "react-router-dom";
 import { UserIcon } from "@heroicons/react/16/solid";
 import { useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
+import { ChangeEvent } from "react";
 
 const ProductPage = () => {
   const [count, setCount] = useState(0);
   const [rating, setRating] = useState(0);
+  const placeholder = "https://via.placeholder.com/150";
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [input, setInput] = useState({
+    review: "",
+    reviewtitle: "",
+  });
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = event.target;
+    setInput((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
+  };
 
   const loremPlaceholder =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat";
@@ -16,6 +33,7 @@ const ProductPage = () => {
   const [product, setProduct] = useState<any>(null);
   const { setIsLoading } = useAuthContext();
   const [mainImage, setMainImage] = useState<string>("");
+  const { user } = useAuthContext();
   const [otherImages, setOtherImages] = useState<string[]>([]);
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
@@ -25,6 +43,47 @@ const ProductPage = () => {
     setSelectedImage(image);
   };
 
+  const handleReviewSubmit = async () => {
+    console.log("Submitting form with data:", input);
+
+    const { error: reviewError } = await supabase.from("DIM_REVIEW").insert([
+      {
+        REVIEW_TITLE: input.reviewtitle,
+        REVIEW_DESC: input.review,
+        REVIEW_RATING: rating,
+        REVIEW_PROD: id,
+        REVIEWER_ID: user?.id,
+      },
+    ]);
+
+    if (reviewError) {
+      console.error("Error submitting review:", reviewError.message);
+    } else {
+      fetchReviews();
+    }
+  };
+  const fetchReviews = async () => {
+    const { data: reviewsData, error: reviewsError } = await supabase
+      .from("DIM_REVIEW")
+      .select("*")
+      .eq("REVIEW_PROD", id);
+
+    if (reviewsError) {
+      console.error("Error fetching reviews:", reviewsError.message);
+    } else {
+      const reviewsWithUserDetails = await Promise.all(
+        reviewsData.map(async (review) => {
+          const userDetails = await fetchReviewerDetails(review.REVIEWER_ID);
+          return {
+            ...review,
+            username: userDetails?.USER_NAME || "Unknown User",
+            userImage: userDetails?.USER_IMAGE || placeholder,
+          };
+        })
+      );
+      setReviews(reviewsWithUserDetails);
+    }
+  };
   const images = [mainImage, otherImages].flat();
 
   const unselectedImages = images.filter((img) => img !== selectedImage);
@@ -81,6 +140,21 @@ const ProductPage = () => {
     fetchProductImages();
   }, [id]);
 
+  const fetchReviewerDetails = async (userId: string) => {
+    const { data, error } = await supabase
+      .from("DIM_USER")
+      .select("USER_NAME, USER_IMAGE")
+      .eq("STUDENT_ID", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching reviewer details:", error.message);
+      return null;
+    } else {
+      return data;
+    }
+  };
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       if (!product?.SELLER_ID) return;
@@ -109,7 +183,9 @@ const ProductPage = () => {
 
     fetchUserDetails();
   }, [product]);
-
+  useEffect(() => {
+    fetchReviews();
+  }, [id]);
   if (!product) {
     return <div>Product not found</div>;
   }
@@ -234,6 +310,36 @@ const ProductPage = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="leave-rev flex-[5] p-2 flex-row items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2 space-y-3">
+                    <div className="flex flex-col mx-2.5">
+                      <h1 className=" mt-1.5 text-2xl xl:text-3xl">
+                        Leave a Review
+                      </h1>
+                      <div className="">
+                        <StarRating rating={rating} setRating={setRating} />
+                      </div>
+                      <input
+                        id="reviewtitle"
+                        className="bg-gray-100 mt-2 p-2 rounded border-black border-2"
+                        placeholder="Title your review!"
+                        onChange={handleChange}
+                      ></input>
+                      <textarea
+                        id="review"
+                        className="bg-gray-100 mt-2 p-2 rounded border-black border-2 h-52"
+                        placeholder="Write your review here"
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="flex">
+                      <button
+                        className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+                        onClick={handleReviewSubmit}
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  </div>
                   <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg p-5 ml-2">
                     <div className=" review-container flex flex-col mb-3">
                       <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
@@ -245,54 +351,33 @@ const ProductPage = () => {
                         80% of costumers are satisfied
                       </h2>
                     </div>
-                    <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                      <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                        <div className="w-full flex items-center my-1 xl:my-2">
-                          <button className="flex gap-4 w-full items-center">
-                            <UserIcon className="size-8" />
-                            <p className="text-xl">User</p>
-                          </button>
-                          <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars(3)}
+                    {reviews.map((review) => (
+                      <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
+                        <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
+                          <div className="w-full flex items-center my-1 xl:my-2">
+                            <button className="flex gap-4 w-full items-center">
+                              <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                                <img
+                                  className="object-cover h-full w-full"
+                                  src={review.userImage}
+                                  alt="User"
+                                />
+                              </div>
+                              <p className="text-xl">{review.username}</p>
+                            </button>
+                            <div className="flex flex-row justify-end items-end w-full mx-2">
+                              {renderStars(review.REVIEW_RATING)}
+                            </div>
                           </div>
+                          <h1 className="font-bold text-base">
+                            {review.REVIEW_TITLE}
+                          </h1>
+                          <h1 className="font-normal text-base">
+                            {review.REVIEW_DESC}
+                          </h1>
                         </div>
-                        <h1 className="font-normal text-base">
-                          {loremPlaceholder}
-                        </h1>
                       </div>
-                    </div>
-                    <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                      <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                        <div className="w-full flex items-center my-1 xl:my-2">
-                          <button className="flex gap-4 w-full items-center">
-                            <UserIcon className="size-8" />
-                            <p className="text-xl">User</p>
-                          </button>
-                          <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars(3)}
-                          </div>
-                        </div>
-                        <h1 className="font-normal text-base">
-                          {loremPlaceholder}
-                        </h1>
-                      </div>
-                    </div>
-                    <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                      <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                        <div className="w-full flex items-center my-1 xl:my-2">
-                          <button className="flex gap-4 w-full items-center">
-                            <UserIcon className="size-8" />
-                            <p className="text-xl">User</p>
-                          </button>
-                          <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars(3)}
-                          </div>
-                        </div>
-                        <h1 className="font-normal text-base">
-                          {loremPlaceholder}
-                        </h1>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -340,15 +425,35 @@ const ProductPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
-                <h1 className="mx-2.5 mt-1.5 text-2xl xl:text-3xl">
-                  Leave a Review
-                </h1>
-                <StarRating rating={rating} setRating={setRating} />
-                <input
-                  className="bg-gray-100 mt-2 p-2 rounded"
-                  placeholder="Write your review here"
-                />
+              <div className="leave-rev flex-[5] p-2 flex-row items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2 space-y-3">
+                <div className="flex flex-col mx-2.5">
+                  <h1 className=" mt-1.5 text-2xl xl:text-3xl">
+                    Leave a Review
+                  </h1>
+                  <div className="">
+                    <StarRating rating={rating} setRating={setRating} />
+                  </div>
+                  <input
+                    id="reviewtitle"
+                    className="bg-gray-100 mt-2 p-2 rounded border-black border-2"
+                    placeholder="Title your review!"
+                    onChange={handleChange}
+                  ></input>
+                  <textarea
+                    id="review"
+                    className="bg-gray-100 mt-2 p-2 rounded border-black border-2 h-52"
+                    placeholder="Write your review here"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex">
+                  <button
+                    className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+                    onClick={handleReviewSubmit}
+                  >
+                    Submit Review
+                  </button>
+                </div>
               </div>
               <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
                 <div className="flex flex-[1] flex-col mb-3">
@@ -365,48 +470,33 @@ const ProductPage = () => {
                     80% of costumers are satisfied
                   </h2>
                 </div>
-                <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                  <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1 xl:my-2">
-                      <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5 xl:size-7" />
-                        <p className="text-base xl:text-lg">User</p>
-                      </button>
-                      <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars(3)}
+                {reviews.map((review) => (
+                  <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
+                    <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
+                      <div className="w-full flex items-center my-1 xl:my-2">
+                        <button className="flex gap-4 w-full items-center">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                            <img
+                              className="object-cover h-full w-full"
+                              src={review.userImage}
+                              alt="User"
+                            />
+                          </div>
+                          <p className="text-xl">{review.username}</p>
+                        </button>
+                        <div className="flex flex-row justify-end items-end w-full mx-2">
+                          {renderStars(review.REVIEW_RATING)}
+                        </div>
                       </div>
+                      <h1 className="font-bold text-base">
+                        {review.REVIEW_TITLE}
+                      </h1>
+                      <h1 className="font-normal text-base">
+                        {review.REVIEW_DESC}
+                      </h1>
                     </div>
-                    <h1 className="font-normal text-sm">{loremPlaceholder}</h1>
                   </div>
-                </div>
-                <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                  <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1 xl:my-2">
-                      <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5 xl:size-7" />
-                        <p className="text-base xl:text-lg">User</p>
-                      </button>
-                      <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars(3)}
-                      </div>
-                    </div>
-                    <h1 className="font-normal text-sm">{loremPlaceholder}</h1>
-                  </div>
-                </div>
-                <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                  <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                    <div className="w-full flex items-center my-1 xl:my-2">
-                      <button className="flex gap-2 w-full">
-                        <UserIcon className="size-5 xl:size-7" />
-                        <p className="text-base xl:text-lg">User</p>
-                      </button>
-                      <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars(3)}
-                      </div>
-                    </div>
-                    <h1 className="font-normal text-sm">{loremPlaceholder}</h1>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
