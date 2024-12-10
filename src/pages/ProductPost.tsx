@@ -76,7 +76,7 @@ const ProductPost = () => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages, ...acceptedFiles];
       if (isPlaceholder) {
-        setMainImage(acceptedFiles[0]); // Set the first dropped image as the main image
+        setMainImage(acceptedFiles[0]);
         setIsPlaceholder(false);
       }
       return updatedImages;
@@ -106,7 +106,17 @@ const ProductPost = () => {
     setIsPlaceholder(false);
   };
 
-  const galleryImages = images.filter((image) => image !== mainImage);
+  const [galleryImages, setGalleryImages] = useState<File[]>([]);
+
+  useEffect(() => {
+    setGalleryImages(images.filter((image) => image !== mainImage));
+  }, [images, mainImage]);
+
+  const removeGalleryImage = (image: File) => {
+    setGalleryImages((prevGalleryImages) =>
+      prevGalleryImages.filter((img) => img !== image)
+    );
+  };
 
   const uploadImages = async (imagesToUpload: File[]) => {
     const uploadedImageUrls = [];
@@ -388,6 +398,15 @@ const ProductPost = () => {
                             src={URL.createObjectURL(src)}
                             alt="Product"
                           />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering handleImageClick
+                              removeGalleryImage(src);
+                            }}
+                            className="remove-button"
+                          >
+                            Remove
+                          </button>
                         </div>
                       ))}
                     </div>

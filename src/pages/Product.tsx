@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 
-
 interface ProductProps {
   id: number;
   name: string;
@@ -24,7 +23,6 @@ const Product: React.FC<ProductProps> = ({
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
   const nav = useNavigate();
-
   useEffect(() => {
     const fetchMainImageUrl = async () => {
       const { data, error } = await supabase
