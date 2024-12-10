@@ -130,95 +130,94 @@ const AdminPage = () => {
     if (error) {
       console.error("Error inserting data:", error.message);
     }
+  };
+  const renderAddAdmin = () => {
+    return (
+      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8">
+        <input
+          placeholder="Name"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 "
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          placeholder="Age"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="age"
+          value={formData.age}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          placeholder="Contact Number"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="number"
+          value={formData.number}
+          onChange={handleChange}
+        />
+        <input
+          placeholder="City"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="city"
+          value={formData.city}
+          onChange={handleChange}
+        />
 
-    const renderAddAdmin = () => {
-      return (
-        <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8">
-          <input
-            placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 "
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="number"
-            value={formData.number}
-            onChange={handleChange}
-          />
-          <input
-            placeholder="City"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-          />
-
-          <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 mb-3 "
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <option value="Admin" className="font-normal">
-              Admin
-            </option>
-            <option value="Moderator" className="font-normal">
-              Moderator
-            </option>
-          </select>
-          <input
-            placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="emergency_contact_name"
-            value={formData.emergency_contact_name}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
-            name="emergency_contact_num"
-            value={formData.emergency_contact_num}
-            onChange={handleChange}
-          />
-          <button
-            id="login-button"
-            className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-10 mt-3 shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
-            onClick={() => handleAdminSubmit(formData)}
-          >
-            Submit
-          </button>
-        </div>
-      );
-    };
-  }
+        <select
+          className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 mb-3 "
+          value={formData.role}
+          onChange={handleChange}
+        >
+          <option value="Admin" className="font-normal">
+            Admin
+          </option>
+          <option value="Moderator" className="font-normal">
+            Moderator
+          </option>
+        </select>
+        <input
+          placeholder="Emergency Contact Name"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="emergency_contact_name"
+          value={formData.emergency_contact_name}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          placeholder="Emergency Contact Number"
+          className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+          name="emergency_contact_num"
+          value={formData.emergency_contact_num}
+          onChange={handleChange}
+        />
+        <button
+          id="login-button"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-10 mt-3 shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
+          onClick={() => handleAdminSubmit(formData)}
+        >
+          Submit
+        </button>
+      </div>
+    );
+  };
     const [tempIssueArr, setTempIssueArr] = useState([
       {
         type: issueType[0],
@@ -448,6 +447,6 @@ const AdminPage = () => {
       </div>
     );
   };
-};
+
 
 export default AdminPage;
