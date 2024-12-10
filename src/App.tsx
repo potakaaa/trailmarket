@@ -17,7 +17,7 @@ const App = () => {
       {isLoading && <LoadingSpinner />}
       <TopNavBar />
       {location.pathname === "/admin" ? (
-        <AdminNavBar obj={CategoryArray} />
+        <AdminNavBar />
       ) : (
         <NavBar obj={CategoryArray} />
       )}

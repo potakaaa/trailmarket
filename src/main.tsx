@@ -17,11 +17,13 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import App from "./App";
 import NotFound404 from "./pages/NotFound404";
+import AdminPrivateRoute from "./pages/context/PrivateRouteAdmin";
+import ModeratorPage from "./pages/ModeratorPage";
 
 const router = createHashRouter([
   {
     path: "/",
-    element: <PrivateRoute />,
+    element: <PrivateRoute />, // Private route for general pages
     errorElement: <NotFound404 />,
     children: [
       {
@@ -31,7 +33,7 @@ const router = createHashRouter([
         children: [
           {
             path: "",
-            element: <HomePage />, // Default route to HomePage
+            element: <HomePage />,
             errorElement: <div>404 Not Found</div>,
           },
           {
@@ -82,18 +84,31 @@ const router = createHashRouter([
             errorElement: <div>404 Not Found</div>,
           },
           {
-            path: "admin",
-            element: <AdminPage />,
-            errorElement: <NotFound404 />,
-          },
-          {
             path: "checkout",
             element: <CheckoutPage />,
             errorElement: <div>404 Not Found</div>,
-          }
+          },
         ],
       },
     ],
+  },
+  {
+    path: "admin",
+    element: (
+      <AdminPrivateRoute>
+        <AdminPage />
+      </AdminPrivateRoute>
+    ),
+    errorElement: <NotFound404 />,
+  },
+  {
+    path: "moderator",
+    element: (
+      <AdminPrivateRoute>
+        <ModeratorPage />
+      </AdminPrivateRoute>
+    ),
+    errorElement: <NotFound404 />,
   },
   {
     path: "login",
@@ -114,7 +129,7 @@ const router = createHashRouter([
     path: "forget",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
-  }
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(

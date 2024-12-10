@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
 import { useParams } from "react-router-dom";
-import { UserIcon } from "@heroicons/react/16/solid";
 import { useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
