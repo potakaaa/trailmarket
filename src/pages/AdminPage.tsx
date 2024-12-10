@@ -1,6 +1,4 @@
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
-import Dropdown from "./DropDown";
 
 const issueType = ["Bug", "Feedback", "Feature"];
 const issueStat = ["Not Started", "In Progress", "Done"];
@@ -30,6 +28,12 @@ const AdminPage = () => {
     },
   ]);
 
+  const [tempEmpName, setTempEmpName] = useState([
+    "John Doe",
+    "Jone Smith",
+    "David Lee",
+  ]);
+
   const handleStatChange = (index: number, newStat: any) => {
     // Create a copy of the array to avoid mutating state directly
     const updatedIssues = [...tempIssueArr];
@@ -39,7 +43,14 @@ const AdminPage = () => {
     setTempIssueArr(updatedIssues);
   };
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const handleEmpChange = (index: number, newEmp: string) => {
+    // Create a copy of the array to avoid mutating state directly
+    const updatedIssues = [...tempIssueArr];
+    // Update the stat of the specific issue
+    updatedIssues[index].assigned = newEmp;
+    // Set the updated array to state
+    setTempIssueArr(updatedIssues);
+  };
 
   return (
     <div className="main-container px-4 flex flex-col gap-3">
@@ -57,10 +68,12 @@ const AdminPage = () => {
           Update Tax
         </button>
       </div>
-      <div className="issuetracker-container flex flex-col w-full gap-1 my-5">
+      <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg">
         <hr className="border-2" />
-        <h1 className="text-center">Issue Tracker</h1>
-        <div className="parent-container w-full max-w-[500px] overflow-x-auto">
+        <h1 className="text-center bg-gray-100 rounded-md text-lg p-1">
+          Issue Tracker
+        </h1>
+        <div className="parent-container w-full max-w-[40rem] overflow-x-auto">
           <table className="table-auto border-collapse w-[600px] whitespace-nowrap">
             {/* Table Header */}
             <thead>
@@ -101,21 +114,47 @@ const AdminPage = () => {
                   >
                     {issue.type}
                   </td>
-                  <td className="text-xs font-normal px-2 py-1">
+                  <td className="text-xs font-normal px-2 py-2">
                     <select
-                      className="border-gray-300 text-xs rounded- focus:outline-none"
+                      className={`${
+                        issue.stat === issueStat[0]
+                          ? "bg-blue-200"
+                          : issue.stat === issueStat[1]
+                          ? "bg-yellow-200"
+                          : issue.stat === issueStat[2]
+                          ? "bg-green-200"
+                          : ""
+                      } px-2 rounded-full text-xs focus:outline-none`}
                       value={issue.stat} // Set the current value
                       onChange={(e) => handleStatChange(index, e.target.value)}
                     >
                       {issueStat.map((statOption, optionIndex) => (
-                        <option key={optionIndex} value={statOption}>
+                        <option
+                          className="bg-slate-100 font-normal"
+                          key={optionIndex}
+                          value={statOption}
+                        >
                           {statOption}
                         </option>
                       ))}
                     </select>
                   </td>
                   <td className="text-xs font-normal px-2 py-1">
-                    {issue.assigned}
+                    <select
+                      value={issue.assigned}
+                      onChange={(e) => handleEmpChange(index, e.target.value)}
+                      className="bg-slate-50 p-1 rounded-full focus:outline-none"
+                    >
+                      {tempEmpName.map((empName, index) => (
+                        <option
+                          className="bg-slate-100 font-normal"
+                          key={index}
+                          value={empName}
+                        >
+                          {empName}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="text-xs font-normal px-2 py-1">
                     {issue.desc}
