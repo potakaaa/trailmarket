@@ -29,11 +29,24 @@ interface User {
   id: string;
   name: string;
   age: number;
-  pass: string;
+  pass: string | null;
   contact_num: number;
   fb: string;
   email: string;
   image: string;
+  prods: Prod[] | null;
+}
+
+interface Prod {
+  id: number;
+  name: string;
+  price: number;
+  condition: string;
+  category: string;
+  seller: number;
+  img: string | undefined;
+  short_desc: string;
+  desc: string;
 }
 
 export interface CartProd {
@@ -69,9 +82,13 @@ export interface Tax {
 interface AuthContextType {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
+  isAdminLoggedIn: boolean;
+  setIsAdminLoggedIn: (value: boolean) => void;
   selectedCategory: string;
   user: User | null;
   setUser: (user: User | null) => void;
+  userList: User[];
+  setUserList: (userList: User[]) => void;
   emp: Emp | null;
   setEmp: (emp: Emp | null) => void;
   empList: Emp[];
@@ -93,6 +110,8 @@ interface AuthContextType {
   setIssues: (issues: Issue[]) => void;
   taxes: Tax[];
   setTaxes: (taxes: Tax[]) => void;
+  prodList: Prod[];
+  setProdList: (prodList: Prod[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -109,6 +128,10 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     const storedValue = localStorage.getItem("isLoggedIn");
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    const storedValue = localStorage.getItem("isAdminLoggedIn");
     return storedValue ? JSON.parse(storedValue) : false;
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -141,18 +164,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [userList, setUserList] = useState<User[]>([]);
   const [empList, setEmpList] = useState<Emp[]>([]);
   const [taxes, setTaxes] = useState<Tax[]>([]);
+  const [prodList, setProdList] = useState<Prod[]>([]);
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
         setIsLoggedIn,
+        isAdminLoggedIn,
+        setIsAdminLoggedIn,
         selectedCategory,
         setSelectedCategory,
         user,
         setUser,
+        userList,
+        setUserList,
         emp,
         setEmp,
         empList,
@@ -173,6 +202,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIssues,
         taxes,
         setTaxes,
+        prodList,
+        setProdList,
       }}
     >
       {children}

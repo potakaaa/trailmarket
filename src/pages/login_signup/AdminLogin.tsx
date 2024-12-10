@@ -6,7 +6,7 @@ import { fetchCategories } from "../context/Globals";
 
 const AdminLogin = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, setEmp, emp } = useAuthContext();
+  const { setIsAdminLoggedIn, setEmp, emp } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -53,12 +53,16 @@ const AdminLogin = () => {
           city: emp.EMP_CITY,
         };
 
-        setIsLoggedIn(true);
+        setIsAdminLoggedIn(true);
         setEmp(fetchedEmp);
         console.log(fetchedEmp);
 
+        console.log(fetchedEmp.role);
+
         {
-          emp?.role === "Administrator" ? nav("/admin") : nav("/moderator");
+          fetchedEmp.role === "Administrator"
+            ? nav("/admin")
+            : nav("/moderator");
         }
       } else {
         alert("Login failed, invalid username or password");

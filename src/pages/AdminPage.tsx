@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
+import AdminPrivateRoute from "./context/PrivateRouteAdmin";
+import TopNavBar from "./navbar/TopNavBar";
+import NavBar from "./navbar/NavBar";
+import { CategoryArray } from "./context/Globals";
+import AdminNavBar from "./navbar/AdminNavBar";
 
 const issueType = ["Bug", "Feedback", "Feature"];
 const issueStat = ["Not Started", "In Progress", "Done"];
@@ -472,146 +477,152 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="main-container px-4 flex flex-col gap-3">
-      <div
-        className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b]
-          text-white rounded-xl p-4 w-full"
-      >
-        <h1 className="text-lg font-medium">Admin Page</h1>
-      </div>
-      <div className="add-admin-update-tax-container items-center justify-center flex gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
-        <button
-          className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-          onClick={() => setIsAddClicked(!isAddClicked)}
+    <div className="app-wrapper size-full ">
+      <TopNavBar />
+      <AdminNavBar />
+      <div className="main-container px-4 flex flex-col gap-3">
+        <div
+          className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b]
+              text-white rounded-xl p-4 w-full"
         >
-          {isAddClicked ? "Cancel Add" : "Add Admin"}
-        </button>
-        <button
-          className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-          onClick={() => setIsTaxClicked(!isTaxClicked)}
-        >
-          {isTaxClicked ? "Cancel Tax" : "Update Tax"}
-        </button>
-      </div>
-      {isAddClicked && renderAddAdmin()}
-      {isTaxClicked && renderUpdateTax()}
-      <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg sm:px-2 ">
-        <hr className="border-2" />
-        <h1 className="text-center bg-gray-100 rounded-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl">
-          Issue Tracker
-        </h1>
-        <div className="parent-container w-full max-w-screen overflow-x-auto ">
-          <table className="table-auto border-collapse w-full whitespace-nowrap">
-            {/* Table Header */}
-            <thead>
-              <tr className="bg-gray-200 w-full">
-                <th className="text-xs font-semibold text-left px-2 py-2"></th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                  ID
-                </th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                  TYPE
-                </th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                  STATUS
-                </th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                  ASSIGNED TO
-                </th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                  DESCRIPTION
-                </th>
-                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2 ">
-                  PRODUCT ID
-                </th>
-              </tr>
-            </thead>
-            {/* Table Body */}
-            <tbody>
-              {issues
-                .sort((a, b) => a.id - b.id) // Sort by 'id' in ascending order
-                .map((issue, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3 self-center">
-                      <input
-                        type="checkbox"
-                        name={`isdone${issue?.id}`}
-                        className="size-3 md:size-4 xl:size-5"
-                      />
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
-                      {issue?.id}
-                    </td>
-                    <td
-                      className={`text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3 ${
-                        issue?.category === "Bug"
-                          ? "text-red-500"
-                          : issue?.category === "Feature"
-                          ? "text-green-500"
-                          : issue?.category === "Feedback"
-                          ? "text-blue-500"
-                          : ""
-                      }`}
-                    >
-                      {issue?.category}
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                      <select
-                        className={`${
-                          issue?.status === issueStat[0]
-                            ? "bg-blue-200"
-                            : issue?.status === issueStat[1]
-                            ? "bg-yellow-200"
-                            : issue?.status === issueStat[2]
-                            ? "bg-green-200"
-                            : ""
-                        } px-2 rounded-full text-xs md:text-sm xl:text-base focus:outline-none`}
-                        value={issue?.status} // Set the current value
-                        onChange={(e) =>
-                          handleStatChange(index, e.target.value)
-                        }
-                      >
-                        {issueStat.map((statOption, optionIndex) => (
-                          <option
-                            className="bg-slate-100 font-normal "
-                            key={optionIndex}
-                            value={statOption}
-                          >
-                            {statOption}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
-                      <select
-                        value={issue?.assigned}
-                        onChange={(e) => handleEmpChange(index, e.target.value)}
-                        className="bg-slate-50 p-1 rounded-full focus:outline-none "
-                      >
-                        {empList.map((emp) => (
-                          <option
-                            className="bg-slate-100 font-normal overflow-auto"
-                            key={emp.id}
-                            value={emp.id}
-                          >
-                            {emp.name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
-                      {issue?.desc}
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
-                      {issue?.prod_id}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <h1 className="text-lg font-medium">Admin Page</h1>
         </div>
+        <div className="add-admin-update-tax-container items-center justify-center flex gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
+          <button
+            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
+            onClick={() => setIsAddClicked(!isAddClicked)}
+          >
+            {isAddClicked ? "Cancel Add" : "Add Admin"}
+          </button>
+          <button
+            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
+            onClick={() => setIsTaxClicked(!isTaxClicked)}
+          >
+            {isTaxClicked ? "Cancel Tax" : "Update Tax"}
+          </button>
+        </div>
+        {isAddClicked && renderAddAdmin()}
+        {isTaxClicked && renderUpdateTax()}
+        <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg sm:px-2 ">
+          <hr className="border-2" />
+          <h1 className="text-center bg-gray-100 rounded-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl">
+            Issue Tracker
+          </h1>
+          <div className="parent-container w-full max-w-screen overflow-x-auto ">
+            <table className="table-auto border-collapse w-full whitespace-nowrap">
+              {/* Table Header */}
+              <thead>
+                <tr className="bg-gray-200 w-full">
+                  <th className="text-xs font-semibold text-left px-2 py-2"></th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    ID
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    TYPE
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    STATUS
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    ASSIGNED TO
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    DESCRIPTION
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2 ">
+                    PRODUCT ID
+                  </th>
+                </tr>
+              </thead>
+              {/* Table Body */}
+              <tbody>
+                {issues
+                  .sort((a, b) => a.id - b.id) // Sort by 'id' in ascending order
+                  .map((issue, index) => (
+                    <tr key={index} className="border-t">
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3 self-center">
+                        <input
+                          type="checkbox"
+                          name={`isdone${issue?.id}`}
+                          className="size-3 md:size-4 xl:size-5"
+                        />
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                        {issue?.id}
+                      </td>
+                      <td
+                        className={`text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3 ${
+                          issue?.category === "Bug"
+                            ? "text-red-500"
+                            : issue?.category === "Feature"
+                            ? "text-green-500"
+                            : issue?.category === "Feedback"
+                            ? "text-blue-500"
+                            : ""
+                        }`}
+                      >
+                        {issue?.category}
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                        <select
+                          className={`${
+                            issue?.status === issueStat[0]
+                              ? "bg-blue-200"
+                              : issue?.status === issueStat[1]
+                              ? "bg-yellow-200"
+                              : issue?.status === issueStat[2]
+                              ? "bg-green-200"
+                              : ""
+                          } px-2 rounded-full text-xs md:text-sm xl:text-base focus:outline-none`}
+                          value={issue?.status} // Set the current value
+                          onChange={(e) =>
+                            handleStatChange(index, e.target.value)
+                          }
+                        >
+                          {issueStat.map((statOption, optionIndex) => (
+                            <option
+                              className="bg-slate-100 font-normal "
+                              key={optionIndex}
+                              value={statOption}
+                            >
+                              {statOption}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                        <select
+                          value={issue?.assigned}
+                          onChange={(e) =>
+                            handleEmpChange(index, e.target.value)
+                          }
+                          className="bg-slate-50 p-1 rounded-full focus:outline-none "
+                        >
+                          {empList.map((emp) => (
+                            <option
+                              className="bg-slate-100 font-normal overflow-auto"
+                              key={emp.id}
+                              value={emp.id}
+                            >
+                              {emp.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                        {issue?.desc}
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                        {issue?.prod_id}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="issue-container"></div>
       </div>
-      <div className="issue-container"></div>
     </div>
   );
 };
