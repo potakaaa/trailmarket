@@ -74,24 +74,27 @@ const AdminPage = () => {
           Issue Tracker
         </h1>
         <div className="parent-container w-full max-w-[40rem] overflow-x-auto">
-          <table className="table-auto border-collapse w-[600px] whitespace-nowrap">
+          <table className="table-auto border-collapse w-full whitespace-nowrap">
             {/* Table Header */}
             <thead>
-              <tr className="bg-gray-200">
-                <th className="text-xs font-semibold text-left px-2 py-1">C</th>
+              <tr className="bg-gray-200 w-full">
+                <th className="text-xs font-semibold text-left px-2 py-1"></th>
                 <th className="text-xs font-semibold text-left px-2 py-1">
+                  ID
+                </th>
+                <th className="text-xs font-semibold text-left px-2 py-2">
                   TYPE
                 </th>
-                <th className="text-xs font-semibold text-left px-2 py-1">
+                <th className="text-xs font-semibold text-left px-2 py-2">
                   STATUS
                 </th>
-                <th className="text-xs font-semibold text-left px-2 py-1">
+                <th className="text-xs font-semibold text-left px-2 py-2">
                   ASSIGNED TO
                 </th>
-                <th className="text-xs font-semibold text-left px-2 py-1">
+                <th className="text-xs font-semibold text-left px-2 py-2">
                   DESCRIPTION
                 </th>
-                <th className="text-xs font-semibold text-left px-2 py-1">
+                <th className="text-xs font-semibold text-left px-2 py-2 ">
                   PRODUCT ID
                 </th>
               </tr>
@@ -100,6 +103,9 @@ const AdminPage = () => {
             <tbody>
               {tempIssueArr.map((issue, index) => (
                 <tr key={index} className="border-t">
+                  <td className="text-xs font-normal px-2 py-1 self-center">
+                    <input type="checkbox" name={`isdone${index}`} />
+                  </td>
                   <td className="text-xs font-normal px-2 py-1">{index + 1}</td>
                   <td
                     className={`text-xs font-normal px-2 py-1 ${
