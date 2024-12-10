@@ -6,24 +6,25 @@ import React, {
   useEffect,
 } from "react";
 
-interface Emp {
+export interface Emp {
   id: number;
   name: string;
   age: number;
-  pass: string;
+  pass: string | null;
   contact_num: number;
   email: string;
   role: string;
   emergency_contact: number;
   emergency_name: string;
-  sss: number;
-  philhealkh: number;
-  pagibig: number;
-  tin: number;
-  housenum: number;
-  street: string;
+  sss: number | null;
+  philhealth: number | null;
+  pagibig: number | null;
+  tin: number | null;
+  housenum: number | null;
+  street: string | null;
   city: string;
 }
+
 interface User {
   id: string;
   name: string;
@@ -46,6 +47,17 @@ export interface CartProd {
   quantity: number;
 }
 
+export interface Issue {
+  id: number;
+  title: string;
+  desc: string;
+  category: string;
+  status: string;
+  user: string;
+  assigned: string;
+  prod_id: number | null;
+}
+
 // Define types for the context value
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -55,6 +67,8 @@ interface AuthContextType {
   setUser: (user: User | null) => void;
   emp: Emp | null;
   setEmp: (emp: Emp | null) => void;
+  empList: Emp[];
+  setEmpList: (empList: Emp[]) => void;
   setSelectedCategory: (value: string) => void;
   isFetched: boolean;
   setIsFetched: (value: boolean) => void;
@@ -68,6 +82,8 @@ interface AuthContextType {
   setSearchState: (value: string) => void;
   isCodeSent: boolean;
   setIsCodeSent: (value: boolean) => void;
+  issues: Issue[];
+  setIssues: (issues: Issue[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -115,6 +131,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [cart, setCart] = useState<CartProd[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [empList, setEmpList] = useState<Emp[]>([]);
 
   return (
     <AuthContext.Provider
@@ -127,6 +145,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser,
         emp,
         setEmp,
+        empList,
+        setEmpList,
         isFetched,
         setIsFetched,
         cartProd,
@@ -139,6 +159,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSearchState,
         isCodeSent,
         setIsCodeSent,
+        issues,
+        setIssues,
       }}
     >
       {children}

@@ -1,9 +1,95 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Emp, Issue, useAuthContext } from "./context/AuthContext";
+import { supabase } from "../createClient";
 
 const issueType = ["Bug", "Feedback", "Feature"];
 const issueStat = ["Not Started", "In Progress", "Done"];
 
 const AdminPage = () => {
+  {
+    /* ISSUE_ID, FEEDBACK_CAT, ISSUE_STAT, ASSIGNED_EMP, FEEDBACK_TITLE, FEEDBACK_TITLE, FEEDBACK_DESC, */
+  }
+
+  const { issues, setIssues, empList, setEmpList } = useAuthContext();
+
+  useEffect(() => {
+    fetchIssues();
+    fetchEmpList();
+  }, [setIssues, setEmpList]);
+
+  const fetchIssues = async () => {
+    const { data, error } = await supabase.from("FACT_ISSUE_TRACKER").select(`
+       ISSUE_ID,
+       ASSIGNED_EMP,
+       ISSUE_STAT,
+       FEEDBACK_FK,
+        DIM_FEEDBACK (
+          FEEDBACK_USER,
+          FEEDBACK_PROD,
+          FEEDBACK_CAT,
+          FEEDBACK_TITLE,
+          FEEDBACK_DESC
+        )
+      `);
+
+    console.log();
+
+    if (error) {
+      console.error("Error fetching data:", error.message);
+    }
+
+    if (data) {
+      const tempIssues: Issue[] = data.map((issue: any, index) => {
+        const issueDets: any = data?.[index];
+        const feedbackDets: any = data?.[index]?.DIM_FEEDBACK;
+        return {
+          id: issueDets?.ISSUE_ID,
+          title: feedbackDets?.FEEDBACK_TITLE,
+          desc: feedbackDets?.FEEDBACK_DESC,
+          category: feedbackDets?.FEEDBACK_CAT,
+          status: issueDets?.ISSUE_STAT,
+          user: feedbackDets?.FEEDBACK_USER,
+          assigned: issueDets?.ASSIGNED_EMP,
+          prod_id: feedbackDets?.FEEDBACK_PROD,
+        };
+        console.log(issue);
+      });
+      setIssues(tempIssues);
+      console.log(issues);
+    }
+  };
+
+  const fetchEmpList = async () => {
+    const { data, error } = await supabase.from("DIM_EMPLOYEE").select("*");
+
+    if (error) {
+      console.error("Error fetching data:", error.message);
+    }
+
+    if (data) {
+      const tempEmpList: Emp[] = data.map((emp: any) => ({
+        id: emp.EMP_ID,
+        name: emp.EMP_NAME,
+        age: emp.EMP_AGE,
+        contact_num: emp.EMP_CONTACTNUM,
+        housenum: emp.EMP_HOUSENUM,
+        street: emp.EMP_STREET,
+        city: emp.EMP_CITY,
+        email: emp.EMP_EMAIL,
+        pass: null,
+        role: emp.EMP_ROLE,
+        sss: emp.EMP_SSS,
+        philhealth: emp.EMP_PHILHEALTH,
+        pagibig: emp.EMP_PAGIBIG,
+        tin: emp.EMP_TIN,
+        emergency_contact: emp.EMP_EMERGENCY_CONTACT_NUM,
+        emergency_name: emp.EMERGENCY_NAME,
+      }));
+      setEmpList(tempEmpList);
+      console.log(empList);
+    }
+  };
+
   const [tempIssueArr, setTempIssueArr] = useState([
     {
       type: issueType[0],
@@ -36,20 +122,20 @@ const AdminPage = () => {
 
   const handleStatChange = (index: number, newStat: any) => {
     // Create a copy of the array to avoid mutating state directly
-    const updatedIssues = [...tempIssueArr];
+    const updatedIssues = [...issues];
     // Update the stat of the specific issue
-    updatedIssues[index].stat = newStat;
+    updatedIssues[index].status = newStat;
     // Set the updated array to state
-    setTempIssueArr(updatedIssues);
+    setIssues(updatedIssues);
   };
 
   const handleEmpChange = (index: number, newEmp: string) => {
     // Create a copy of the array to avoid mutating state directly
-    const updatedIssues = [...tempIssueArr];
+    const updatedIssues = [...issues];
     // Update the stat of the specific issue
     updatedIssues[index].assigned = newEmp;
     // Set the updated array to state
-    setTempIssueArr(updatedIssues);
+    setIssues(updatedIssues);
   };
 
   return (
@@ -101,37 +187,37 @@ const AdminPage = () => {
             </thead>
             {/* Table Body */}
             <tbody>
-              {tempIssueArr.map((issue, index) => (
+              {issues.map((issue, index) => (
                 <tr key={index} className="border-t">
                   <td className="text-xs font-normal px-2 py-1 self-center">
-                    <input type="checkbox" name={`isdone${index}`} />
+                    <input type="checkbox" name={`isdone${issue?.id}`} />
                   </td>
-                  <td className="text-xs font-normal px-2 py-1">{index + 1}</td>
+                  <td className="text-xs font-normal px-2 py-1">{issue?.id}</td>
                   <td
                     className={`text-xs font-normal px-2 py-1 ${
-                      issue.type === "Bug"
+                      issue?.category === "Bug"
                         ? "text-red-500"
-                        : issue.type === "Feature"
+                        : issue?.category === "Feature"
                         ? "text-green-500"
-                        : issue.type === "Feedback"
+                        : issue?.category === "Feedback"
                         ? "text-blue-500"
                         : ""
                     }`}
                   >
-                    {issue.type}
+                    {issue?.category}
                   </td>
                   <td className="text-xs font-normal px-2 py-2">
                     <select
                       className={`${
-                        issue.stat === issueStat[0]
+                        issue?.status === issueStat[0]
                           ? "bg-blue-200"
-                          : issue.stat === issueStat[1]
+                          : issue?.status === issueStat[1]
                           ? "bg-yellow-200"
-                          : issue.stat === issueStat[2]
+                          : issue?.status === issueStat[2]
                           ? "bg-green-200"
                           : ""
                       } px-2 rounded-full text-xs focus:outline-none`}
-                      value={issue.stat} // Set the current value
+                      value={issue?.status} // Set the current value
                       onChange={(e) => handleStatChange(index, e.target.value)}
                     >
                       {issueStat.map((statOption, optionIndex) => (
@@ -147,26 +233,26 @@ const AdminPage = () => {
                   </td>
                   <td className="text-xs font-normal px-2 py-1">
                     <select
-                      value={issue.assigned}
+                      value={issue?.assigned}
                       onChange={(e) => handleEmpChange(index, e.target.value)}
                       className="bg-slate-50 p-1 rounded-full focus:outline-none"
                     >
-                      {tempEmpName.map((empName, index) => (
+                      {empList.map((_, index) => (
                         <option
                           className="bg-slate-100 font-normal"
-                          key={index}
-                          value={empName}
+                          key={empList[index].id}
+                          value={empList[index].id}
                         >
-                          {empName}
+                          {empList[index].name}
                         </option>
                       ))}
                     </select>
                   </td>
                   <td className="text-xs font-normal px-2 py-1">
-                    {issue.desc}
+                    {issue?.desc}
                   </td>
                   <td className="text-xs font-normal px-2 py-1">
-                    {issue.prod_id}
+                    {issue?.prod_id}
                   </td>
                 </tr>
               ))}

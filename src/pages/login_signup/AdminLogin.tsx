@@ -45,7 +45,7 @@ const AdminLogin = () => {
           emergency_contact: emp.EMP_EMERGENCY_CONTACT_NUM,
           emergency_name: emp.EMERGENCY_NAME,
           sss: emp.EMP_SSS,
-          philhealkh: emp.EMP_PHILHEALTH,
+          philhealth: emp.EMP_PHILHEALTH,
           pagibig: emp.EMP_PAGIBIG,
           tin: emp.EMP_TIN,
           housenum: emp.EMP_HOUSENUM,
@@ -56,7 +56,6 @@ const AdminLogin = () => {
         setIsLoggedIn(true);
         setEmp(fetchedEmp);
         console.log(fetchedEmp);
-        fetchCategories();
 
         nav("/admin");
       } else {
