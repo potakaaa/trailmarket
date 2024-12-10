@@ -1,15 +1,113 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "../createClient";
+import { useParams } from "react-router-dom";
 import { UserIcon } from "@heroicons/react/16/solid";
+import { useAuthContext } from "./context/AuthContext";
 const ProductPage = () => {
   const [count, setCount] = useState(0);
 
   const loremPlaceholder =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat";
-  const kanye =
-    "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
-  const kanyeArr = Array(4).fill(kanye);
+
   const star = "http://www.w3.org/2000/svg";
   const starArr = Array(5).fill(star);
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<any>(null);
+  const { setIsLoading } = useAuthContext();
+  const [mainImage, setMainImage] = useState<string>("");
+  const [otherImages, setOtherImages] = useState<string[]>([]);
+  const [username, setUsername] = useState("");
+  const [userImage, setUserImage] = useState("");
+  const [selectedImage, setSelectedImage] =
+    useState<string>("defaultImage.jpg"); // Replace with your default image
+
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
+  };
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("DIM_PRODUCT")
+        .select(
+          `
+          PRODUCT_ID,
+          PROD_NAME,
+          PROD_PRICE,
+          PROD_CONDITION,
+          PROD_CATEGORY,
+          PROD_STOCKS,
+          PROD_DESC,
+          SELLER_ID,
+          CATEGORY:PROD_CATEGORY (CATEGORY_NAME)
+        `
+        )
+        .eq("PRODUCT_ID", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching product details:", error.message);
+      } else {
+        setProduct(data);
+      }
+      setIsLoading(false);
+    };
+    const fetchProductImages = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("DIM_PRODUCTIMAGES")
+        .select("PRODUCT_IMAGE, isMainImage")
+        .eq("PRODUCT_PICTURED_FK", id);
+
+      if (error) {
+        console.error("Error fetching product images:", error.message);
+      } else {
+        const mainImg = data.find((img: any) => img.isMainImage)?.PRODUCT_IMAGE;
+        const otherImgs = data
+          .filter((img: any) => !img.isMainImage)
+          .map((img: any) => img.PRODUCT_IMAGE);
+        setMainImage(mainImg || "");
+        setOtherImages(otherImgs);
+      }
+      setIsLoading(false);
+    };
+
+    fetchProductDetails();
+    fetchProductImages();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!product?.SELLER_ID) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("DIM_USER")
+          .select("USER_NAME, USER_IMAGE")
+          .eq("STUDENT_ID", product.SELLER_ID)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user details:", error.message);
+        } else {
+          setUsername(data.USER_NAME);
+          setUserImage(data.USER_IMAGE);
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error("Unexpected error fetching user details:", err.message);
+        } else {
+          console.error("Unexpected error fetching user details:", err);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [product]);
+
+  if (!product) {
+    return <div>Product not found</div>;
+  }
 
   const renderStars = () => {
     return starArr.map((_, index) => (
@@ -50,16 +148,16 @@ const ProductPage = () => {
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
-                    src={kanye}
+                    src={mainImage}
                     alt="Product"
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {kanyeArr.map(() => (
+                  {otherImages.map((image) => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
                         className="h-full w-full object-cover rounded-lg"
-                        src={kanye}
+                        src={image}
                         alt="Product"
                       />
                     </div>
@@ -69,16 +167,26 @@ const ProductPage = () => {
               <div className="flex flex-[4] flex-col">
                 <div className="product-details flex-[5] flex flex-col xl:my-4 xl:mr-4 2xl:flex-[0]">
                   <div className="product-name flex-[1] 2xl:flex-[0] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
+                    <div className="flex flex-row align-middle space-x-2">
+                      <div className="w-4 h-4 rounded-full overflow-hidden border border-black">
+                        <img
+                          className="object-cover h-full w-full"
+                          src={userImage}
+                          alt="User"
+                        />
+                      </div>
+                      <p className="text-xs align-middle">{username}</p>
+                    </div>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
-                      Product Name
+                      {product.PROD_NAME}
                     </h1>
                     <h2 className="text-sm font-normal md:text-base xl:mt-3 xl:text-lg 2xl:text-xl">
-                      {loremPlaceholder}
+                      {product.PROD_DESC}
                     </h2>
                   </div>
                   <div className="product-price flex-[1] 2xl:flex-[0] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3 2xl:pl-4">
                     <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3 xl:text-5xl 2xl:text-[4rem] 2xl:my-5">
-                      PHP 400
+                      PHP {product.PROD_PRICE.toFixed(2)}
                     </h1>
                     <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3 xl:my-5 2xl:my-8">
                       <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl">
@@ -103,12 +211,8 @@ const ProductPage = () => {
                         Category
                       </h2>
                       <div className="flex gap-3 flex-1">
-                        {/* should be array here */}
                         <p className="px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center">
-                          Bags
-                        </p>
-                        <p className="px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center">
-                          Accessories
+                          {product.CATEGORY.CATEGORY_NAME}
                         </p>
                       </div>
                     </div>
@@ -213,12 +317,8 @@ const ProductPage = () => {
                     Category
                   </h2>
                   <div className="flex gap-3 flex-1">
-                    {/* should be array here */}
                     <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center sm:text-sm">
-                      Bags
-                    </p>
-                    <p className="px-4 py-2 text-xs border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center sm:text-sm">
-                      Accessories
+                      {product.CATEGORY.CATEGORY_NAME}
                     </p>
                   </div>
                 </div>

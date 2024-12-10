@@ -64,6 +64,7 @@ const HomePage = () => {
               price={product.price}
               stock={product.stock}
               imageUrl={product.imageUrl}
+              sellerId={product.sellerId}
             />
           ))}
         </div>

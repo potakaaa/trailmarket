@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../createClient";
 
 interface ProductProps {
   id: number;
@@ -7,6 +8,7 @@ interface ProductProps {
   price: number;
   stock: number;
   imageUrl: string;
+  sellerId: string;
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -14,9 +16,52 @@ const Product: React.FC<ProductProps> = ({
   name,
   price,
   stock,
-  imageUrl,
+  imageUrl: initialImageUrl,
+  sellerId,
 }) => {
+  const [imageUrl, setImageUrl] = useState(initialImageUrl);
+  const [username, setUsername] = useState("");
+  const [userImage, setUserImage] = useState("");
   const nav = useNavigate();
+
+  useEffect(() => {
+    const fetchMainImageUrl = async () => {
+      const { data, error } = await supabase
+        .from("DIM_PRODUCTIMAGES")
+        .select("PRODUCT_IMAGE")
+        .eq("PRODUCT_PICTURED_FK", id)
+        .eq("isMainImage", true)
+        .single();
+
+      if (error) {
+        console.error("Error fetching main image URL:", error.message);
+      } else if (data) {
+        setImageUrl(data.PRODUCT_IMAGE);
+      }
+    };
+
+    fetchMainImageUrl();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const { data, error } = await supabase
+        .from("DIM_USER") // Ensure this table name exists in Supabase Database
+        .select("USER_NAME, USER_IMAGE")
+        .eq("STUDENT_ID", sellerId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user details:", error.message);
+      } else if (data) {
+        setUsername(data.USER_NAME);
+        setUserImage(data.USER_IMAGE);
+      }
+    };
+
+    fetchUserDetails();
+  }, [sellerId]);
+
   return (
     <div className="PRODUCT-CONTAINER space-y-3 flex flex-col w-full p-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
       <button
@@ -38,11 +83,11 @@ const Product: React.FC<ProductProps> = ({
               <div className="w-4 h-4 rounded-full overflow-hidden border border-black">
                 <img
                   className="object-cover h-full w-full"
-                  src={imageUrl}
+                  src={userImage}
                   alt="User"
                 />
               </div>
-              <p className="text-xs align-middle text-white">Username</p>
+              <p className="text-xs align-middle text-white">{username}</p>
             </div>
             <h2 className="text-white text-left font-normal text-sm">{name}</h2>
           </div>
