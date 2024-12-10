@@ -11,7 +11,7 @@ const App = () => {
   const { searchState, isLoading } = useAuthContext();
 
   return (
-    <div className="main-layout size-screen justify-center items-center">
+    <div className="main-layout size-screen h-screen justify-center items-center">
       {isLoading && <LoadingSpinner />}
       <TopNavBar />
       <NavBar obj={CategoryArray} />
