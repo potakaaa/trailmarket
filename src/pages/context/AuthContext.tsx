@@ -58,6 +58,13 @@ export interface Issue {
   prod_id: number | null;
 }
 
+export interface Tax {
+  id: number;
+  low: number;
+  high: number;
+  amount: number;
+}
+
 // Define types for the context value
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -84,6 +91,8 @@ interface AuthContextType {
   setIsCodeSent: (value: boolean) => void;
   issues: Issue[];
   setIssues: (issues: Issue[]) => void;
+  taxes: Tax[];
+  setTaxes: (taxes: Tax[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -133,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [empList, setEmpList] = useState<Emp[]>([]);
+  const [taxes, setTaxes] = useState<Tax[]>([]);
 
   return (
     <AuthContext.Provider
@@ -161,6 +171,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsCodeSent,
         issues,
         setIssues,
+        taxes,
+        setTaxes,
       }}
     >
       {children}
