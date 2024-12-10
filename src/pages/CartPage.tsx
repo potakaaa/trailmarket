@@ -208,7 +208,7 @@ const CartPage = () => {
             <div className="PaymentButton w-full">
               <button
                 className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full"
-                onClick={() => nav("./checkout")}
+                onClick={() => nav("/checkout")}
               >
                 Proceed to Payment
               </button>

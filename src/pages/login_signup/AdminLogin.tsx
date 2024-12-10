@@ -6,7 +6,7 @@ import { fetchCategories } from "../context/Globals";
 
 const AdminLogin = () => {
   const [input, setInput] = useState<Record<string, string>>({});
-  const { setIsLoggedIn, setEmp } = useAuthContext();
+  const { setIsLoggedIn, setEmp, emp } = useAuthContext();
 
   const nav = useNavigate();
 
@@ -57,7 +57,9 @@ const AdminLogin = () => {
         setEmp(fetchedEmp);
         console.log(fetchedEmp);
 
-        nav("/admin");
+        {
+          emp?.role === "Administrator" ? nav("/admin") : nav("/moderator");
+        }
       } else {
         alert("Login failed, invalid username or password");
       }
