@@ -3,14 +3,15 @@ import { supabase } from "../createClient";
 import { useParams } from "react-router-dom";
 import { UserIcon } from "@heroicons/react/16/solid";
 import { useAuthContext } from "./context/AuthContext";
+import { renderStars, StarRating } from "./Stars";
+
 const ProductPage = () => {
   const [count, setCount] = useState(0);
+  const [rating, setRating] = useState(0);
 
   const loremPlaceholder =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat";
 
-  const star = "http://www.w3.org/2000/svg";
-  const starArr = Array(5).fill(star);
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>(null);
   const { setIsLoading } = useAuthContext();
@@ -18,12 +19,15 @@ const ProductPage = () => {
   const [otherImages, setOtherImages] = useState<string[]>([]);
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
-  const [selectedImage, setSelectedImage] =
-    useState<string>("defaultImage.jpg"); // Replace with your default image
+  const [selectedImage, setSelectedImage] = useState<string>(mainImage);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
   };
+
+  const images = [mainImage, otherImages].flat();
+
+  const unselectedImages = images.filter((img) => img !== selectedImage);
   useEffect(() => {
     const fetchProductDetails = async () => {
       setIsLoading(true);
@@ -68,6 +72,7 @@ const ProductPage = () => {
           .map((img: any) => img.PRODUCT_IMAGE);
         setMainImage(mainImg || "");
         setOtherImages(otherImgs);
+        setSelectedImage(mainImg || "");
       }
       setIsLoading(false);
     };
@@ -109,25 +114,6 @@ const ProductPage = () => {
     return <div>Product not found</div>;
   }
 
-  const renderStars = () => {
-    return starArr.map((_, index) => (
-      <svg
-        xmlns={star}
-        fill={index > 3 ? "none" : "currentColor"}
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        className={index > 3 ? "h-4 w-4 text-gray-300" : "h-4 w-4 text-black"}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-        />
-      </svg>
-    ));
-  };
-
   const handlePlus = () => {
     setCount(count + 1);
   };
@@ -148,17 +134,18 @@ const ProductPage = () => {
                 <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                   <img
                     className="h-full w- object-cover rounded-lg"
-                    src={mainImage}
+                    src={selectedImage}
                     alt="Product"
                   />
                 </div>
                 <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {otherImages.map((image) => (
+                  {unselectedImages.map((image) => (
                     <div className="bg-gray-100 rounded-lg border aspect-square shadow-sm">
                       <img
                         className="h-full w-full object-cover rounded-lg"
                         src={image}
                         alt="Product"
+                        onClick={() => handleImageClick(image)}
                       />
                     </div>
                   ))}
@@ -167,16 +154,22 @@ const ProductPage = () => {
               <div className="flex flex-[4] flex-col">
                 <div className="product-details flex-[5] flex flex-col xl:my-4 xl:mr-4 2xl:flex-[0]">
                   <div className="product-name flex-[1] 2xl:flex-[0] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
-                    <div className="flex flex-row align-middle space-x-2">
-                      <div className="w-4 h-4 rounded-full overflow-hidden border border-black">
-                        <img
-                          className="object-cover h-full w-full"
-                          src={userImage}
-                          alt="User"
-                        />
+                    <button>
+                      <div className="flex flex-row align-middle space-x-2 items-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                          <img
+                            className="object-cover h-full w-full"
+                            src={userImage}
+                            alt="User"
+                          />
+                        </div>
+                        <div className=" h-full align-middle">
+                          <p className="text-xl align-middle justify-center">
+                            {username}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-xs align-middle">{username}</p>
-                    </div>
+                    </button>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
                       {product.PROD_NAME}
                     </h1>
@@ -242,13 +235,13 @@ const ProductPage = () => {
                     </div>
                   </div>
                   <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg p-5 ml-2">
-                    <div className="flex flex-col mb-3">
+                    <div className=" review-container flex flex-col mb-3">
                       <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
-                      <div className="flex space-x-1 mx-2.5 my-1">
-                        {renderStars()}
+                      <div className=" review-ave flex space-x-1 mx-2.5 my-1">
+                        {renderStars(3.5)}
                         <h3 className="text-sm font-medium">{"(3 reviews)"}</h3>
                       </div>
-                      <h2 className="text-[11px] mx-2.5 font-medium xl:text-sm">
+                      <h2 className="review-percent text-[11px] mx-2.5 font-medium xl:text-sm">
                         80% of costumers are satisfied
                       </h2>
                     </div>
@@ -260,7 +253,7 @@ const ProductPage = () => {
                             <p className="text-xl">User</p>
                           </button>
                           <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars()}
+                            {renderStars(3)}
                           </div>
                         </div>
                         <h1 className="font-normal text-base">
@@ -276,7 +269,7 @@ const ProductPage = () => {
                             <p className="text-xl">User</p>
                           </button>
                           <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars()}
+                            {renderStars(3)}
                           </div>
                         </div>
                         <h1 className="font-normal text-base">
@@ -292,7 +285,7 @@ const ProductPage = () => {
                             <p className="text-xl">User</p>
                           </button>
                           <div className="flex flex-row justify-end items-end w-full mx-2">
-                            {renderStars()}
+                            {renderStars(3)}
                           </div>
                         </div>
                         <h1 className="font-normal text-base">
@@ -348,12 +341,22 @@ const ProductPage = () => {
                 </div>
               </div>
               <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
+                <h1 className="mx-2.5 mt-1.5 text-2xl xl:text-3xl">
+                  Leave a Review
+                </h1>
+                <StarRating rating={rating} setRating={setRating} />
+                <input
+                  className="bg-gray-100 mt-2 p-2 rounded"
+                  placeholder="Write your review here"
+                />
+              </div>
+              <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
                 <div className="flex flex-[1] flex-col mb-3">
                   <h1 className="mx-2.5 mt-1.5 text-2xl xl:text-3xl">
                     Customer Reviews
                   </h1>
                   <div className="flex space-x-1 mx-2.5 my-1">
-                    {renderStars()}
+                    {renderStars(3.7)}
                     <h3 className="text-xs font-medium xl:text-sm">
                       {"(3 reviews)"}
                     </h3>
@@ -370,7 +373,7 @@ const ProductPage = () => {
                         <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars()}
+                        {renderStars(3)}
                       </div>
                     </div>
                     <h1 className="font-normal text-sm">{loremPlaceholder}</h1>
@@ -384,7 +387,7 @@ const ProductPage = () => {
                         <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars()}
+                        {renderStars(3)}
                       </div>
                     </div>
                     <h1 className="font-normal text-sm">{loremPlaceholder}</h1>
@@ -398,7 +401,7 @@ const ProductPage = () => {
                         <p className="text-base xl:text-lg">User</p>
                       </button>
                       <div className="flex flex-row justify-end items-end w-full mx-2">
-                        {renderStars()}
+                        {renderStars(3)}
                       </div>
                     </div>
                     <h1 className="font-normal text-sm">{loremPlaceholder}</h1>

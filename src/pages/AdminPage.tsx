@@ -245,60 +245,73 @@ const AdminPage = () => {
     return taxes
       .sort((a, b) => a.id - b.id) // Sort the taxes array by tax.id
       .map((tax, index) => (
-        <div key={tax.id} className="flex flex-col my-4">
-          <p className="text-center">Tax {index + 1}</p>
-          <div className="flex gap-3">
-            <div className="flex flex-col gap-1 w-full">
-              <p className="text-sm font-medium px-2 text-center">Low Bound</p>
-              <input
-                className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center"
-                name="low"
-                value={tax.low}
-                onChange={(e) => {
-                  if (e.target.value === "") {
-                    e.target.value = "0";
-                  }
-                  const updatedTaxes = [...taxes];
-                  updatedTaxes[index]["low"] = parseInt(e.target.value);
-                  setTaxes(updatedTaxes);
-                  console.log(tax.low);
-                }}
-              />
+        <div
+          key={tax.id}
+          className="flex flex-col my-4 sm:my-3 w-full justify-center items-center "
+        >
+          <p className="text-center lg:text-lg">Tax {index + 1}</p>
+          <div className="flex-none sm:flex sm:gap-3">
+            <div className="flex gap-3">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="text-sm font-medium px-2 text-center lg:text-base">
+                  Low Bound
+                </p>
+                <input
+                  className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center lg:text-base lg:py-5 xl:border-[3px]"
+                  name="low"
+                  value={tax.low}
+                  onChange={(e) => {
+                    if (e.target.value === "") {
+                      e.target.value = "0";
+                    }
+                    const updatedTaxes = [...taxes];
+                    updatedTaxes[index]["low"] = parseInt(e.target.value);
+                    setTaxes(updatedTaxes);
+                    console.log(tax.low);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-full">
+                <p className="text-sm font-medium px-2 text-center lg:text-base">
+                  High Bound
+                </p>
+                <input
+                  className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center lg:text-base lg:py-5 xl:border-[3px]"
+                  name="high"
+                  value={tax.high}
+                  onChange={(e) => {
+                    if (e.target.value === "") {
+                      e.target.value = "0";
+                    }
+                    const updatedTaxes = [...taxes];
+                    updatedTaxes[index]["high"] = parseInt(e.target.value);
+                    setTaxes(updatedTaxes);
+                    console.log(tax.high);
+                  }}
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-1 w-full">
-              <p className="text-sm font-medium px-2 text-center">High Bound</p>
+            <div className="flex-non sm:flex sm:flex-col gap-0 sm:gap-1">
+              <p className="text-center font-medium text-sm lg:text-base">
+                Percentage
+              </p>
               <input
-                className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center"
-                name="high"
-                value={tax.high}
+                className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center lg:text-base lg:py-5 xl:border-[3px]"
+                name="amount"
+                value={`${tax.amount}`}
                 onChange={(e) => {
                   if (e.target.value === "") {
                     e.target.value = "0";
                   }
                   const updatedTaxes = [...taxes];
-                  updatedTaxes[index]["high"] = parseInt(e.target.value);
+                  updatedTaxes[index]["amount"] = parseInt(e.target.value);
                   setTaxes(updatedTaxes);
-                  console.log(tax.high);
                 }}
               />
             </div>
           </div>
-          <p className="text-center font-normal">Percentage</p>
-          <input
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 text-center"
-            name="amount"
-            value={`${tax.amount}`}
-            onChange={(e) => {
-              if (e.target.value === "") {
-                e.target.value = "0";
-              }
-              const updatedTaxes = [...taxes];
-              updatedTaxes[index]["amount"] = parseInt(e.target.value);
-              setTaxes(updatedTaxes);
-            }}
-          />
           <button
-            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-10 shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
+            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-[20rem] self-center h-10 shadow-md   transition duration-300 sm:mt-4 xl:h-14"
             onClick={() => handleTaxSubmit(index)}
           >
             Submit Changes
@@ -309,11 +322,11 @@ const AdminPage = () => {
 
   const renderAddAdmin = () => {
     return (
-      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8 sm:mt-5">
+      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
         <div className="flex-none sm:flex sm:gap-2">
           <input
             placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -321,7 +334,7 @@ const AdminPage = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -330,7 +343,7 @@ const AdminPage = () => {
         <input
           type="password"
           placeholder="Password"
-          className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 "
+          className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px] "
           name="password"
           value={formData.password}
           onChange={handleChange}
@@ -339,7 +352,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="age"
             value={formData.age}
             onChange={handleChange}
@@ -347,14 +360,14 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="number"
             value={formData.number}
             onChange={handleChange}
           />
           <input
             placeholder="City"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="city"
             value={formData.city}
             onChange={handleChange}
@@ -363,7 +376,7 @@ const AdminPage = () => {
 
         <div className="flex-none sm:flex sm:gap-2">
           <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 mb-3 "
+            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
             value={formData.role}
             onChange={handleChange} // Set the current value
             name="role"
@@ -377,7 +390,7 @@ const AdminPage = () => {
           </select>
           <input
             placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_name"
             value={formData.emergency_contact_name}
             onChange={handleChange}
@@ -385,7 +398,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_num"
             value={formData.emergency_contact_num}
             onChange={handleChange}
@@ -393,7 +406,7 @@ const AdminPage = () => {
         </div>
         <button
           id="login-button"
-          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full w-full h-10 mt-3 shadow-md 2xl:h-12 2xl:w-48 lg:h-12 lg:w-36 transition duration-300"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
           onClick={() => handleAdminSubmit(formData)}
         >
           Submit

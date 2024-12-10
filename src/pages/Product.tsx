@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 
+
 interface ProductProps {
   id: number;
   name: string;
