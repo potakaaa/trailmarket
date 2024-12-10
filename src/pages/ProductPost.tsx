@@ -1,14 +1,14 @@
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
 import { supabase } from "../createClient";
 import Dropdown from "./DropDown";
 import { fetchCategories, CategoryArray } from "./context/Globals";
 import { useAuthContext } from "./context/AuthContext";
+import { v4 as uuidv4 } from "uuid";
 
 const placeholder = "https://via.placeholder.com/150";
-
 const placeholderArr = Array(4).fill(placeholder);
-
 const ProductPost = () => {
   const [input, setInput] = useState({
     name: "",
@@ -20,11 +20,27 @@ const ProductPost = () => {
     condition: "",
   });
 
+  const [images, setImages] = useState<File[]>([]);
+  const [mainImage, setMainImage] = useState<File | null>(null);
+  const [isPlaceholder, setIsPlaceholder] = useState(true);
   const { user } = useAuthContext();
   const nav = useNavigate();
 
   useEffect(() => {
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    // Create a File object from the placeholder URL
+    const createPlaceholderFile = async () => {
+      const response = await fetch(placeholder);
+      const blob = await response.blob();
+      const file = new File([blob], "placeholder.jpg", { type: "image/jpeg" });
+      setMainImage(file);
+      setIsPlaceholder(true);
+    };
+
+    createPlaceholderFile();
   }, []);
 
   const handleChange = (
@@ -36,6 +52,42 @@ const ProductPost = () => {
       [id]: value,
     }));
   };
+
+  const handleDrop = (acceptedFiles: File[]) => {
+    if (images.length + acceptedFiles.length > 5) {
+      alert("You can only upload up to 5 images.");
+      return;
+    }
+
+    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+    const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+
+    const invalidFiles = acceptedFiles.filter(
+      (file) => !validImageTypes.includes(file.type) || file.size > maxSize
+    );
+
+    if (invalidFiles.length > 0) {
+      alert(
+        "Invalid file type or size. Only JPEG, PNG, and GIF files under 10 MB are allowed."
+      );
+      return;
+    }
+
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages, ...acceptedFiles];
+      if (isPlaceholder) {
+        setMainImage(acceptedFiles[0]); // Set the first dropped image as the main image
+        setIsPlaceholder(false);
+      }
+      return updatedImages;
+    });
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleDrop,
+    accept: { "image/*": [] },
+    disabled: images.length >= 5,
+  });
 
   const handleCategorySelect = (selectedCategoryName: string) => {
     const selectedCategory = CategoryArray.find(
@@ -49,8 +101,41 @@ const ProductPost = () => {
     }
   };
 
+  const handleImageClick = (image: File) => {
+    setMainImage(image);
+    setIsPlaceholder(false);
+  };
+
+  const galleryImages = images.filter((image) => image !== mainImage);
+
+  const uploadImages = async (imagesToUpload: File[]) => {
+    const uploadedImageUrls = [];
+    const folderPath = "products";
+
+    for (const image of imagesToUpload) {
+      const uniqueName = `${folderPath}/${uuidv4()}-${image.name}`;
+      const { error } = await supabase.storage
+        .from("trailmarket-images")
+        .upload(uniqueName, image);
+
+      if (error) {
+        console.error("Error uploading image:", error.message);
+        alert("Error uploading image:" + error.message);
+        continue;
+      }
+
+      const { publicUrl } = supabase.storage
+        .from("trailmarket-images")
+        .getPublicUrl(uniqueName).data;
+
+      uploadedImageUrls.push(publicUrl);
+    }
+
+    return uploadedImageUrls;
+  };
+
   const handlePost = async () => {
-    console.log("Submitting form with data:", input); // Debugging
+    console.log("Submitting form with data:", input);
 
     if (!input.name) {
       alert("Please enter a product name.");
@@ -62,24 +147,86 @@ const ProductPost = () => {
       return;
     }
 
-    const { error: insertError } = await supabase.from("DIM_PRODUCT").insert([
-      {
-        PROD_NAME: input.name,
-        PROD_PRICE: input.price,
-        PROD_CONDITION: input.condition,
-        PROD_STOCKS: input.stock,
-        PROD_DESC: input.description,
-        PROD_SHORTDESC: input.short_desc,
-        SELLER_ID: user?.id,
-        PROD_CATEGORY: input.category, // Ensure this is a number
-      },
-    ]);
-
-    if (insertError) {
-      alert("Error fetching data: " + insertError.message);
-    } else {
-      nav("/home");
+    if (input.price === "" || Number(input.price) <= 0) {
+      alert("Please enter a valid price.");
+      return;
     }
+
+    if (input.stock === "" || Number(input.stock) <= 0) {
+      alert("Please enter a valid stock quantity.");
+      return;
+    }
+
+    if (!input.condition) {
+      alert("Please enter a product condition.");
+      return;
+    }
+
+    if (images.length === 0) {
+      alert("You must have at least one image!");
+    }
+
+    if (!mainImage) {
+      alert("Main image is missing.");
+      return;
+    }
+    const mainImageUrl = await uploadImages([mainImage]);
+    const imagesToUpload = images.filter((image) => image !== mainImage);
+
+    let uploadedImageUrls: string[] = [];
+    if (imagesToUpload.length > 0) {
+      uploadedImageUrls = await uploadImages(imagesToUpload);
+    }
+    const { data: productData, error: productError } = await supabase
+      .from("DIM_PRODUCT")
+      .insert([
+        {
+          PROD_NAME: input.name,
+          PROD_DESC: input.description,
+          PROD_SHORTDESC: input.short_desc,
+          PROD_PRICE: input.price,
+          PROD_STOCKS: input.stock,
+          PROD_CATEGORY: input.category,
+          PROD_CONDITION: input.condition,
+          SELLER_ID: user?.id,
+        },
+      ])
+      .select();
+
+    if (productError) {
+      console.error("Error inserting product:", productError.message);
+      return;
+    }
+
+    const productId = productData[0]?.PRODUCT_ID;
+
+    if (!productId) {
+      console.error("Product ID is null or undefined.");
+      return;
+    }
+
+    const mainImageRecord = {
+      PRODUCT_PICTURED_FK: productId,
+      PRODUCT_IMAGE: mainImageUrl[0],
+      isMainImage: true,
+    };
+
+    const imageRecords = uploadedImageUrls.map((url) => ({
+      PRODUCT_PICTURED_FK: productId,
+      PRODUCT_IMAGE: url,
+      isMainImage: false,
+    }));
+
+    const { error: imageError } = await supabase
+      .from("DIM_PRODUCTIMAGES")
+      .insert([mainImageRecord, ...imageRecords]);
+
+    if (imageError) {
+      console.error("Error inserting images:", imageError.message);
+      return;
+    }
+
+    nav("/home");
   };
 
   const options = CategoryArray.map((category) => category.CategoryName);
@@ -91,7 +238,7 @@ const ProductPost = () => {
           <h1 className="text-xl">Post a Product</h1>
         </div>
         <div className="main-app flex w-full flex-col justify-center space-y-2 lg:flex-row space-x-2">
-          <div className="left flex w-full h-full flex-col space-y-4">
+          <div className="left flex w-full h-full flex-col space-y-4 md:flex-[3] lg:flex-[4] xl:flex-[5.5]">
             <div className="gen-info flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
               <h1 className="text-xl">General Information</h1>
               <form className="space-y-4">
@@ -183,33 +330,76 @@ const ProductPost = () => {
               </div>
             </div>
           </div>
-          <div className="right space-y-4 h-full flex flex-col md:flex-[1]">
+          <div className="right space-y-4 h-full w-full flex flex-col md:flex-[2]">
             <div className="flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
-              <div className="product-display flex-[3] flex flex-col rounded-2xl 2xl:flex-[3] xl:m-4">
-                <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
-                  <img
-                    className="h-full w- object-cover rounded-lg"
-                    src={placeholder}
-                    alt="Product"
-                  />
-                </div>
-                <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
-                  {placeholderArr.map((placeholder, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
-                    >
+              <div
+                {...getRootProps({
+                  className:
+                    "product-display flex-[3] flex flex-col rounded-2xl 2xl:flex-[3] xl:m-4",
+                })}
+              >
+                <input {...getInputProps()} />
+                {images.length === 0 ? (
+                  <>
+                    <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
                       <img
-                        className="h-full w-full object-cover rounded-lg"
+                        className="h-full w- object-cover rounded-lg"
                         src={placeholder}
                         alt="Product"
                       />
                     </div>
-                  ))}
-                </div>
+                    <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
+                      {placeholderArr.map((placeholder, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
+                        >
+                          <img
+                            className="h-full w-full object-cover rounded-lg"
+                            src={placeholder}
+                            alt="Product"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="aspect-square bg-gray-200 rounded-lg shadow-md sm:m-4 md:m-2">
+                      <img
+                        className="h-full w-full object-cover rounded-lg aspect-square"
+                        src={
+                          mainImage
+                            ? URL.createObjectURL(mainImage)
+                            : placeholder
+                        }
+                        alt="Product"
+                      />
+                    </div>
+                    <div className="gallery grid grid-cols-4 md:grid-cols-4 xl:grid-cols-4 gap-4 p-2 w-full sm:px-5 md:p-2">
+                      {galleryImages.map((src, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
+                          onClick={() => handleImageClick(src)}
+                        >
+                          <img
+                            className="h-full w-full object-cover rounded-lg"
+                            src={URL.createObjectURL(src)}
+                            alt="Product"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="uplaod">
-                <input type="file" name="file" id="file" />
+              <div className="prompt">
+                {images.length < 5 ? (
+                  <p>Drag and Drop your product images!</p>
+                ) : (
+                  <p>Maximum of 5 images only!</p>
+                )}
               </div>
             </div>
             <div className="disclaimer flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">

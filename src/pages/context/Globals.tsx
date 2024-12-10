@@ -77,6 +77,7 @@ export type Product = {
   stock: number;
   description: string;
   imageUrl: string;
+  sellerId: string;
 };
 
 export const fetchProducts = async () => {
@@ -92,6 +93,7 @@ export const fetchProducts = async () => {
       PROD_CATEGORY,
       PROD_STOCKS,
       PROD_DESC,
+      SELLER_ID,
       CATEGORY:PROD_CATEGORY (CATEGORY_NAME)
     `
     )
@@ -110,9 +112,12 @@ export const fetchProducts = async () => {
       name: product.PROD_NAME,
       price: product.PROD_PRICE,
       condition: product.PROD_CONDITION,
-      category: product.CATEGORY.CATEGORY_NAME,
+      category: product.CATEGORY
+        ? product.CATEGORY.CATEGORY_NAME
+        : "Unknown Category",
       stock: product.PROD_STOCKS,
       description: product.PROD_DESC,
+      sellerId: product.SELLER_ID,
       imageUrl: "https://via.placeholder.com/150",
     }));
 
