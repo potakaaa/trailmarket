@@ -1,10 +1,65 @@
 import { useAuthContext } from "./context/AuthContext";
+import { supabase } from "../createClient";
+import Product from "./Product";
+import { useState, useEffect } from "react";
+import { Product as ProductType } from "./context/Globals";
 
-const kanye =
-  "https://media.gq.com/photos/5ad93798ceb93861adb912d8/16:9/w_2672,h_1503,c_limit/kanye-west-0814-GQ-FEKW01.01.jpg";
-
+const placeholder = "https://via.placeholder.com/150";
 const SellerPage = () => {
   const { user } = useAuthContext();
+  const [products, setProducts] = useState<ProductType[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!user?.id) {
+        console.error("User ID is not defined");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("DIM_PRODUCT")
+        .select(
+          `
+          PRODUCT_ID,
+          PROD_NAME,
+          PROD_PRICE,
+          PROD_CONDITION,
+          PROD_CATEGORY,
+          PROD_STOCKS,
+          PROD_DESC,
+          SELLER_ID,
+          CATEGORY:PROD_CATEGORY (CATEGORY_NAME)
+        `
+        )
+        .eq("SELLER_ID", user.id)
+        .order("PRODUCT_ID", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching products:", error.message);
+        return;
+      }
+
+      console.log("Fetched products:", data);
+
+      const formattedData = data.map((item) => ({
+        id: item.PRODUCT_ID,
+        name: item.PROD_NAME,
+        price: item.PROD_PRICE,
+        condition: item.PROD_CONDITION,
+        category: item.PROD_CATEGORY,
+        stocks: item.PROD_STOCKS,
+        description: item.PROD_DESC,
+        sellerId: item.SELLER_ID,
+        categoryName: item.CATEGORY[0]?.CATEGORY_NAME,
+        stock: item.PROD_STOCKS, // Assuming stock is the same as stocks
+        imageUrl: placeholder, // Placeholder image URL
+      }));
+
+      setProducts(formattedData);
+    };
+
+    fetchProducts();
+  }, [user]);
 
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
@@ -104,23 +159,17 @@ const SellerPage = () => {
               </div>
 
               <div className="flex flex-col">
-                <h1 className="text-white text-3xl">245</h1>
+                <h1 className="text-white text-3xl">{products.length}</h1>
                 <h2 className="text-white font-normal text-xs">Products</h2>
               </div>
             </div>
           </div>
         </div>
         <div className="bot-seller-page flex flex-[2]   flex-col rounded-xl">
-          <div className="products container flex flex-1 p-3 flex-col space-y-3">
-            <div className="w-56 space-y-3">
-              <div className="flex flex-[5] rounded-xl overflow-hidden aspect-square ">
-                <img src={kanye} className="object-cover"></img>
-              </div>
-              <div className="flex flex-[2] bg-zinc-900 rounded-xl p-4 flex-col">
-                <h2 className="text-white text-xl">4 Orders pending</h2>
-                <h2 className="text-white font-normal text-sm">Lorem Ipsum</h2>
-              </div>
-            </div>
+          <div className="products container flex flex-1 p-3 flex-col space-y-3 md:flex-row">
+            {products.map((product) => (
+              <Product key={product.id} {...product} />
+            ))}
           </div>
         </div>
       </div>
