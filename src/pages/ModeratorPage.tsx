@@ -68,15 +68,19 @@ const ModeratorPage = () => {
 
   const renderProds = (prods: Prod[]) => {
     if (prods.length === 0 || !prods) {
-      return <div>No products found</div>;
+      return (
+        <h1 className="text-center bg-gray-100 rounded-md shadow-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl my-4 w-full">
+          No products found
+        </h1>
+      );
     } else {
       return (
-        <div>
-          <h1 className="text-center bg-gray-100 rounded-md shadow-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl w-full my-4">
+        <div className="w-full px-2">
+          <h1 className="text-center bg-gray-100 rounded-md shadow-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl my-4">
             {activeProds[0].seller}
           </h1>
 
-          <div className="main-container flex flex-col gap-3 justify-cemter items-center w-full">
+          <div className="main-container w-full max-w-screen overflow-x-auto shadow-md">
             <table className="table-auto border-collapse w-full whitespace-nowrap">
               <thead>
                 <tr className="bg-gray-200 w-full">
@@ -91,9 +95,6 @@ const ModeratorPage = () => {
                   </th>
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
                     Category
-                  </th>
-                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                    Seller
                   </th>
                 </tr>
               </thead>
@@ -111,9 +112,6 @@ const ModeratorPage = () => {
                     </td>
                     <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
                       {prod.category}
-                    </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                      {prod.seller}
                     </td>
                   </tr>
                 ))}
