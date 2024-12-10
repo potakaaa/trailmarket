@@ -5,7 +5,7 @@ import { AuthProvider } from "./pages/context/AuthContext"; // Import the AuthPr
 
 import SignOrLoginPage from "./pages/login_signup/SignOrLoginPage";
 import HomePage from "./pages/HomePage";
-import ProductPage from "./pages/ProductPage";
+// import ProductPage from "./pages/ProductPage";
 import TopNavBar from "./pages/navbar/TopNavBar";
 import SellerPage from "./pages/SellerPage";
 import AboutUs from "./pages/AboutUs";
@@ -39,10 +39,10 @@ const router = createHashRouter([
             element: <HomePage />,
             errorElement: <div>404 Not Found</div>,
           },
-          {
-            path: "product/:id",
-            element: <ProductPage />,
-          },
+          // {
+          //   path: "product/:id",
+          //   element: <ProductPage />,
+          // },
           {
             path: "navbar2",
             element: <TopNavBar />,
@@ -82,15 +82,15 @@ const router = createHashRouter([
             errorElement: <div>404 Not Found</div>,
           },
           {
-            path: "checkout",
-            element: <CheckoutPage />,
-            errorElement: <div>404 Not Found</div>,
-          },
-          {
             path: "admin",
             element: <AdminPage />,
             errorElement: <NotFound404 />,
           },
+          {
+            path: "checkout",
+            element: <CheckoutPage />,
+            errorElement: <div>404 Not Found</div>,
+          }
         ],
       },
     ],
@@ -114,7 +114,7 @@ const router = createHashRouter([
     path: "forget",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
-  },
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(
