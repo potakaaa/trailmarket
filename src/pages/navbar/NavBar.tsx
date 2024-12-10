@@ -75,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
       <div className="NavBarMiddleRight flex flex-grow justify-center items mx-5 w-full">
         <div className="NavBarMiddle flex items-center justify-center gap-2 w-full ml-5">
           <div className="NavBarSearchBar flex border border-black rounded-full h-9 sm:h-12 md:h-14 px-5 w-full">
-            <div className="NavBarCategories flex relative w-5 sm:w-48 md:w-56 xl:w-72 justify-start">
+            <div className="NavBarCategories flex relative w-5 sm:w-48 md:w-56 lg:w-72 justify-start">
               <button
                 className="flex items-center"
                 onClick={toggleCategoryDropdown}
