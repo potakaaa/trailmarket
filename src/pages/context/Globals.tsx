@@ -97,7 +97,7 @@ export const fetchProducts = async () => {
       CATEGORY:PROD_CATEGORY (CATEGORY_NAME)
     `
     )
-    .order("PRODUCT_ID", { ascending: true });
+    .order("PRODUCT_ID", { ascending: false });
 
   if (error) {
     console.error("Error fetching products:", error.message);

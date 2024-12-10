@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
 import { useParams } from "react-router-dom";
-import { UserIcon } from "@heroicons/react/16/solid";
+
 import { useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
@@ -15,6 +15,8 @@ const ProductPage = () => {
     review: "",
     reviewtitle: "",
   });
+  const [averageRating, setAverageRating] = useState(0);
+  const [highRatingPercentage, setHighRatingPercentage] = useState(0);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -25,9 +27,6 @@ const ProductPage = () => {
       [id]: value,
     }));
   };
-
-  const loremPlaceholder =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat";
 
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>(null);
@@ -66,7 +65,8 @@ const ProductPage = () => {
     const { data: reviewsData, error: reviewsError } = await supabase
       .from("DIM_REVIEW")
       .select("*")
-      .eq("REVIEW_PROD", id);
+      .eq("REVIEW_PROD", id)
+      .order("REVIEW_DATE", { ascending: false });
 
     if (reviewsError) {
       console.error("Error fetching reviews:", reviewsError.message);
@@ -82,6 +82,21 @@ const ProductPage = () => {
         })
       );
       setReviews(reviewsWithUserDetails);
+
+      const totalRating = reviewsWithUserDetails.reduce(
+        (sum, review) => sum + review.REVIEW_RATING,
+        0
+      );
+      const averageRating = totalRating / reviewsWithUserDetails.length;
+      setAverageRating(averageRating);
+
+      // Calculate the percentage of high ratings (3.5 and above)
+      const highRatingCount = reviewsWithUserDetails.filter(
+        (review) => review.REVIEW_RATING >= 3.5
+      ).length;
+      const highRatingPercentage =
+        (highRatingCount / reviewsWithUserDetails.length) * 100;
+      setHighRatingPercentage(highRatingPercentage);
     }
   };
   const images = [mainImage, otherImages].flat();
@@ -200,6 +215,14 @@ const ProductPage = () => {
     }
   };
 
+  const handleEdit = () => {
+    console.log("Edit product");
+  };
+
+  const handleDelete = () => {
+    console.log("Delete product");
+  };
+
   return (
     <div className="flex flex-col">
       <div className="app-wrapper flex items-center justify-center min-h-screen overflow-scroll ">
@@ -230,22 +253,38 @@ const ProductPage = () => {
               <div className="flex flex-[4] flex-col">
                 <div className="product-details flex-[5] flex flex-col xl:my-4 xl:mr-4 2xl:flex-[0]">
                   <div className="product-name flex-[1] 2xl:flex-[0] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
-                    <button>
-                      <div className="flex flex-row align-middle space-x-2 items-center">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
-                          <img
-                            className="object-cover h-full w-full"
-                            src={userImage}
-                            alt="User"
-                          />
+                    <div>
+                      <button>
+                        <div className="flex flex-row align-middle space-x-2 items-center">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                            <img
+                              className="object-cover h-full w-full"
+                              src={userImage}
+                              alt="User"
+                            />
+                          </div>
+                          <div className=" h-full align-middle">
+                            <p className="text-xl align-middle justify-center">
+                              {username}
+                            </p>
+                          </div>
                         </div>
-                        <div className=" h-full align-middle">
-                          <p className="text-xl align-middle justify-center">
-                            {username}
-                          </p>
+                      </button>
+
+                      {username === user?.id && (
+                        <div className="product-actions">
+                          <button onClick={handleEdit} className="edit-button">
+                            Edit
+                          </button>
+                          <button
+                            onClick={handleDelete}
+                            className="delete-button"
+                          >
+                            Delete
+                          </button>
                         </div>
-                      </div>
-                    </button>
+                      )}
+                    </div>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
                       {product.PROD_NAME}
                     </h1>
@@ -344,11 +383,12 @@ const ProductPage = () => {
                     <div className=" review-container flex flex-col mb-3">
                       <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
                       <div className=" review-ave flex space-x-1 mx-2.5 my-1">
-                        {renderStars(3.5)}
-                        <h3 className="text-sm font-medium">{"(3 reviews)"}</h3>
+                        {renderStars(averageRating)}
+                        <h3 className="text-sm font-medium">{`(${reviews.length} reviews)`}</h3>
                       </div>
                       <h2 className="review-percent text-[11px] mx-2.5 font-medium xl:text-sm">
-                        80% of costumers are satisfied
+                        {highRatingPercentage.toFixed(2)}% of costumers are
+                        satisfied
                       </h2>
                     </div>
                     {reviews.map((review) => (
@@ -457,17 +497,14 @@ const ProductPage = () => {
               </div>
               <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
                 <div className="flex flex-[1] flex-col mb-3">
-                  <h1 className="mx-2.5 mt-1.5 text-2xl xl:text-3xl">
-                    Customer Reviews
-                  </h1>
-                  <div className="flex space-x-1 mx-2.5 my-1">
-                    {renderStars(3.7)}
-                    <h3 className="text-xs font-medium xl:text-sm">
-                      {"(3 reviews)"}
-                    </h3>
+                  <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
+                  <div className=" review-ave flex space-x-1 mx-2.5 my-1">
+                    {renderStars(averageRating)}
+                    <h3 className="text-sm font-medium">{`(${reviews.length} reviews)`}</h3>
                   </div>
-                  <h2 className="text-[11px] mx-2.5 font-medium xl:text-sm">
-                    80% of costumers are satisfied
+                  <h2 className="review-percent text-[11px] mx-2.5 font-medium xl:text-sm">
+                    {highRatingPercentage.toFixed(2)}% of costumers are
+                    satisfied
                   </h2>
                 </div>
                 {reviews.map((review) => (
