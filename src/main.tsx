@@ -86,14 +86,14 @@ const router = createHashRouter([
             element: <CheckoutPage />,
             errorElement: <div>404 Not Found</div>,
           },
+          {
+            path: "admin",
+            element: <AdminPage />,
+            errorElement: <NotFound404 />,
+          },
         ],
       },
     ],
-  },
-  {
-    path: "admin",
-    element: <AdminPage />,
-    errorElement: <NotFound404 />,
   },
   {
     path: "login",
