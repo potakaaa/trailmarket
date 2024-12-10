@@ -82,15 +82,15 @@ const router = createHashRouter([
             errorElement: <div>404 Not Found</div>,
           },
           {
-            path: "checkout",
-            element: <CheckoutPage />,
-            errorElement: <div>404 Not Found</div>,
-          },
-          {
             path: "admin",
             element: <AdminPage />,
             errorElement: <NotFound404 />,
           },
+          {
+            path: "checkout",
+            element: <CheckoutPage />,
+            errorElement: <div>404 Not Found</div>,
+          }
         ],
       },
     ],
@@ -114,7 +114,7 @@ const router = createHashRouter([
     path: "forget",
     element: <SignOrLoginPage />,
     errorElement: <NotFound404 />,
-  },
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(
