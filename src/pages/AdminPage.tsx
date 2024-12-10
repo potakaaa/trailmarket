@@ -1,25 +1,46 @@
-const tempIssueArr = [
-  {
-    type: "Bug",
-    prio: "Urgent",
-    assigned: "John Doe",
-    desc: "User unable to add items in the cart",
-  },
-  {
-    type: "Feedback",
-    prio: "Nice to do",
-    assigned: "Jone Smith",
-    desc: "Offer a wishlist feature for users to save favorite items",
-  },
-  {
-    type: "Feature",
-    prio: "Urgent",
-    assigned: "David Lee",
-    desc: "Add a recently viewed items section",
-  },
-];
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { useState } from "react";
+import Dropdown from "./DropDown";
+
+const issueType = ["Bug", "Feedback", "Feature"];
+const issueStat = ["Not Started", "In Progress", "Done"];
 
 const AdminPage = () => {
+  const [tempIssueArr, setTempIssueArr] = useState([
+    {
+      type: issueType[0],
+      stat: issueStat[0],
+      assigned: "John Doe",
+      desc: "User unable to add items in the cart",
+      prod_id: 4102,
+    },
+    {
+      type: issueType[1],
+      stat: issueStat[1],
+      assigned: "Jone Smith",
+      desc: "Offer a wishlist feature for users to save favorite items",
+      prod_id: 5293,
+    },
+    {
+      type: issueType[2],
+      stat: issueStat[0],
+      assigned: "David Lee",
+      desc: "Add a recently viewed items section",
+      prod_id: 4924,
+    },
+  ]);
+
+  const handleStatChange = (index: number, newStat: any) => {
+    // Create a copy of the array to avoid mutating state directly
+    const updatedIssues = [...tempIssueArr];
+    // Update the stat of the specific issue
+    updatedIssues[index].stat = newStat;
+    // Set the updated array to state
+    setTempIssueArr(updatedIssues);
+  };
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   return (
     <div className="main-container px-4 flex flex-col gap-3">
       <div
@@ -36,32 +57,76 @@ const AdminPage = () => {
           Update Tax
         </button>
       </div>
-      <div className="issuetracker-container flex flex-col w-full gap-1">
-        <hr />
+      <div className="issuetracker-container flex flex-col w-full gap-1 my-5">
+        <hr className="border-2" />
         <h1 className="text-center">Issue Tracker</h1>
-        <hr />
         <div className="parent-container w-full max-w-[500px] overflow-x-auto">
-          <div className="table-cols flex items-stretch justify-between w-[600px] overflow-x-auto whitespace-nowrap">
-            <p className="text-xs font-medium">C</p>
-            <p className="text-xs font-medium">TYPE</p>
-            <p className="text-xs font-medium">PRIORITY</p>
-            <p className="text-xs font-medium">ASSIGNED TO</p>
-            <p className="text-xs font-medium">DESCRIPTION</p>
-          </div>
-          <div className="flex justify-between w-[600px] overflow-x-auto">
-            {tempIssueArr.map((issue, index) => (
-              <div
-                key={index}
-                className="issue-item flex justify-between w-full"
-              >
-                <p className="text-xs font-normal">{index + 1}</p>
-                <p className="text-xs font-normal">{issue.type}</p>
-                <p className="text-xs font-normal">{issue.prio}</p>
-                <p className="text-xs font-normal">{issue.assigned}</p>
-                <p className="text-xs font-normal">{issue.desc}</p>
-              </div>
-            ))}
-          </div>
+          <table className="table-auto border-collapse w-[600px] whitespace-nowrap">
+            {/* Table Header */}
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="text-xs font-semibold text-left px-2 py-1">C</th>
+                <th className="text-xs font-semibold text-left px-2 py-1">
+                  TYPE
+                </th>
+                <th className="text-xs font-semibold text-left px-2 py-1">
+                  STATUS
+                </th>
+                <th className="text-xs font-semibold text-left px-2 py-1">
+                  ASSIGNED TO
+                </th>
+                <th className="text-xs font-semibold text-left px-2 py-1">
+                  DESCRIPTION
+                </th>
+                <th className="text-xs font-semibold text-left px-2 py-1">
+                  PRODUCT ID
+                </th>
+              </tr>
+            </thead>
+            {/* Table Body */}
+            <tbody>
+              {tempIssueArr.map((issue, index) => (
+                <tr key={index} className="border-t">
+                  <td className="text-xs font-normal px-2 py-1">{index + 1}</td>
+                  <td
+                    className={`text-xs font-normal px-2 py-1 ${
+                      issue.type === "Bug"
+                        ? "text-red-500"
+                        : issue.type === "Feature"
+                        ? "text-green-500"
+                        : issue.type === "Feedback"
+                        ? "text-blue-500"
+                        : ""
+                    }`}
+                  >
+                    {issue.type}
+                  </td>
+                  <td className="text-xs font-normal px-2 py-1">
+                    <select
+                      className="border-gray-300 text-xs rounded- focus:outline-none"
+                      value={issue.stat} // Set the current value
+                      onChange={(e) => handleStatChange(index, e.target.value)}
+                    >
+                      {issueStat.map((statOption, optionIndex) => (
+                        <option key={optionIndex} value={statOption}>
+                          {statOption}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="text-xs font-normal px-2 py-1">
+                    {issue.assigned}
+                  </td>
+                  <td className="text-xs font-normal px-2 py-1">
+                    {issue.desc}
+                  </td>
+                  <td className="text-xs font-normal px-2 py-1">
+                    {issue.prod_id}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
       <div className="issue-container"></div>
