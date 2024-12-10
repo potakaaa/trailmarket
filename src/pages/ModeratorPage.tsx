@@ -70,12 +70,13 @@ const ModeratorPage = () => {
     if (prods.length === 0 || !prods) {
       return <div>No products found</div>;
     } else {
-      return prods.map((prod, index) => (
+      return (
         <div>
-          <h1 className="text-center bg-gray-100 rounded-md shadow-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl w-full">
-            {prod.seller}
+          <h1 className="text-center bg-gray-100 rounded-md shadow-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl w-full my-4">
+            {activeProds[0].seller}
           </h1>
-          <div className="main-container px-4 flex flex-col gap-3 justify-cemter items-center w-full">
+
+          <div className="main-container flex flex-col gap-3 justify-cemter items-center w-full">
             <table className="table-auto border-collapse w-full whitespace-nowrap">
               <thead>
                 <tr className="bg-gray-200 w-full">
@@ -96,27 +97,31 @@ const ModeratorPage = () => {
                   </th>
                 </tr>
               </thead>
-              <tr key={index} className="border-t">
-                <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                  {prod.name}
-                </td>
-                <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                  {prod.price}
-                </td>
-                <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                  {prod.condition}
-                </td>
-                <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                  {prod.category}
-                </td>
-                <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
-                  {prod.seller}
-                </td>
-              </tr>
+              <tbody>
+                {activeProds.map((prod, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                      {prod.name}
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                      {prod.price}
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                      {prod.condition}
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                      {prod.category}
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                      {prod.seller}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
-      ));
+      );
     }
   };
 
