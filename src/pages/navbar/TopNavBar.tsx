@@ -1,8 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 const TopNavBar = () => {
   const nav = useNavigate();
+  const location = useLocation();
+  const { setIsLoggedIn } = useAuthContext();
 
   return (
     <div
@@ -37,13 +39,21 @@ const TopNavBar = () => {
         2xl:mr-16 2xl:gap-8 2xl:m-4
         "
       >
-        <h3
-          className="
-        font-normal lg:font-medium md:text-sm
-        "
-        >
-          Welcome {useAuthContext().user?.name}
-        </h3>
+        {location.pathname === "/login" ? (
+          <h3 className="font-normal lg:font-medium md:text-sm">
+            Welcome ${useAuthContext().user?.name}
+          </h3>
+        ) : (
+          <button
+            className="font-normal lg:font-medium md:text-sm"
+            onClick={() => {
+              nav("/login");
+              setIsLoggedIn(false);
+            }}
+          >
+            Log Out
+          </button>
+        )}
       </div>
     </div>
   );

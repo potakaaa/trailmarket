@@ -247,7 +247,7 @@ const AdminPage = () => {
       .map((tax, index) => (
         <div
           key={tax.id}
-          className="flex flex-col my-4 sm:my-3 w-full justify-center items-center "
+          className="flex flex-col my-4 sm:my-3 w-full justify-center items-center px-2"
         >
           <p className="text-center lg:text-lg">Tax {index + 1}</p>
           <div className="flex-none sm:flex sm:gap-3">
