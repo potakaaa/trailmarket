@@ -65,7 +65,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   const nav = useNavigate();
 
   return (
-    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row mx-4 justify-center items-center  lg:px-5 2xl:px-10 w-full">
+    <div className="NavBar mb-3 flex flex-col xl:flex-row 2xl:flex-row justify-center items-center  lg:px-5 2xl:px-10 w-full">
       <button className="NavBarLeft" onClick={() => nav("/home")}>
         <h1 className="NavBarTitle text-transparent bg-gradient-to-r from-[#282667] to-slate-900 bg-clip-text flex flex-col align-center justify-center md:row-span-2 sm:col-span-3 sm:text-center text-center mb-2 text-2xl sm:text-3xl md:text-4xl md:my-2 lg:my-3 xl:pl-[20px]">
           TrailMarket
@@ -75,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
       <div className="NavBarMiddleRight flex flex-grow justify-center items mx-5 w-full">
         <div className="NavBarMiddle flex items-center justify-center gap-2 w-full ml-5">
           <div className="NavBarSearchBar flex border border-black rounded-full h-9 sm:h-12 md:h-14 px-5 w-full">
-            <div className="NavBarCategories flex relative">
+            <div className="NavBarCategories flex relative w-5 sm:w-48 md:w-56 xl:w-72 justify-start">
               <button
                 className="flex items-center"
                 onClick={toggleCategoryDropdown}
@@ -115,11 +115,11 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 </div>
               )}
             </div>
-            <div className="NavBarSearch flex">
+            <div className="NavBarSearch flex w-full">
               <input
                 type="text"
                 placeholder="Search in the market"
-                className="bg-transparent border-none focus:outline-none pl-4 p-3 text-sm font-medium w-full sm:text-base md:text-lg md:pl-6"
+                className="bg-transparent border-none focus:outline-none pl-4 p-3 text-xs font-medium w-full sm:text-sm md:text-lg md:pl-6"
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   handleSearch(e.target.value)
                 }
@@ -146,7 +146,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
             </button>
           </div>
         </div>
-        <div className="NavBarRight">
+        <div className="NavBarRight flex justify-end">
           <div
             className="NavBarRightIcons hidden md:flex
         justify-end items-center mr-5 ml-1"

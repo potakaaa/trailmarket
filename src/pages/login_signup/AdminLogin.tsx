@@ -58,7 +58,7 @@ const AdminLogin = () => {
         console.log(fetchedEmp);
         fetchCategories();
 
-        nav("/home");
+        nav("/admin");
       } else {
         alert("Login failed, invalid username or password");
       }
