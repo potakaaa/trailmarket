@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
 
 const ProductPage = () => {
+  const nav = useNavigate();
   const [count, setCount] = useState(0);
   const [rating, setRating] = useState(0);
   const placeholder = "https://via.placeholder.com/150";
@@ -219,8 +220,66 @@ const ProductPage = () => {
     console.log("Edit product");
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("Delete product");
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const { data: images, error: fetchError } = await supabase
+          .from("DIM_PRODUCTIMAGES")
+          .select("PRODUCT_IMAGE")
+          .eq("PRODUCT_PICTURED_FK", id);
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        for (const image of images) {
+          const url = new URL(image.PRODUCT_IMAGE);
+          const basePath = "trailmarket-images/";
+          const imagePath = url.pathname.replace(
+            `/storage/v1/object/public/${basePath}`,
+            ""
+          );
+          console.log(`Deleting image from storage: ${imagePath}`);
+          const { error: storageError } = await supabase.storage
+            .from("trailmarket-images")
+            .remove([imagePath]);
+
+          if (storageError) {
+            console.error(
+              `Error deleting image from storage: ${imagePath}`,
+              storageError
+            );
+            throw storageError;
+          }
+        }
+
+        const { error: deleteProductError } = await supabase
+          .from("DIM_PRODUCT")
+          .delete()
+          .eq("PRODUCT_ID", id);
+
+        if (deleteProductError) {
+          throw deleteProductError;
+        }
+
+        alert("Product and associated images deleted successfully!");
+        nav("/home");
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error deleting product and images:", error.message);
+          alert(`Error deleting product and images: ${error.message}`);
+        } else {
+          console.error("Error deleting product and images:", error);
+          alert("Error deleting product and images.");
+        }
+      }
+    }
   };
 
   return (
@@ -270,20 +329,6 @@ const ProductPage = () => {
                           </div>
                         </div>
                       </button>
-
-                      {username === user?.id && (
-                        <div className="product-actions">
-                          <button onClick={handleEdit} className="edit-button">
-                            Edit
-                          </button>
-                          <button
-                            onClick={handleDelete}
-                            className="delete-button"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
                     </div>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
                       {product.PROD_NAME}
@@ -291,6 +336,22 @@ const ProductPage = () => {
                     <h2 className="text-sm font-normal md:text-base xl:mt-3 xl:text-lg 2xl:text-xl">
                       {product.PROD_DESC}
                     </h2>
+                    {product.SELLER_ID === user?.id && (
+                      <div className="product-actions flex flex-row space-x-2 pt-2">
+                        <button
+                          onClick={handleEdit}
+                          className="edit-button px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={handleDelete}
+                          className="delete-button px-10 py-2 text-base border-2 border-black text-black bg-red-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-red-300 hover:text-black transition duration-300 text-center flex justify-center items-center"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="product-price flex-[1] 2xl:flex-[0] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3 2xl:pl-4">
                     <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3 xl:text-5xl 2xl:text-[4rem] 2xl:my-5">
