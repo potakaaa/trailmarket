@@ -117,17 +117,18 @@ const TopNavBar = () => {
         2xl:mr-16 2xl:gap-8 2xl:m-4
         "
       >
-        {location.pathname === "/login" ? (
-          <h3 className="font-normal lg:font-medium md:text-sm">
-            Welcome ${useAuthContext().user?.id}
-          </h3>
-        ) : (
+        {location.pathname === "/admin" ||
+        location.pathname === "/moderator" ? (
           <button
             className="font-normal lg:font-medium md:text-sm"
             onClick={handleLogout}
           >
             Log Out
           </button>
+        ) : (
+          <h3 className="font-normal lg:font-medium md:text-sm">
+            Welcome {useAuthContext().user?.name}
+          </h3>
         )}
       </div>
       <FeedbackPop isOpen={isFeedbackPopOpen} onClose={handleCloseFeedback}>

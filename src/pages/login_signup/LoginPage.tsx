@@ -36,7 +36,11 @@ const LoginPage = () => {
     }
     if (data && data.length > 0) {
       const user = data[0];
-      if (user.USER_PASS === input.password) {
+
+      if (user.IS_BANNED === true) {
+        alert("You are banned from the system.");
+        return;
+      } else if (user.USER_PASS === input.password) {
         alert("Login successful!");
         const fetchedUser = {
           id: user.STUDENT_ID,
@@ -53,6 +57,7 @@ const LoginPage = () => {
 
         setIsLoggedIn(true);
         setUser(fetchedUser);
+
         fetchCategories();
 
         nav("/home");

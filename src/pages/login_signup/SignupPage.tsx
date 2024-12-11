@@ -22,6 +22,38 @@ const SignupPage = () => {
     }));
   }
 
+  const insertCart = async (id: string) => {
+    const { data: maxIdData, error: fetchError } = await supabase
+      .from("DIM_CART")
+      .select("CART_ID")
+      .order("CART_ID", { ascending: false })
+      .limit(1);
+
+    if (fetchError) {
+      console.error("Error fetching max CART_ID:", fetchError.message);
+      return;
+    }
+
+    // Calculate the next CART_ID
+    const nextCartId = maxIdData?.[0]?.CART_ID ? maxIdData[0].CART_ID + 1 : 1;
+
+    const { error: cartError } = await supabase.from("DIM_CART").insert([
+      {
+        CART_ID: nextCartId,
+        CART_USER: input.id,
+      },
+    ]);
+
+    if (cartError) {
+      console.error("Error inserting cart:", cartError.message);
+      alert("An error occurred while creating your cart.");
+    }
+
+    if (!cartError) {
+      console.log("Cart created successfully!");
+    }
+  };
+
   async function handleSignUp(event: React.FormEvent) {
     event.preventDefault();
 
@@ -55,22 +87,24 @@ const SignupPage = () => {
       if (existingUser && existingUser.length > 0) {
         alert("Student ID already exists. Please use a different ID.");
         return;
-      }
-      const { error: insertError } = await supabase.from("DIM_USER").insert([
-        {
-          USER_NAME: input.name,
-          STUDENT_ID: input.id,
-          USER_EMAIL: input.email,
-          USER_PASS: input.password,
-        },
-      ]);
-
-      if (insertError) {
-        console.error("Error signing up:", insertError.message);
-        alert("Sign-up failed. Please try again.");
       } else {
-        alert("Sign-up successful!");
-        nav("/login");
+        const { error: insertError } = await supabase.from("DIM_USER").insert([
+          {
+            USER_NAME: input.name,
+            STUDENT_ID: input.id,
+            USER_EMAIL: input.email,
+            USER_PASS: input.password,
+          },
+        ]);
+
+        insertCart(input.id);
+
+        if (insertError) {
+          alert("Sign-up failed. Please try again.");
+        } else {
+          alert("Sign-up successful!");
+          nav("/login");
+        }
       }
     } catch (err) {
       console.error("Unexpected error:", err);
