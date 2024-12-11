@@ -21,9 +21,17 @@ const SearchResults = () => {
   if (!searchState) {
     return null; // Do not render anything if searchState is empty
   }
-  const handleSelect = (value: string) => {
-    console.log("Selected:", value);
-  };
+    const handleSelect = (value: string) => {
+      if (value === "High to Low") {
+        handlePriceOrderChange("high");
+      } else if (value === "Low to High") {
+        handlePriceOrderChange("low");
+      } else if (value === "Latest to Oldest") {
+        handleSortOrderChange("latest");
+      } else if (value === "Oldest to Latest") {
+        handleSortOrderChange("oldest");
+      }
+    };
 
   const handleSortOrderChange = (order: string) => {
     setDateOrder(order);
