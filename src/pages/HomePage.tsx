@@ -12,7 +12,9 @@ import { Product as ProductType } from "./context/Globals";
 const HomePage = () => {
   const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [displayProducts, setDisplayProducts] = useState<ProductType[]>([]);
   const { setIsLoading } = useAuthContext();
+  const { selectedCategory, setSelectedCategory } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +23,7 @@ const HomePage = () => {
       const fetchedProducts = await fetchProducts();
       if (fetchedProducts) {
         setProducts(fetchedProducts);
+        setDisplayProducts(fetchedProducts);
       }
       setIsFetched(true);
       setIsLoading(false);
@@ -28,6 +31,32 @@ const HomePage = () => {
 
     fetchData();
   }, [setIsFetched]);
+
+  async function handleCategoryClick(categoryName: string) {
+    setIsLoading(true);
+    if (selectedCategory === categoryName) {
+      setDisplayProducts(products);
+      setSelectedCategory(CategoryArray[0].CategoryName);
+    } else {
+      const filteredProducts = products.filter(
+        (product) => product.category === categoryName
+      );
+      setDisplayProducts(filteredProducts);
+      setSelectedCategory(categoryName);
+    }
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    if (selectedCategory === CategoryArray[0].CategoryName) {
+      setDisplayProducts(products);
+    } else {
+      const filteredProducts = products.filter(
+        (product) => product.category === selectedCategory
+      );
+      setDisplayProducts(filteredProducts);
+    }
+  }, [selectedCategory, products]);
 
   return (
     <div className="HomePage size-full flex flex-col">
@@ -50,15 +79,16 @@ const HomePage = () => {
                   desc={category.CategoryDesc}
                   price={category.CategoryStartPrice}
                   image={category.CategoryImage}
+                  handleClick={handleCategoryClick}
                 />
               )
             )}
           </div>
         </div>
         <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4 justify-center">
-          {products.map((product, index) => (
+          {displayProducts.map((product) => (
             <Product
-              key={index}
+              key={product.id}
               id={product.id}
               name={product.name}
               price={product.price}

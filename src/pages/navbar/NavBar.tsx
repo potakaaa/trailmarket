@@ -92,7 +92,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                 />
               </button>
               {dropdownCategoryOpen && (
-                <div className="absolute top-full left-0 sm:left-14 bg-slate-50 shadow-md rounded-md w-20 sm:w-28 md:w-36">
+                <div className="absolute top-full left-0 sm:left-14 bg-slate-50 shadow-md rounded-md w-20 sm:w-28 md:w-36 z-20">
                   {obj.map((category, index) => {
                     if (selectedCategory === category.CategoryName) {
                       return null;

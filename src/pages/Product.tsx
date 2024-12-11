@@ -62,7 +62,7 @@ const Product: React.FC<ProductProps> = ({
   }, [sellerId]);
 
   return (
-    <div className="PRODUCT-CONTAINER space-y-3 flex flex-col w-full p-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
+    <div className="PRODUCT-CONTAINER space-y-3 flex flex-col w-full p-4 md:max-w-md">
       <button
         className="flex flex-col gap-3"
         onClick={() => {
