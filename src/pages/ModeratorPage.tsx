@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../createClient";
-import { Prod, useAuthContext, User } from "./context/AuthContext";
+import { Prod, useAuthContext } from "./context/AuthContext";
 import AdminNavBar from "./navbar/AdminNavBar";
 import TopNavBar from "./navbar/TopNavBar";
 
