@@ -148,6 +148,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+
+
   const [emp, setEmp] = useState<Emp | null>(() => {
     const storedEmp = localStorage.getItem("user");
     return storedEmp ? JSON.parse(storedEmp) : null;
