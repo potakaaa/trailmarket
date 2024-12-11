@@ -47,6 +47,7 @@ const LoginPage = () => {
           fb: user.USER_FB,
           email: user.USER_EMAIL,
           image: user.USER_IMAGE,
+          prods: [],
         };
 
         setIsLoggedIn(true);
