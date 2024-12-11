@@ -307,30 +307,51 @@ const ProductPage = () => {
 
       if (fetchData && fetchData.length > 0) {
         const tempCartId = fetchData[0]?.CART_ID;
+        console.log("cartId", tempCartId);
         const tempCartProd =
           fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID === undefined
             ? 1
-            : fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID + 2;
+            : fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID + 1;
 
         console.log("cartId", tempCartId, "cart prod id", tempCartProd);
         console.log(product.PRODUCT_ID, count);
-        const { error: insertError } = await supabase
+
+        const { error: updateError, data: updatedRows } = await supabase
           .from("FACT_CART_PROD")
-          .upsert([
+          .update([
             {
-              CART_PROD_ID: tempCartProd,
-              PRODUCT_FK: product.PRODUCT_ID,
               CART_QUANTITY: count,
-              CART_FK: tempCartId,
             },
           ])
-          .eq("PRODUCT_FK", product.PRODUCT_ID);
+          .eq("CART_PROD_ID", tempCartProd)
+          .select();
 
-        if (insertError) {
-          console.error("Error adding product to cart:", insertError.message);
+        if (updateError) {
+          console.error("Error adding product to cart:", updateError.message);
           alert("An error occurred while adding the product to your cart.");
           return;
         }
+
+        if (!updatedRows || updatedRows.length === 0) {
+          console.log("inserting");
+          const { error: insertError } = await supabase
+            .from("FACT_CART_PROD")
+            .insert([
+              {
+                CART_PROD_ID: tempCartProd,
+                PRODUCT_FK: product.PRODUCT_ID,
+                CART_QUANTITY: count,
+                CART_FK: tempCartId,
+              },
+            ]);
+
+          if (insertError) {
+            console.error("Error adding product to cart:", insertError.message);
+            alert("An error occurred while adding the product to your cart.");
+            return;
+          }
+        }
+
         alert("Product added to cart successfully!");
         setCount(1);
       }

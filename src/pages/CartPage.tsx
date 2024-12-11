@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
-import { CartProd, useAuthContext } from "./context/AuthContext";
+import { CartProd, Tax, useAuthContext } from "./context/AuthContext";
 import { TrashIcon } from "@heroicons/react/16/solid";
 import { BiTrash } from "react-icons/bi";
 
@@ -41,8 +41,18 @@ const CartPage = () => {
   const [cartItemsState] = useState(cartItems);
   const [quantity, setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [tax, setTax] = useState(0);
 
-  const { cart, setCart, user, setIsLoading, totalAmount } = useAuthContext();
+  const {
+    cart,
+    setCart,
+    user,
+    setIsLoading,
+    totalAmount,
+    setTotalAmount,
+    setTaxes,
+    taxes,
+  } = useAuthContext();
 
   const handleDelete = async (prod_id: number) => {
     const { error: deleteError } = await supabase
@@ -57,6 +67,36 @@ const CartPage = () => {
     }
     alert("Item deleted successfully!");
     getOrders();
+  };
+
+  const fetchTaxes = async () => {
+    try {
+      const { data } = await supabase.from("DIM_TAX").select("*");
+      if (data) {
+        const tempTaxes: Tax[] = data.map((tax: any) => ({
+          id: tax.TAX_ID,
+          low: tax.TAX_BRACKET_LOW,
+          high: tax.TAX_BRACKET_HIGH,
+          amount: tax.TAX_AMOUNT,
+        }));
+        setTaxes(tempTaxes);
+        console.log("TAX", taxes);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const calculateTax = () => {
+    const tempTax = taxes.find(
+      (tax) => subTotal >= tax.low && subTotal <= tax.high
+    );
+    console.log("TAX", tempTax);
+    if (tempTax?.amount) {
+      setTax(tempTax?.amount);
+      console.log("TOTAL", subTotal + tempTax?.amount);
+      setTotalAmount(subTotal + tempTax?.amount);
+    }
   };
 
   const calculateSubTotal = () => {
@@ -135,10 +175,12 @@ const CartPage = () => {
   };
   useEffect(() => {
     getOrders();
+    fetchTaxes();
   }, []);
 
   useEffect(() => {
     calculateSubTotal();
+    calculateTax();
   }, [cart]);
 
   return (
@@ -226,21 +268,11 @@ const CartPage = () => {
               </div>
               <div className="PaymentShippingFee">
                 <p className="text-sm font-medium">Tax</p>
-                <h1 className="pb-4 text-2xl">
-                  {cartItemsState.reduce(
-                    (total, item) => total + item?.quantity,
-                    0
-                  )}
-                </h1>
+                <h1 className="pb-4 text-2xl">{tax}</h1>
               </div>
               <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
                 <p className="text-sm font-normal">Total Amount</p>
-                <h1 className="text-2xl font-semibold">
-                  {cartItemsState.reduce(
-                    (total, item) => total + item.unitPrice * item.quantity,
-                    0
-                  )}
-                </h1>
+                <h1 className="text-2xl font-semibold">{totalAmount}</h1>
               </div>
             </div>
             <div className="PaymentButton w-full">
