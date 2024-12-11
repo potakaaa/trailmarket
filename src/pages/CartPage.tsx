@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 import { CartProd, useAuthContext } from "./context/AuthContext";
+import { TrashIcon } from "@heroicons/react/16/solid";
+import { BiTrash } from "react-icons/bi";
 
 const CartPage = () => {
   const nav = useNavigate();
@@ -44,11 +46,25 @@ const CartPage = () => {
   const [cartItemsState] = useState(cartItems);
   const [quantity, setQuantity] = useState(0);
 
-  const { cart, setCart, user } = useAuthContext();
+  const { cart, setCart, user, setIsLoading } = useAuthContext();
 
-  console.log(quantity);
+  const handleDelete = async (prod_id: number) => {
+    const { error: deleteError } = await supabase
+      .from("FACT_CART_PROD")
+      .delete()
+      .eq("PRODUCT_FK", prod_id);
+
+    if (deleteError) {
+      console.error("Error deleting cart item:", deleteError.message);
+      alert("An error occurred while deleting the item.");
+      return;
+    }
+    alert("Item deleted successfully!");
+    getOrders();
+  };
 
   const getOrders = async () => {
+    setIsLoading(true);
     const { data: cartData, error: cartError } = await supabase
       .from("DIM_CART")
       .select(
@@ -79,6 +95,7 @@ const CartPage = () => {
     console.log(cartData);
     if (cartError) {
       console.error("Error fetching :", cartError.message);
+      setIsLoading(false);
       return [];
     }
 
@@ -108,6 +125,7 @@ const CartPage = () => {
 
       console.log(tempCart);
       setCart(tempCart);
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -137,11 +155,19 @@ const CartPage = () => {
               </div>
               <div className="CartItemInfo m-6 flex gap-2 flex-col w-[70%]">
                 <div className="CartItemTop">
-                  <div className="CartItemSeller flex items-center">
-                    <div className="CartItemSellerImage bg-gray-700 w-3 h-3 mr-2 rounded-full"></div>
+                  <div className="CartItemSeller flex items-center w-full">
+                    <div className="CartItemSellerImage bg-gray-700 size-3 mr-2 rounded-full"></div>
                     <p className="CartItemSellerName text-xs font-medium">
                       {item?.seller}
                     </p>
+                    <div className="flex justify-end flex-grow">
+                      <button
+                        className="flex justify-end self-end items-end p-2 hover:rounded-full hover:shadow-md bg-transparent transition-all duration-300"
+                        onClick={() => handleDelete(item?.prod_id)}
+                      >
+                        <BiTrash className="size-6 text-red-600 shadow-sm" />
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="CartItemMiddle">
