@@ -141,11 +141,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
+  
+  useEffect(() => {
+    localStorage.setItem("isAdminLoggedIn", JSON.stringify(isAdminLoggedIn));
+  }, [isAdminLoggedIn]);
 
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+
+
   const [emp, setEmp] = useState<Emp | null>(() => {
     const storedEmp = localStorage.getItem("user");
     return storedEmp ? JSON.parse(storedEmp) : null;

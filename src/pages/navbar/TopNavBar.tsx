@@ -4,7 +4,18 @@ import { useAuthContext } from "../context/AuthContext";
 const TopNavBar = () => {
   const nav = useNavigate();
   const location = useLocation();
-  const { setIsAdminLoggedIn } = useAuthContext();
+  const { setIsAdminLoggedIn, setIsLoggedIn, setUser, setEmp } =
+    useAuthContext();
+
+  const handleLogout = () => {
+    setUser(null);
+    setEmp(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("employee");
+    setIsLoggedIn(false);
+    setIsAdminLoggedIn(false);
+    nav("/login");
+  };
 
   return (
     <div
@@ -46,10 +57,7 @@ const TopNavBar = () => {
         ) : (
           <button
             className="font-normal lg:font-medium md:text-sm"
-            onClick={() => {
-              nav("/login");
-              setIsAdminLoggedIn(false);
-            }}
+            onClick={handleLogout}
           >
             Log Out
           </button>

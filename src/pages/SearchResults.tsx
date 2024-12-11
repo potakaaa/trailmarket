@@ -14,7 +14,8 @@ const SearchResults = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
   const { selectedCategory, setSelectedCategory } = useAuthContext();
-
+  const [dateOrder, setDateOrder] = useState<string>("latest");
+  const [priceOrder, setPriceOrder] = useState<string>("none");
   const categories = CategoryArray.map((category) => category.CategoryName);
   const { searchState } = useAuthContext();
   if (!searchState) {
@@ -22,6 +23,14 @@ const SearchResults = () => {
   }
   const handleSelect = (value: string) => {
     console.log("Selected:", value);
+  };
+
+  const handleSortOrderChange = (order: string) => {
+    setDateOrder(order);
+  };
+
+  const handlePriceOrderChange = (order: string) => {
+    setPriceOrder((prevOrder) => (prevOrder === order ? "none" : order));
   };
 
   useEffect(() => {
@@ -48,8 +57,7 @@ const SearchResults = () => {
 
     if (selectedCategory) {
       if (selectedCategory === CategoryArray[0].CategoryName) {
-        setFilteredProducts(filtered);
-        return;
+        setFilteredProducts(products);
       } else {
         filtered = filtered.filter(
           (product) => product.category === selectedCategory
@@ -57,8 +65,20 @@ const SearchResults = () => {
       }
     }
 
+    if (dateOrder === "latest") {
+      filtered.sort((a, b) => b.id - a.id);
+    } else {
+      filtered.sort((a, b) => a.id - b.id);
+    }
+
+    if (priceOrder === "high") {
+      filtered.sort((a, b) => b.price - a.price);
+    } else if (priceOrder === "low") {
+      filtered.sort((a, b) => a.price - b.price);
+    }
+
     setFilteredProducts(filtered);
-  }, [searchState, selectedCategory, products]);
+  }, [searchState, selectedCategory, products, dateOrder, priceOrder]);
 
   async function handleCategoryClicked(categoryName: string) {
     setSelectedCategory(categoryName);
@@ -92,10 +112,20 @@ const SearchResults = () => {
               <div>
                 <h1>By Price</h1>
                 <div className="space-y-2 lg:space-x-1">
-                  <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                  <button
+                    onClick={() => handlePriceOrderChange("high")}
+                    className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                      priceOrder === "high" ? "bg-black text-white" : "bg-white"
+                    }`}
+                  >
                     High To Low
                   </button>
-                  <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                  <button
+                    onClick={() => handlePriceOrderChange("low")}
+                    className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                      priceOrder === "low" ? "bg-black text-white" : "bg-white"
+                    }`}
+                  >
                     Low To High
                   </button>
                 </div>
@@ -104,10 +134,24 @@ const SearchResults = () => {
               <div>
                 <h1>By Date</h1>
                 <div className="space-y-2 lg:space-x-1">
-                  <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                  <button
+                    onClick={() => handleSortOrderChange("latest")}
+                    className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                      dateOrder === "latest"
+                        ? "bg-black text-white"
+                        : "bg-white"
+                    }`}
+                  >
                     Latest to Oldest
                   </button>
-                  <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                  <button
+                    onClick={() => handleSortOrderChange("oldest")}
+                    className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                      dateOrder === "oldest"
+                        ? "bg-black text-white"
+                        : "bg-white"
+                    }`}
+                  >
                     Oldest to Latest
                   </button>
                 </div>
@@ -118,7 +162,7 @@ const SearchResults = () => {
                 <Dropdown
                   buttonStyle="md:hidden px-6 py-1 bg-white border-2 border-black rounded-xl"
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
-                  onSelect={handleSelect}
+                  onSelect={handleCategoryClicked}
                   options={categories}
                 ></Dropdown>
               </div>
@@ -141,7 +185,7 @@ const SearchResults = () => {
             </div>
           </div>
           <div className="search-results flex flex-[3] bg-gray-50 drop-shadow-xl rounded-xl p-2 flex-col space-y-3">
-            <h1>Search Results for :INPUTTED SEARCH:</h1>
+            <h1>Search Results for {searchState}</h1>
             <div className=" result-container w-full flex items-center justify-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2">
               {filteredProducts.map((product, index) => (
                 <Product

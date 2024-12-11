@@ -13,6 +13,7 @@ const AdminPrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   return <>{children}</>;
+
 };
 
 export default AdminPrivateRoute;
