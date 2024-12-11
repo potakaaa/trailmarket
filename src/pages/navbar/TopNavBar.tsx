@@ -1,11 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { useState } from "react";
+import FeedbackPop from "./FeedbackPop";
+import { supabase } from "../../createClient";
 
 const TopNavBar = () => {
   const nav = useNavigate();
   const location = useLocation();
-  const { setIsAdminLoggedIn, setIsLoggedIn, setUser, setEmp } =
-    useAuthContext();
+
+  const [isFeedbackPopOpen, setIsFeedbackPopOpen] = useState(false);
+
+  const {
+    setIsAdminLoggedIn,
+    setIsLoggedIn,
+    setUser,
+    setEmp,
+    isAdminLoggedIn,
+    isLoggedIn,
+    user,
+    setIsLoading,
+  } = useAuthContext();
 
   const handleLogout = () => {
     setUser(null);
@@ -15,6 +29,51 @@ const TopNavBar = () => {
     setIsLoggedIn(false);
     setIsAdminLoggedIn(false);
     nav("/login");
+  };
+
+  const handleFeedbackClick = () => {
+    setIsFeedbackPopOpen(true);
+  };
+
+  const handleCloseFeedback = () => {
+    setIsFeedbackPopOpen(false);
+  };
+
+  const handleSubmitFeedback = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    setIsLoading(true);
+    console.log("Submitting feedback...");
+
+    const formData = new FormData(event.currentTarget);
+    const category = formData.get("category") as string;
+    const title = formData.get("title") as string;
+    const feedback = formData.get("feedback") as string;
+
+    if (!category || !title || !feedback) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    console.log("Form Data:", { category, title, feedback });
+
+    const { data, error } = await supabase.from("DIM_FEEDBACK").insert([
+      {
+        FEEDBACK_CAT: category,
+        FEEDBACK_TITLE: title,
+        FEEDBACK_DESC: feedback,
+        FEEDBACK_USER: user?.id,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error submitting feedback:", error.message);
+    } else {
+      console.log("Feedback submitted successfully:", data);
+      setIsFeedbackPopOpen(false);
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -42,6 +101,14 @@ const TopNavBar = () => {
         >
           About Us
         </button>
+        {isLoggedIn && !isAdminLoggedIn && (
+          <button
+            className="font-normal lg:font-medium md:text-sm"
+            onClick={handleFeedbackClick}
+          >
+            Give Feedback
+          </button>
+        )}
       </div>
       <div
         className="right
@@ -64,6 +131,41 @@ const TopNavBar = () => {
           </h3>
         )}
       </div>
+      <FeedbackPop isOpen={isFeedbackPopOpen} onClose={handleCloseFeedback}>
+        <h2 className="text-lg font-bold mb-4">Give Feedback</h2>
+        <form className="" onSubmit={handleSubmitFeedback}>
+          <select
+            className="w-full p-2 border rounded mb-4 text-black"
+            defaultValue=""
+            name="category"
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            <option value="Bug">Bug</option>
+            <option value="Feature">Feature</option>
+            <option value="Feedback">Feedback</option>
+          </select>
+          <input
+            type="text"
+            className="w-full p-2 border rounded mb-4 text-black"
+            placeholder="Title"
+            name="title"
+          />
+          <textarea
+            className="w-full p-2 border rounded text-black"
+            rows={5}
+            placeholder="Your feedback"
+            name="feedback"
+          ></textarea>
+          <button
+            type="submit"
+            className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+          >
+            Submit
+          </button>
+        </form>
+      </FeedbackPop>
     </div>
   );
 };
