@@ -35,6 +35,7 @@ export interface User {
   email: string;
   image: string;
   prods: Prod[];
+  isBanned: boolean;
 }
 
 export interface Prod {
@@ -131,8 +132,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    const storedValue = localStorage.getItem("isAdminLoggedIn");
-    return storedValue ? JSON.parse(storedValue) : false;
+    const storedValueAdmin = localStorage.getItem("isAdminLoggedIn");
+    return storedValueAdmin ? JSON.parse(storedValueAdmin) : false;
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
@@ -140,11 +141,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
-  }, [isLoggedIn]);
-  
-  useEffect(() => {
     localStorage.setItem("isAdminLoggedIn", JSON.stringify(isAdminLoggedIn));
-  }, [isAdminLoggedIn]);
+  }, [isLoggedIn, isAdminLoggedIn]);
 
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("user");
