@@ -35,6 +35,7 @@ export interface User {
   email: string;
   image: string;
   prods: Prod[];
+  isBanned: boolean;
 }
 
 export interface Prod {

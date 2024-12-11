@@ -48,6 +48,7 @@ const LoginPage = () => {
           email: user.USER_EMAIL,
           image: user.USER_IMAGE,
           prods: [],
+          isBanned: user.IS_BANNED,
         };
 
         setIsLoggedIn(true);
