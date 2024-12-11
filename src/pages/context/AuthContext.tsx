@@ -113,6 +113,8 @@ interface AuthContextType {
   setTaxes: (taxes: Tax[]) => void;
   prodList: Prod[];
   setProdList: (prodList: Prod[]) => void;
+  totalAmount: number;
+  setTotalAmount: (value: number) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -149,7 +151,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-
   const [emp, setEmp] = useState<Emp | null>(() => {
     const storedEmp = localStorage.getItem("user");
     return storedEmp ? JSON.parse(storedEmp) : null;
@@ -172,6 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [empList, setEmpList] = useState<Emp[]>([]);
   const [taxes, setTaxes] = useState<Tax[]>([]);
   const [prodList, setProdList] = useState<Prod[]>([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   return (
     <AuthContext.Provider
@@ -208,6 +210,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setTaxes,
         prodList,
         setProdList,
+        totalAmount,
+        setTotalAmount,
       }}
     >
       {children}

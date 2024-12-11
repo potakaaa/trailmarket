@@ -38,15 +38,11 @@ const CartPage = () => {
     },
   ];
 
-  const payment = {
-    paymentTransactionId: "NX93842",
-    paymentTotal: 0,
-  };
-
   const [cartItemsState] = useState(cartItems);
   const [quantity, setQuantity] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
 
-  const { cart, setCart, user, setIsLoading } = useAuthContext();
+  const { cart, setCart, user, setIsLoading, totalAmount } = useAuthContext();
 
   const handleDelete = async (prod_id: number) => {
     const { error: deleteError } = await supabase
@@ -61,6 +57,15 @@ const CartPage = () => {
     }
     alert("Item deleted successfully!");
     getOrders();
+  };
+
+  const calculateSubTotal = () => {
+    const tempSubTotal = cart.reduce((sum: number, item: any) => {
+      return sum + item?.price * item?.quantity;
+    }, 0);
+
+    console.log(tempSubTotal);
+    setSubTotal(tempSubTotal);
   };
 
   const getOrders = async () => {
@@ -131,6 +136,10 @@ const CartPage = () => {
   useEffect(() => {
     getOrders();
   }, []);
+
+  useEffect(() => {
+    calculateSubTotal();
+  }, [cart]);
 
   return (
     <div className="mb-5">
@@ -213,12 +222,7 @@ const CartPage = () => {
               <div className="PaymentTransactionId"></div>
               <div className="PaymentOrderSummary">
                 <p className="text-sm font-medium">Sub Total</p>
-                <h1 className="pb-4 text-2xl">
-                  {cartItemsState.reduce(
-                    (total, item) => total + item.unitPrice * item.quantity,
-                    0
-                  )}
-                </h1>
+                <h1 className="pb-4 text-2xl">{subTotal}</h1>
               </div>
               <div className="PaymentShippingFee">
                 <p className="text-sm font-medium">Tax</p>
