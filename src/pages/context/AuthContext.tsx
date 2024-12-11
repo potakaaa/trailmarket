@@ -79,6 +79,13 @@ export interface Tax {
   amount: number;
 }
 
+export interface FactCart {
+  cartId: number;
+  cartUser: number;
+  cartProdId: number;
+  cartMaxProdId: number | null;
+}
+
 // Define types for the context value
 interface AuthContextType {
   isLoggedIn: boolean;

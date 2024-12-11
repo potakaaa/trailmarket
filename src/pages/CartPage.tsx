@@ -216,7 +216,7 @@ const CartPage = () => {
                         className="flex justify-end self-end items-end p-2 hover:rounded-full hover:shadow-md bg-transparent transition-all duration-300"
                         onClick={() => handleDelete(item?.prod_id)}
                       >
-                        <BiTrash className="size-6 text-red-600 shadow-sm" />
+                        <BiTrash className="size-6 text-red-600 shadow-sm bg-transparent" />
                       </button>
                     </div>
                   </div>

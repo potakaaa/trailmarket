@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
 import { useParams, useNavigate, data } from "react-router-dom";
 
-import { useAuthContext } from "./context/AuthContext";
+import { CartProd, FactCart, useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
 
@@ -38,6 +38,7 @@ const ProductPage = () => {
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>(mainImage);
+  const [cartProd, setCartProd] = useState<FactCart | null>(null);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
@@ -202,6 +203,7 @@ const ProductPage = () => {
   useEffect(() => {
     fetchReviews();
   }, [id]);
+
   if (!product) {
     return <div>Product not found</div>;
   }
@@ -282,81 +284,90 @@ const ProductPage = () => {
     }
   };
 
-  const handleAddCart = async () => {
-    try {
-      const { data: fetchData, error: fetchError } = await supabase
-        .from("DIM_CART")
-        .select(
-          `
+  const fetchMaxCartProdId = async (): Promise<number | null> => {
+    const { data, error } = await supabase
+      .from("FACT_CART_PROD")
+      .select("CART_PROD_ID")
+      .order("CART_PROD_ID", { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error("Error fetching max CART_PROD_ID:", error.message);
+      return null;
+    }
+    if (data && data.length > 0) {
+      console.log("MAX CART PROD ID:", data[0].CART_PROD_ID);
+      return data[0].CART_PROD_ID;
+    }
+    return null;
+  };
+
+  const fetchCart = async () => {
+    const { data: fetchData, error: fetchError } = await supabase
+      .from("DIM_CART")
+      .select(
+        `
       CART_ID,
       CART_USER,
         FACT_CART_PROD(
           CART_PROD_ID
           )
       `
-        )
-        .eq("CART_USER", user?.id);
+      )
+      .eq("CART_USER", user?.id);
 
-      if (fetchError) {
-        console.error("Error fetching cart:", fetchError.message);
-        alert("An error occurred while adding the product to your cart.");
-        return;
-      }
+    if (fetchError) {
+      console.error("Error fetching cart 3:", fetchError.message);
+      alert("An error occurred while adding the product to your cart.");
+      return;
+    }
 
-      console.log(fetchData);
+    if (fetchData && fetchData.length > 0) {
+      const factCartProd = fetchData[0].FACT_CART_PROD;
+      const cartProdId =
+        factCartProd.length > 0 ? factCartProd[0].CART_PROD_ID : null;
+      const tempCartProd: FactCart = {
+        cartId: fetchData[0].CART_ID,
+        cartUser: fetchData[0].CART_USER,
+        cartProdId: cartProdId,
+        cartMaxProdId: cartProdId === null ? 1 : await fetchMaxCartProdId(),
+      };
+      setCartProd(tempCartProd);
+      console.log("Cart Prod id max:", tempCartProd.cartProdId);
+    }
+  };
 
-      if (fetchData && fetchData.length > 0) {
-        const tempCartId = fetchData[0]?.CART_ID;
-        console.log("cartId", tempCartId);
-        const tempCartProd =
-          fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID === undefined
-            ? 1
-            : fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID + 1;
+  const handleAddCart = async () => {
+    try {
+      await fetchCart();
 
-        console.log("cartId", tempCartId, "cart prod id", tempCartProd);
-        console.log(product.PRODUCT_ID, count);
-
-        const { error: updateError, data: updatedRows } = await supabase
+      if (cartProd?.cartProdId) {
+        const { data, error } = await supabase
           .from("FACT_CART_PROD")
-          .update([
+          .upsert([
             {
+              CART_PROD_ID: cartProd?.cartProdId + 1,
+              CART_FK: cartProd?.cartId,
+              PRODUCT_FK: id,
               CART_QUANTITY: count,
             },
           ])
-          .eq("CART_PROD_ID", tempCartProd)
-          .select();
+          .eq("CART_PROD_ID", cartProd?.cartMaxProdId);
 
-        if (updateError) {
-          console.error("Error adding product to cart:", updateError.message);
+        if (error) {
+          console.error("Error adding product to cart:", error.message);
           alert("An error occurred while adding the product to your cart.");
           return;
         }
-
-        if (!updatedRows || updatedRows.length === 0) {
-          console.log("inserting");
-          const { error: insertError } = await supabase
-            .from("FACT_CART_PROD")
-            .insert([
-              {
-                CART_PROD_ID: tempCartProd,
-                PRODUCT_FK: product.PRODUCT_ID,
-                CART_QUANTITY: count,
-                CART_FK: tempCartId,
-              },
-            ]);
-
-          if (insertError) {
-            console.error("Error adding product to cart:", insertError.message);
-            alert("An error occurred while adding the product to your cart.");
-            return;
-          }
+        if (data) {
+          console.log("Product added to cart successfully!");
+          alert("Product added to cart successfully!");
+          setCount(1);
+          return;
         }
-
-        alert("Product added to cart successfully!");
-        setCount(1);
       }
     } catch (err) {
-      console.error("Error fetching cart:", err);
+      console.error("Error fetching cart asdf:", err);
     }
   };
 
