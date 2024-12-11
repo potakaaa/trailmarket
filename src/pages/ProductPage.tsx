@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, data } from "react-router-dom";
 
 import { useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
@@ -8,7 +8,7 @@ import { ChangeEvent } from "react";
 
 const ProductPage = () => {
   const nav = useNavigate();
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [rating, setRating] = useState(0);
   const placeholder = "https://via.placeholder.com/150";
   const [reviews, setReviews] = useState<any[]>([]);
@@ -211,7 +211,7 @@ const ProductPage = () => {
   };
 
   const handleMinus = () => {
-    if (count != 0) {
+    if (count != 1) {
       setCount(count - 1);
     }
   };
@@ -279,6 +279,63 @@ const ProductPage = () => {
           alert("Error deleting product and images.");
         }
       }
+    }
+  };
+
+  const handleAddCart = async () => {
+    try {
+      const { data: fetchData, error: fetchError } = await supabase
+        .from("DIM_CART")
+        .select(
+          `
+      CART_ID,
+      CART_USER,
+        FACT_CART_PROD(
+          CART_PROD_ID
+          )
+      `
+        )
+        .eq("CART_USER", user?.id);
+
+      if (fetchError) {
+        console.error("Error fetching cart:", fetchError.message);
+        alert("An error occurred while adding the product to your cart.");
+        return;
+      }
+
+      console.log(fetchData);
+
+      if (fetchData && fetchData.length > 0) {
+        const tempCartId = fetchData[0]?.CART_ID;
+        const tempCartProd =
+          fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID === undefined
+            ? 1
+            : fetchData[0]?.FACT_CART_PROD?.[0]?.CART_PROD_ID + 2;
+
+        console.log("cartId", tempCartId, "cart prod id", tempCartProd);
+        console.log(product.PRODUCT_ID, count);
+        const { error: insertError } = await supabase
+          .from("FACT_CART_PROD")
+          .upsert([
+            {
+              CART_PROD_ID: tempCartProd,
+              PRODUCT_FK: product.PRODUCT_ID,
+              CART_QUANTITY: count,
+              CART_FK: tempCartId,
+            },
+          ])
+          .eq("PRODUCT_FK", product.PRODUCT_ID);
+
+        if (insertError) {
+          console.error("Error adding product to cart:", insertError.message);
+          alert("An error occurred while adding the product to your cart.");
+          return;
+        }
+        alert("Product added to cart successfully!");
+        setCount(1);
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err);
     }
   };
 
@@ -358,10 +415,13 @@ const ProductPage = () => {
                       PHP {product.PROD_PRICE.toFixed(2)}
                     </h1>
                     <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3 xl:my-5 2xl:my-8">
-                      <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl">
+                      <button
+                        className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-base xl:mr-3 2xl:text-xl"
+                        onClick={() => handleAddCart()}
+                      >
                         Add to Cart
                       </button>
-                      <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm 2xl:text-xl">
+                      <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-base 2xl:text-xl">
                         Proceed to Checkout
                       </button>
                     </div>

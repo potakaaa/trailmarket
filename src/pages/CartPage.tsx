@@ -44,13 +44,17 @@ const CartPage = () => {
   const [cartItemsState] = useState(cartItems);
   const [quantity, setQuantity] = useState(0);
 
-  const { cart, setCart } = useAuthContext();
+  const { cart, setCart, user } = useAuthContext();
 
   console.log(quantity);
 
   const getOrders = async () => {
-    const { data, error } = await supabase.from("DIM_CART").select(`
+    const { data: cartData, error: cartError } = await supabase
+      .from("DIM_CART")
+      .select(
+        `
     CART_ID,
+    CART_USER,
     FACT_CART_PROD(
       PRODUCT_FK,
       CART_QUANTITY,
@@ -59,44 +63,53 @@ const CartPage = () => {
         PROD_PRICE,
         PROD_CONDITION,
         PROD_CATEGORY,
-         DIM_USER (
-            USER_NAME
+         DIM_PRODUCTIMAGES (
+         PRODUCT_IMAGE,
+         isMainImage
+          ),
+        DIM_USER (
+          USER_NAME
         )
       )
     )
-  `);
-    if (error) {
-      console.error("Error fetching :", error.message);
+  `
+      )
+      .eq("CART_USER", user?.id);
+
+    console.log(cartData);
+    if (cartError) {
+      console.error("Error fetching :", cartError.message);
       return [];
     }
 
-    const tempData = data[0].FACT_CART_PROD;
+    if (cartData && cartData.length > 0) {
+      const tempData: any = cartData[0].FACT_CART_PROD;
+      const tempCart: CartProd[] = tempData.map(
+        (cartItem: any, index: number) => {
+          const productDets: any = tempData?.[index]?.DIM_PRODUCT;
 
-    if (data) {
-      const tempCart: CartProd[] = tempData.map((cartItem: any, index) => {
-        const productDets: any = tempData?.[index]?.DIM_PRODUCT;
+          // Find the main image (isMainImage === true) from DIM_PRODUCTIMAGES
+          const mainImage = productDets?.DIM_PRODUCTIMAGES?.find(
+            (image: any) => image.isMainImage === true
+          );
 
-        return {
-          prod_id: tempData[index].PRODUCT_FK,
-          name: productDets?.PROD_NAME,
-          price: productDets?.PROD_PRICE,
-          condition: productDets?.PROD_CONDITION,
-          category: productDets?.PROD_CATEGORY,
-          seller: productDets?.DIM_USER?.USER_NAME,
-          img: undefined,
-          quantity: tempData[index].CART_QUANTITY,
-        };
-        console.log(cartItem);
-      });
+          return {
+            prod_id: tempData[index].PRODUCT_FK,
+            name: productDets?.PROD_NAME,
+            price: productDets?.PROD_PRICE,
+            condition: productDets?.PROD_CONDITION,
+            category: productDets?.PROD_CATEGORY,
+            seller: productDets?.DIM_USER?.USER_NAME,
+            img: mainImage ? mainImage.PRODUCT_IMAGE : null, // Use the main image if found, otherwise null
+            quantity: tempData[index].CART_QUANTITY,
+          };
+        }
+      );
 
-      console.log("Raw Data: ", data);
-      console.log("Raw Data 0: ", data[0]);
-
+      console.log(tempCart);
       setCart(tempCart);
-      console.log(cart[0]?.name);
     }
   };
-
   useEffect(() => {
     getOrders();
   }, []);
@@ -171,14 +184,9 @@ const CartPage = () => {
           <div className="CartPaymentWindow flex flex-col items-center shadow-lg m-5 rounded-xl p-8">
             <div className="CartPaymentInfo w-full">
               <h1 className="text-2xl pb-4">Payment Summary</h1>
-              <div className="PaymentTransactionId">
-                <p className="text-sm font-medium">Transaction ID</p>
-                <h1 className="pb-6 mb-6 text-2xl border-b-2 border-gray-400">
-                  {payment.paymentTransactionId}
-                </h1>
-              </div>
+              <div className="PaymentTransactionId"></div>
               <div className="PaymentOrderSummary">
-                <p className="text-sm font-medium">Order Summary</p>
+                <p className="text-sm font-medium">Sub Total</p>
                 <h1 className="pb-4 text-2xl">
                   {cartItemsState.reduce(
                     (total, item) => total + item.unitPrice * item.quantity,
@@ -187,7 +195,7 @@ const CartPage = () => {
                 </h1>
               </div>
               <div className="PaymentShippingFee">
-                <p className="text-sm font-medium">Shipping Fee</p>
+                <p className="text-sm font-medium">Tax</p>
                 <h1 className="pb-4 text-2xl">
                   {cartItemsState.reduce(
                     (total, item) => total + item?.quantity,
@@ -207,7 +215,7 @@ const CartPage = () => {
             </div>
             <div className="PaymentButton w-full">
               <button
-                className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full"
+                className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full text-base hover:text-lg hover:shadow-lg xl:text-lg xl:hover:text-xl transition-all duration-300"
                 onClick={() => nav("/checkout")}
               >
                 Proceed to Payment
