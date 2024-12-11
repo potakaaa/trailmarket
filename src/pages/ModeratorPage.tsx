@@ -34,26 +34,36 @@ const ModeratorPage = () => {
   const fetchUserPosts = async (stud_id: number) => {
     const { data, error } = await supabase
       .from("DIM_PRODUCT")
-      .select("*")
+      .select("*, DIM_PRODUCTIMAGES(*)")
       .eq("SELLER_ID", stud_id);
 
     if (error) {
       console.error("Error fetching user posts:", error.message);
       return;
     }
+
     if (data) {
-      const tempProdList = data.map((prod: any) => ({
-        id: prod.PRODUCT_ID,
-        name: prod.PROD_NAME,
-        price: prod.PROD_PRICE,
-        condition: prod.PROD_CONDITION,
-        category: prod.PROD_CATEGORY,
-        stock: prod.PROD_STOCKS,
-        desc: prod.PROD_DESC,
-        short_desc: prod.PROD_SHORTDESC,
-        img: undefined,
-        seller: prod.SELLER_ID,
-      }));
+      const tempProdList = data.map((prod: any, index) => {
+        const img = data[index].DIM_PRODUCTIMAGES[index];
+        const mainImage = prod.DIM_PRODUCTIMAGES?.find(
+          (img: any) => img.isMainImage
+        );
+
+        return {
+          id: prod.PRODUCT_ID,
+          name: prod.PROD_NAME,
+          price: prod.PROD_PRICE,
+          condition: prod.PROD_CONDITION,
+          category: prod.PROD_CATEGORY,
+          stock: prod.PROD_STOCKS,
+          desc: prod.PROD_DESC,
+          short_desc: prod.PROD_SHORTDESC,
+          img: mainImage ? mainImage.PRODUCT_IMAGE : undefined,
+          seller: prod.SELLER_ID,
+        };
+        {
+        }
+      });
       setProdList(tempProdList);
       setActiveProds(tempProdList);
       console.log(prodList);
@@ -85,33 +95,56 @@ const ModeratorPage = () => {
               <thead>
                 <tr className="bg-gray-200 w-full">
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                    Name
+                    IMAGE
                   </th>
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                    Price
+                    NAME
                   </th>
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                    Condition
+                    PRICE
                   </th>
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
-                    Category
+                    CONDITION
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    CATEGORY
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    ACTIONS
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {activeProds.map((prod, index) => (
                   <tr key={index} className="border-t">
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3 text-center">
+                      <img
+                        src={prod.img}
+                        alt={prod.name}
+                        className="size-14 rounded-lg m-1 border"
+                      />
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
                       {prod.name}
                     </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                    <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
                       {prod.price}
                     </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                    <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
                       {prod.condition}
                     </td>
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                    <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
                       {prod.category}
+                    </td>
+                    <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
+                      <select className="bg-slate-50 p-1 rounded-full focus:outline-none text-xs">
+                        <option className="bg-slate-100 font-medium overflow-auto ">
+                          Select
+                        </option>
+                        <option className="bg-red-200 font-medium overflow-auto ">
+                          Delete Post
+                        </option>
+                      </select>
                     </td>
                   </tr>
                 ))}
@@ -170,6 +203,9 @@ const ModeratorPage = () => {
                 <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2 ">
                   FB LINK
                 </th>
+                <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2 ">
+                  ACTIONS
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -196,6 +232,13 @@ const ModeratorPage = () => {
                   </td>
                   <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
                     {user.fb}
+                  </td>
+                  <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3">
+                    <select className="bg-transparent text-xs bg-slate-50 p-1 rounded-full focus:outline-none ">
+                      <option className="font-normal">None</option>
+                      <option className="font-normal">Ban 30 days</option>
+                      <option className="font-normal">Ban Forever</option>
+                    </select>
                   </td>
                 </tr>
               ))}

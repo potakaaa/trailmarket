@@ -131,8 +131,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    const storedValue = localStorage.getItem("isAdminLoggedIn");
-    return storedValue ? JSON.parse(storedValue) : false;
+    const storedValueAdmin = localStorage.getItem("isAdminLoggedIn");
+    return storedValueAdmin ? JSON.parse(storedValueAdmin) : false;
   });
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
@@ -140,7 +140,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
-  }, [isLoggedIn]);
+    localStorage.setItem("isAdminLoggedIn", JSON.stringify(isAdminLoggedIn));
+  }, [isLoggedIn, isAdminLoggedIn]);
 
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("user");

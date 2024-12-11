@@ -9,16 +9,16 @@ import {
 import { Product as ProductType } from "./context/Globals";
 import Product from "./Product";
 
+const categories = CategoryArray.map((category) => category.CategoryName);
+
 const SearchResults = () => {
   const { setIsFetched } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
-  const { selectedCategory, setSelectedCategory } = useAuthContext();
 
-  const categories = CategoryArray.map((category) => category.CategoryName);
   const { searchState } = useAuthContext();
   if (!searchState) {
-    return null;
+    return null; // Do not render anything if searchState is empty
   }
   const handleSelect = (value: string) => {
     console.log("Selected:", value);
@@ -38,31 +38,15 @@ const SearchResults = () => {
   }, [setIsFetched]);
 
   useEffect(() => {
-    let filtered = products;
-
     if (searchState) {
-      filtered = filtered.filter((product) =>
+      const filtered = products.filter((product) =>
         product.name.toLowerCase().includes(searchState.toLowerCase())
       );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
     }
-
-    if (selectedCategory) {
-      if (selectedCategory === CategoryArray[0].CategoryName) {
-        setFilteredProducts(filtered);
-        return;
-      } else {
-        filtered = filtered.filter(
-          (product) => product.category === selectedCategory
-        );
-      }
-    }
-
-    setFilteredProducts(filtered);
-  }, [searchState, selectedCategory, products]);
-
-  async function handleCategoryClicked(categoryName: string) {
-    setSelectedCategory(categoryName);
-  }
+  }, [searchState, products]);
 
   return (
     <div className="flex flex-col">
@@ -76,14 +60,7 @@ const SearchResults = () => {
                 <h1>By Tags</h1>
                 <div className="space-y-2 lg:space-x-1">
                   {categories.map((category) => (
-                    <button
-                      onClick={() => handleCategoryClicked(category)}
-                      className={`px-6 py-1  border-2 border-black rounded-3xl ${
-                        selectedCategory === category
-                          ? "bg-black text-white"
-                          : "bg-white"
-                      }`}
-                    >
+                    <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
                       {category}
                     </button>
                   ))}
