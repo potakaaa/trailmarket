@@ -25,6 +25,10 @@ const UserPage = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [pageOwner, setPageOwner] = useState<User | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const paymentMethodOptions = [
+    { value: "GCash", label: "Gcash" },
+    { value: "Bank", label: "Bank Transfer" },
+  ];
 
   type PaymentMethod = {
     id: string;
@@ -511,11 +515,12 @@ const UserPage = () => {
                             key={method.id}
                             className="flex flex-row items-center space-x-2"
                           >
-                            <input
-                              type="text"
+                            <select
                               value={method.method}
-                              readOnly={!method.isEditing}
-                              onChange={(e) =>
+                              disabled={!method.isEditing}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLSelectElement>
+                              ) =>
                                 handleEditPaymentMethodField(
                                   method.id,
                                   "method",
@@ -523,7 +528,13 @@ const UserPage = () => {
                                 )
                               }
                               className="flex-1 rounded-xl border-2 border-black p-1"
-                            />
+                            >
+                              {paymentMethodOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
                             <input
                               type="text"
                               value={method.account}
@@ -535,7 +546,9 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl border-2 border-black p-1"
+                              className={`flex-1 rounded-xl border-2 border-black p-1 ${
+                                !method.isEditing ? "no-arrow" : ""
+                              }`}
                             />
 
                             {isEditing &&
