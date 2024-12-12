@@ -117,7 +117,7 @@ const CheckoutPage = () => {
     if (tempTax?.amount) {
       setTax((tempTax?.amount / 100) * subTotal);
       console.log("TOTAL", subTotal + tempTax?.amount);
-      setTotalAmount(subTotal + (tempTax?.amount / 100) * subTotal);
+      setTotalAmount(Math.round(subTotal + (tempTax?.amount / 100) * subTotal));
     }
   };
 

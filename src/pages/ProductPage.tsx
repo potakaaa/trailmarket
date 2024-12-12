@@ -209,7 +209,9 @@ const ProductPage = () => {
   }
 
   const handlePlus = () => {
-    setCount(count + 1);
+    if (count < product.PROD_STOCKS) {
+      setCount(count + 1);
+    }
   };
 
   const handeUserVisit = () => {
