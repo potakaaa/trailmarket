@@ -32,7 +32,7 @@ const SignOrLoginPage = () => {
         {/* Left Container */}
         <div className="left-container w-0 sm:w-1/2 h-screen m-0 drop-shadow-2xl">
           <img
-            src="public\img\login_bg.png"
+            src="https://vcebzlxdqipnbipntjkr.supabase.co/storage/v1/object/public/trailmarket-images/display/login_bg.png?t=2024-12-12T15%3A52%3A15.140Z"
             alt="TrailMarket"
             className="w-full h-full object-cover "
           />
