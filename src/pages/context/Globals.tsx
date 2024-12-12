@@ -27,26 +27,40 @@ export const fetchCategories = async () => {
   if (categoryData) {
     console.log("Fetched categories:", categoryData);
 
-    for (const category of categoryData) {
-      const { data: productData, error: productError } = await supabase
-        .from("PRODUCT")
-        .select("PRICE")
-        .eq("CATEGORY_ID", category.CATEGORY_ID)
-        .order("PRICE", { ascending: true })
-        .limit(1);
+    // Use Promise.all to fetch the minimum price for each category concurrently
+    const enrichedCategories = await Promise.all(
+      categoryData.map(async (category: any) => {
+        let CategoryStartPrice = 0;
 
-      if (productError) {
-        console.error(
-          `Error fetching products for category ${category.CATEGORY_ID}:`,
-          productError.message
-        );
-        category.CategoryStartPrice = 0; // Default to 0 if there's an error
-      } else if (productData && productData.length > 0) {
-        category.CategoryStartPrice = productData[0].PRICE;
-      } else {
-        category.CategoryStartPrice = 0; // Default to 0 if no products found
-      }
-    }
+        // Fetch the product with the lowest price in this category
+        const { data: productData, error: productError } = await supabase
+          .from("DIM_PRODUCT")
+          .select("PROD_PRICE")
+          .eq("PROD_CATEGORY", category.CATEGORY_ID)
+          .order("PROD_PRICE", { ascending: true })
+          .limit(1);
+
+        if (productError) {
+          console.error(
+            `Error fetching products for category ${category.CATEGORY_ID}:`,
+            productError.message
+          );
+        } else if (productData && productData.length > 0) {
+          CategoryStartPrice = productData[0].PROD_PRICE;
+        }
+
+        // Return the enriched category object
+        return {
+          CategoryID: category.CATEGORY_ID,
+          CategoryName: category.CATEGORY_NAME,
+          CategoryDesc: category.CATEGORY_DESC || "",
+          CategoryStartPrice, // Use the calculated value
+          CategoryImage: category.CATEGORY_IMAGE || "",
+        };
+      })
+    );
+
+    // Include the "All Categories" default item at the start of the array
     CategoryArray = [
       {
         CategoryID: 0,
@@ -55,17 +69,14 @@ export const fetchCategories = async () => {
         CategoryStartPrice: 0,
         CategoryImage: "",
       },
-      ...categoryData.map((category: any) => ({
-        CategoryID: category.CATEGORY_ID,
-        CategoryName: category.CATEGORY_NAME,
-        CategoryDesc: category.CATEGORY_DESC || "",
-        CategoryStartPrice: category.CategoryStartPrice || 0,
-        CategoryImage: category.CATEGORY_IMAGE || "",
-      })),
+      ...enrichedCategories,
     ];
+
+    console.log("Final CategoryArray:", CategoryArray); // Debugging
     return CategoryArray;
   }
 };
+
 
 export const addCategory = async (newCategory: string) => {
   if (CategoryArray.some((category) => category.CategoryName === newCategory)) {
