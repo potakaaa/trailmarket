@@ -10,8 +10,7 @@ import LoadingSpinner from "./pages/Loader/LoadingSpinner";
 import { useEffect } from "react";
 
 const App = () => {
-  const { searchState, isLoading, checkoutProds, setCheckoutProds } =
-    useAuthContext();
+  const { searchState, isLoading, setCheckoutProds } = useAuthContext();
   const location = useLocation();
 
   useEffect(() => {

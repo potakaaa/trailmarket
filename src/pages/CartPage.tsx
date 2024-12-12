@@ -12,7 +12,7 @@ import { BiTrash } from "react-icons/bi";
 const CartPage = () => {
   const nav = useNavigate();
 
-  const [setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
 
@@ -239,6 +239,7 @@ const CartPage = () => {
                           readOnly
                           onChange={(e) => {
                             setQuantity(parseInt(e.target.value));
+                            console.log(quantity);
                           }}
                           className="w-1/2 border-[2px] border-black rounded-2xl px-4 text-center"
                           onKeyDown={(e) => e.preventDefault()}

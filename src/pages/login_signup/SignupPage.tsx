@@ -31,6 +31,7 @@ const SignupPage = () => {
 
     if (fetchError) {
       console.error("Error fetching max CART_ID:", fetchError.message);
+      console.log(id);
       return;
     }
 
