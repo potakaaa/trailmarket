@@ -237,6 +237,7 @@ const CartPage = () => {
                           type="number"
                           value={item?.quantity}
                           min="1"
+                          readOnly
                           onChange={(e) => {
                             setQuantity(parseInt(e.target.value));
                           }}
