@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tax, useAuthContext } from "./context/AuthContext";
+import { Tax, useAuthContext, UserPayment } from "./context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 
@@ -12,6 +12,9 @@ const CheckoutPage = () => {
     setTaxes,
     totalAmount,
     setTotalAmount,
+    user,
+    userPayment,
+    setUserPayment,
   } = useAuthContext();
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
@@ -36,6 +39,26 @@ const CheckoutPage = () => {
     "PayMaya",
     "Credit Card",
   ];
+
+  const fetchUserPayment = async () => {
+    const { data, error } = await supabase
+      .from("DIM_PAYMENTMETHOD")
+      .select("*")
+      .eq("USER_PAY_FK", user?.id);
+
+    if (error) {
+      console.error("Error fetching payment data:", error);
+    }
+    if (data) {
+      console.log(data);
+      const tempUserPay: UserPayment[] = data.map((payment: any) => ({
+        paymentMethod: payment.PAYMENT_METHOD,
+        paymentNumber: payment.ACCOUNT_NUMBER,
+      }));
+      setUserPayment(tempUserPay);
+      console.log("USER PAYMENT", userPayment);
+    }
+  };
 
   const PaymentInformation = [
     {
@@ -109,6 +132,7 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     fetchTaxes();
+    fetchUserPayment();
   }, []);
 
   useEffect(() => {
@@ -252,11 +276,11 @@ const CheckoutPage = () => {
           <div className="PaymentInfo flex flex-col lg:flex-col w-full mx-1">
             <div className="PaymentInfoBody shadow-2xl flex flex-col items-stretch sm:w-full rounded-xl p-8">
               <p className="border-b-2 border-gray-400 pb-4">Payment Info</p>
-              {PaymentInformation.map((payment) => (
+              {userPayment.map((payment) => (
                 <div className="PaymentInfoItem pt-4">
                   <p className="PaymentMethod">{payment.paymentMethod}</p>
                   <p className="PaymentInfo border-[1px] border-black p-2 rounded-xl mb-2 font-medium">
-                    {payment.paymentInfo}
+                    {payment.paymentNumber}
                   </p>
                 </div>
               ))}

@@ -288,63 +288,16 @@ const ProductPage = () => {
     }
   };
 
-  const fetchMaxCartProdId = async (): Promise<number | null> => {
-    const { data, error } = await supabase
-      .from("FACT_CART_PROD")
-      .select("CART_PROD_ID")
-      .order("CART_PROD_ID", { ascending: false })
-      .limit(1);
-
-    if (error) {
-      console.error("Error fetching max CART_PROD_ID:", error.message);
-      return null;
-    }
-    if (data && data.length > 0) {
-      console.log("MAX CART PROD ID:", data[0].CART_PROD_ID);
-      return data[0].CART_PROD_ID;
-    }
-    return null;
-  };
-
-  {
-    /* LOGIC ERROR ON FETCHING AND UPSERTING DB */
-  }
-
   const fetchCart = async () => {
-    const { data: fetchData, error: fetchError } = await supabase
+    const { error: fetchError } = await supabase
       .from("DIM_CART")
-      .select(
-        `
-      CART_ID,
-      CART_USER,
-        FACT_CART_PROD(
-          CART_PROD_ID
-          )
-      `
-      )
+      .select("*")
       .eq("CART_USER", user?.id);
 
     if (fetchError) {
       console.error("Error fetching cart 3:", fetchError.message);
       alert("An error occurred while adding the product to your cart.");
       return;
-    }
-
-    if (fetchData && fetchData.length > 0) {
-      const factCartProd = fetchData[0].FACT_CART_PROD;
-      const cartProdId =
-        factCartProd.length > 0 ? factCartProd[0].CART_PROD_ID : null;
-      const tempCartProd: FactCart = {
-        cartId: fetchData[0].CART_ID,
-        cartUser: fetchData[0].CART_USER,
-        cartProdId: cartProdId,
-        cartMaxProdId:
-          (await fetchMaxCartProdId()) === null
-            ? 1
-            : await fetchMaxCartProdId(),
-      };
-      setCartProd(tempCartProd);
-      console.log("Cart Prod id max:", tempCartProd.cartMaxProdId);
     }
   };
 
@@ -369,38 +322,74 @@ const ProductPage = () => {
     console.log(checkoutProds);
   };
 
-  const handleAddCart = async () => {
+  const handleAddCart = async (productId: number, quantity: number = 1) => {
+    setIsLoading(true);
     try {
       await fetchCart();
+      const { data: cartData, error: cartError } = await supabase
+        .from("DIM_CART")
+        .select(
+          `
+        CART_ID,
+        CART_USER,
+        FACT_CART_PROD(
+          CART_PROD_ID,
+          PRODUCT_FK,
+          CART_QUANTITY
+        )
+      `
+        )
+        .eq("CART_USER", user?.id);
 
-      if (cartProd?.cartProdId) {
-        const { data, error } = await supabase
+      if (cartError) {
+        console.error("Error fetching cart:", cartError.message);
+        return;
+      }
+
+      let cartId;
+      let existingCartProd = null;
+
+      if (cartData && cartData.length > 0) {
+        cartId = cartData[0].CART_ID;
+        existingCartProd = cartData[0].FACT_CART_PROD.find(
+          (prod) => String(prod.PRODUCT_FK) === String(productId)
+        );
+      }
+
+      if (existingCartProd) {
+        const newQuantity = existingCartProd.CART_QUANTITY + quantity;
+        const { error: updateError } = await supabase
           .from("FACT_CART_PROD")
-          .upsert([
-            {
-              CART_PROD_ID: cartProd?.cartProdId,
-              CART_FK: cartProd?.cartId,
-              PRODUCT_FK: id,
-              CART_QUANTITY: count,
-            },
-          ])
-          .eq("CART_PROD_ID", cartProd?.cartMaxProdId);
+          .update({ CART_QUANTITY: newQuantity })
+          .eq("CART_PROD_ID", existingCartProd.CART_PROD_ID);
 
-        if (error) {
-          console.error("Error adding product to cart:", error.message);
+        if (updateError) {
+          console.error("1", updateError.message);
+          console.log("qunatity problem");
+          return;
+        }
+      } else {
+        const { error: insertError } = await supabase
+          .from("FACT_CART_PROD")
+          .insert({
+            CART_FK: cartId,
+            PRODUCT_FK: productId,
+            CART_QUANTITY: quantity,
+          });
+
+        if (insertError) {
+          console.error(insertError.message);
           alert("An error occurred while adding the product to your cart.");
           return;
         }
-        if (data) {
-          console.log("Product added to cart successfully!");
-          alert("Product added to cart successfully!");
-          setCount(1);
-          return;
-        }
       }
-    } catch (err) {
-      console.error("Error fetching cart asdf:", err);
+
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while adding the product to your cart.");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -481,7 +470,7 @@ const ProductPage = () => {
                     <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3 xl:my-5 2xl:my-8">
                       <button
                         className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-base xl:mr-3 2xl:text-xl"
-                        onClick={() => handleAddCart()}
+                        onClick={() => handleAddCart(product.PRODUCT_ID, count)}
                       >
                         Add to Cart
                       </button>

@@ -14,7 +14,7 @@ export let ProductArray: Product[] = [];
 
 export const fetchCategories = async () => {
   console.log("Fetching categories...");
-  const { data, error } = await supabase
+  const { data: categoryData, error } = await supabase
     .from("DIM_CATEGORY")
     .select("*")
     .order("CATEGORY_ID", { ascending: true });
@@ -24,9 +24,29 @@ export const fetchCategories = async () => {
     return [];
   }
 
-  if (data) {
-    console.log("Fetched categories:", data);
+  if (categoryData) {
+    console.log("Fetched categories:", categoryData);
 
+    for (const category of categoryData) {
+      const { data: productData, error: productError } = await supabase
+        .from("PRODUCT")
+        .select("PRICE")
+        .eq("CATEGORY_ID", category.CATEGORY_ID)
+        .order("PRICE", { ascending: true })
+        .limit(1);
+
+      if (productError) {
+        console.error(
+          `Error fetching products for category ${category.CATEGORY_ID}:`,
+          productError.message
+        );
+        category.CategoryStartPrice = 0; // Default to 0 if there's an error
+      } else if (productData && productData.length > 0) {
+        category.CategoryStartPrice = productData[0].PRICE;
+      } else {
+        category.CategoryStartPrice = 0; // Default to 0 if no products found
+      }
+    }
     CategoryArray = [
       {
         CategoryID: 0,
@@ -35,7 +55,7 @@ export const fetchCategories = async () => {
         CategoryStartPrice: 0,
         CategoryImage: "",
       },
-      ...data.map((category: any) => ({
+      ...categoryData.map((category: any) => ({
         CategoryID: category.CATEGORY_ID,
         CategoryName: category.CATEGORY_NAME,
         CategoryDesc: category.CATEGORY_DESC || "",

@@ -90,8 +90,8 @@ export interface CheckoutProd {
   orderListId: number | null;
   prod_fk: number;
   meetupLoc: string | null;
-  meetupDate: string | undefined;
-  meetupTime: string | undefined;
+  meetupDate: string | null;
+  meetupTime: string | null;
   quantity: number;
   prodName: string;
   prodPrice: number;
@@ -99,6 +99,11 @@ export interface CheckoutProd {
   paymentMethod: string | null;
   paymentDate: string | null;
   paymentStatus: string | null;
+}
+
+export interface UserPayment {
+  paymentMethod: string;
+  paymentNumber: string;
 }
 
 // Define types for the context value
@@ -141,6 +146,8 @@ interface AuthContextType {
   setCheckoutProd: (value: CheckoutProd) => void;
   checkoutProds: CheckoutProd[];
   setCheckoutProds: (value: CheckoutProd[]) => void;
+  userPayment: UserPayment[];
+  setUserPayment: (value: UserPayment[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -203,6 +210,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [checkoutProd, setCheckoutProd] = useState<CheckoutProd | null>(null);
   const [checkoutProds, setCheckoutProds] = useState<CheckoutProd[]>([]);
+  const [userPayment, setUserPayment] = useState<UserPayment[]>([]);
 
   return (
     <AuthContext.Provider
@@ -245,6 +253,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setCheckoutProd,
         checkoutProds,
         setCheckoutProds,
+        userPayment,
+        setUserPayment,
       }}
     >
       {children}
