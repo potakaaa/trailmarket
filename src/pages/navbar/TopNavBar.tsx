@@ -53,26 +53,57 @@ const TopNavBar = () => {
 
     if (!category || !title || !feedback) {
       alert("Please fill in all fields.");
+      setIsLoading(false);
       return;
     }
 
     console.log("Form Data:", { category, title, feedback });
 
-    const { data, error } = await supabase.from("DIM_FEEDBACK").insert([
-      {
-        FEEDBACK_CAT: category,
-        FEEDBACK_TITLE: title,
-        FEEDBACK_DESC: feedback,
-        FEEDBACK_USER: user?.id,
-      },
-    ]);
+    const { data: feedbackData, error: feedbackError } = await supabase
+      .from("DIM_FEEDBACK")
+      .insert([
+        {
+          FEEDBACK_CAT: category,
+          FEEDBACK_TITLE: title,
+          FEEDBACK_DESC: feedback,
+          FEEDBACK_USER: user?.id,
+        },
+      ])
+      .select();
 
-    if (error) {
-      console.error("Error submitting feedback:", error.message);
-    } else {
-      console.log("Feedback submitted successfully:", data);
-      setIsFeedbackPopOpen(false);
+    if (feedbackError) {
+      console.error("Error submitting feedback:", feedbackError.message);
+      setIsLoading(false);
+      return;
     }
+
+    console.log("Feedback submitted successfully:", feedbackData);
+
+    if (feedbackData && feedbackData.length > 0) {
+      const feedbackId = feedbackData[0].FEEDBACK_ID; // Ensure this matches the primary key column name
+
+      const { error: issueError } = await supabase
+        .from("FACT_ISSUE_TRACKER")
+        .insert([
+          {
+            FEEDBACK_FK: feedbackId,
+            ISSUE_STAT: "Not Started",
+          },
+        ]);
+
+      if (issueError) {
+        console.error(
+          "Error creating issue tracker entry:",
+          issueError.message
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("Issue tracker entry created successfully");
+    }
+
+    setIsFeedbackPopOpen(false);
     setIsLoading(false);
   };
 
