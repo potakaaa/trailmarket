@@ -302,6 +302,10 @@ const ProductPage = () => {
     return null;
   };
 
+  {
+    /* LOGIC ERROR ON FETCHING AND UPSERTING DB */
+  }
+
   const fetchCart = async () => {
     const { data: fetchData, error: fetchError } = await supabase
       .from("DIM_CART")
@@ -330,10 +334,13 @@ const ProductPage = () => {
         cartId: fetchData[0].CART_ID,
         cartUser: fetchData[0].CART_USER,
         cartProdId: cartProdId,
-        cartMaxProdId: cartProdId === null ? 1 : await fetchMaxCartProdId(),
+        cartMaxProdId:
+          (await fetchMaxCartProdId()) === null
+            ? 1
+            : await fetchMaxCartProdId(),
       };
       setCartProd(tempCartProd);
-      console.log("Cart Prod id max:", tempCartProd.cartProdId);
+      console.log("Cart Prod id max:", tempCartProd.cartMaxProdId);
     }
   };
 
@@ -346,7 +353,7 @@ const ProductPage = () => {
           .from("FACT_CART_PROD")
           .upsert([
             {
-              CART_PROD_ID: cartProd?.cartProdId + 1,
+              CART_PROD_ID: cartProd?.cartProdId,
               CART_FK: cartProd?.cartId,
               PRODUCT_FK: id,
               CART_QUANTITY: count,
