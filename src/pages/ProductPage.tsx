@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { CheckoutProd, FactCart, useAuthContext } from "./context/AuthContext";
+import { CheckoutProd, useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
 
@@ -38,7 +38,6 @@ const ProductPage = () => {
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>(mainImage);
-  const [cartProd, setCartProd] = useState<FactCart | null>(null);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);

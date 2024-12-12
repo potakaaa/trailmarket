@@ -2,43 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 import { CartProd, Tax, useAuthContext } from "./context/AuthContext";
-import { TrashIcon } from "@heroicons/react/16/solid";
 import { BiTrash } from "react-icons/bi";
 
 const CartPage = () => {
   const nav = useNavigate();
 
-  const cartItems = [
-    {
-      cartItemId: 1,
-      cartItemImage:
-        "https://www.kalkstore.com/cdn/shop/articles/KL_WEB_BLOG_PORTADA_4420x2400_df689793-0c08-4d64-8872-7b415597a5ac.jpg?v=1654701916&width=700",
-      buyerName: "userAlpha4",
-      productName: "Big K Sling Chainbag",
-      unitPrice: 100,
-      quantity: 4,
-    },
-    {
-      cartItemId: 2,
-      cartItemImage:
-        "https://media.karousell.com/media/photos/products/2024/9/9/macbook_air_2018_13inch_core_i_1725901665_e2991c14_progressive.jpg",
-      buyerName: "grandnationalExperimental",
-      productName: "Apple MacBook M1",
-      unitPrice: 40000,
-      quantity: 1,
-    },
-    {
-      cartItemId: 3,
-      cartItemImage:
-        "https://img.ltwebstatic.com/images3_spmp/2023/05/19/1684480567b4c168018d222c224b27ece30b2d14f8_thumbnail_720x.jpg",
-      buyerName: "userAlpha4",
-      productName: "Some Colorful Notebooks",
-      unitPrice: 200,
-      quantity: 1,
-    },
-  ];
-
-  const [cartItemsState] = useState(cartItems);
   const [quantity, setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
