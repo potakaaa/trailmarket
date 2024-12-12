@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
-import { CartProd, Tax, useAuthContext } from "./context/AuthContext";
+import {
+  CartProd,
+  CheckoutProd,
+  Tax,
+  useAuthContext,
+} from "./context/AuthContext";
 import { BiTrash } from "react-icons/bi";
 
 const CartPage = () => {
@@ -20,6 +25,8 @@ const CartPage = () => {
     setTotalAmount,
     setTaxes,
     taxes,
+    setCheckoutProds,
+    checkoutProds,
   } = useAuthContext();
 
   const handleDelete = async (prod_id: number) => {
@@ -61,9 +68,9 @@ const CartPage = () => {
     );
     console.log("TAX", tempTax);
     if (tempTax?.amount) {
-      setTax((tempTax?.amount / 100) * subTotal);
+      setTax(Math.round((tempTax?.amount / 100) * subTotal));
       console.log("TOTAL", subTotal + tempTax?.amount);
-      setTotalAmount(subTotal + (tempTax?.amount / 100) * subTotal);
+      setTotalAmount(Math.round(subTotal + (tempTax?.amount / 100) * subTotal));
     }
   };
 
@@ -74,6 +81,29 @@ const CartPage = () => {
 
     console.log(tempSubTotal);
     setSubTotal(tempSubTotal);
+  };
+
+  const handleCheckout = () => {
+    const tempCheckoutProd: CheckoutProd[] = cart.map((item) => {
+      return {
+        orderId: null,
+        orderListId: null,
+        prod_fk: item?.prod_id,
+        meetupLoc: null,
+        meetupDate: null,
+        meetupTime: null,
+        quantity: item?.quantity,
+        prodName: item?.name,
+        prodPrice: item?.price,
+        prodImg: item?.img,
+        paymentMethod: null,
+        paymentDate: null,
+        paymentStatus: null,
+      };
+    });
+    setCheckoutProds(tempCheckoutProd);
+    nav("/checkout");
+    console.log(checkoutProds);
   };
 
   const getOrders = async () => {
@@ -233,21 +263,21 @@ const CartPage = () => {
               <div className="PaymentTransactionId"></div>
               <div className="PaymentOrderSummary">
                 <p className="text-sm font-medium">Sub Total</p>
-                <h1 className="pb-4 text-2xl">{subTotal}</h1>
+                <h1 className="pb-4 text-2xl">₱ {subTotal}</h1>
               </div>
               <div className="PaymentShippingFee">
                 <p className="text-sm font-medium">Tax</p>
-                <h1 className="pb-4 text-2xl">{tax}</h1>
+                <h1 className="pb-4 text-2xl">₱ {tax}</h1>
               </div>
               <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
                 <p className="text-sm font-normal">Total Amount</p>
-                <h1 className="text-2xl font-semibold">{totalAmount}</h1>
+                <h1 className="text-2xl font-semibold">₱ {totalAmount}</h1>
               </div>
             </div>
             <div className="PaymentButton w-full">
               <button
                 className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full text-base hover:text-lg hover:shadow-lg xl:text-lg xl:hover:text-xl transition-all duration-300"
-                onClick={() => nav("/checkout")}
+                onClick={() => handleCheckout()}
               >
                 Proceed to Payment
               </button>
