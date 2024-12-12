@@ -85,7 +85,7 @@ const HomePage = () => {
             )}
           </div>
         </div>
-        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4 justify-center">
+        <div className="HomePageProducts flex grid w-full flex-wrap flex-col md:flex-row md:grid-cols-2 xl:grid-cols-4 justify-center">
           {displayProducts.map((product) => (
             <Product
               key={product.id}

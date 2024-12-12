@@ -5,6 +5,7 @@ interface DropdownProps {
   onSelect: (value: string) => void;
   buttonStyle: string;
   optionStyle: string;
+  selected?: string; // Make the selected prop optional
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -12,9 +13,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   onSelect,
   buttonStyle,
   optionStyle,
+  selected, // Destructure the selected prop
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>(options[0]);
+  const [selectedOption, setSelectedOption] = useState<string>(
+    selected || options[0]
+  );
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);

@@ -114,6 +114,7 @@ const ProductPage = () => {
           PROD_NAME,
           PROD_PRICE,
           PROD_CONDITION,
+          PROD_SHORTDESC,
           PROD_CATEGORY,
           PROD_STOCKS,
           PROD_DESC,
@@ -225,6 +226,16 @@ const ProductPage = () => {
 
   const handleEdit = () => {
     console.log("Edit product");
+
+    nav("/product/edit", {
+      state: {
+        product: {
+          ...product,
+          mainImage: mainImage,
+          galleryImages: otherImages,
+        },
+      },
+    });
   };
 
   const handleDelete = async () => {
