@@ -304,19 +304,19 @@ const ProductPage = () => {
 
   const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd = {
-      orderId: null,
-      orderListId: null,
+      orderId: undefined,
+      orderListId: undefined,
       prod_fk: product.PRODUCT_ID,
-      meetupLoc: null,
-      meetupDate: null,
-      meetupTime: null,
+      meetupLoc: undefined,
+      meetupDate: undefined,
+      meetupTime: undefined,
       quantity: count,
       prodName: product.PROD_NAME,
       prodPrice: product.PROD_PRICE,
       prodImg: mainImage,
-      paymentMethod: null,
-      paymentDate: null,
-      paymentStatus: null,
+      paymentMethod: undefined,
+      paymentDate: undefined,
+      paymentStatus: undefined,
     };
     setCheckoutProds([...checkoutProds, tempCheckoutProd]);
     nav("/checkout");

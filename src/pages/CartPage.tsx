@@ -12,7 +12,7 @@ import { BiTrash } from "react-icons/bi";
 const CartPage = () => {
   const nav = useNavigate();
 
-  const [quantity, setQuantity] = useState(0);
+  const [setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
 
@@ -86,19 +86,19 @@ const CartPage = () => {
   const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd[] = cart.map((item) => {
       return {
-        orderId: null,
-        orderListId: null,
+        orderId: undefined,
+        orderListId: undefined,
         prod_fk: item?.prod_id,
-        meetupLoc: null,
-        meetupDate: null,
-        meetupTime: null,
+        meetupLoc: undefined,
+        meetupDate: undefined,
+        meetupTime: undefined,
         quantity: item?.quantity,
         prodName: item?.name,
         prodPrice: item?.price,
         prodImg: item?.img,
-        paymentMethod: null,
-        paymentDate: null,
-        paymentStatus: null,
+        paymentMethod: undefined,
+        paymentDate: undefined,
+        paymentStatus: undefined,
       };
     });
     setCheckoutProds(tempCheckoutProd);
@@ -163,6 +163,7 @@ const CartPage = () => {
             img: mainImage ? mainImage.PRODUCT_IMAGE : null, // Use the main image if found, otherwise null
             quantity: tempData[index].CART_QUANTITY,
           };
+          console.log(cartItem);
         }
       );
 

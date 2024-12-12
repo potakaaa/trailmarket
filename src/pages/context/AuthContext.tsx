@@ -86,19 +86,19 @@ export interface FactCart {
 }
 
 export interface CheckoutProd {
-  orderId: number | null;
-  orderListId: number | null;
+  orderId: number | undefined;
+  orderListId: number | undefined;
   prod_fk: number;
-  meetupLoc: string | null;
-  meetupDate: string | null;
-  meetupTime: string | null;
+  meetupLoc: string | undefined;
+  meetupDate: string | undefined;
+  meetupTime: string | undefined;
   quantity: number;
   prodName: string;
   prodPrice: number;
   prodImg: string | undefined;
-  paymentMethod: string | null;
-  paymentDate: string | null;
-  paymentStatus: string | null;
+  paymentMethod: string | undefined;
+  paymentDate: string | undefined;
+  paymentStatus: string | undefined;
 }
 
 export interface UserPayment {

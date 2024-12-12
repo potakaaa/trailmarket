@@ -72,6 +72,9 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
+  console.log(getCurrentTime());
+  console.log(getCurrentDate());
+
   const fetchTaxes = async () => {
     try {
       const { data } = await supabase.from("DIM_TAX").select("*");
