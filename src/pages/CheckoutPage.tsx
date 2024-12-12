@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Tax, useAuthContext, UserPayment } from "./context/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { supabase } from "../createClient";
 
 const CheckoutPage = () => {
   const {
-    checkoutProd,
     checkoutProds,
     setCheckoutProds,
     taxes,
@@ -18,7 +17,6 @@ const CheckoutPage = () => {
   } = useAuthContext();
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
-  const nav = useNavigate();
   const loc = useLocation();
 
   const deliveryLocationOptions = [
@@ -30,8 +28,6 @@ const CheckoutPage = () => {
     "Gym Lobby",
     "Old CSM",
   ];
-
-  const deliveryMethodOptions = ["Pickup", "Delivery"];
 
   const OrderPaymentMethod = [
     "Cash on Delivery",
@@ -60,21 +56,6 @@ const CheckoutPage = () => {
     }
   };
 
-  const PaymentInformation = [
-    {
-      paymentMethod: "GCash",
-      paymentInfo: "09123456789",
-    },
-    {
-      paymentMethod: "PayMaya",
-      paymentInfo: "09123456789",
-    },
-    {
-      paymentMethod: "Credit Card",
-      paymentInfo: "**** **** **** 1234",
-    },
-  ];
-
   const getCurrentTime = () => {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, "0");
@@ -90,6 +71,9 @@ const CheckoutPage = () => {
     const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  console.log(getCurrentTime());
+  console.log(getCurrentDate());
 
   const fetchTaxes = async () => {
     try {

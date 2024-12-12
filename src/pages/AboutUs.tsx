@@ -27,7 +27,7 @@ const AboutUs = () => {
             </div>
             <div className="img-container w-full mt-1 sm:px-5 sm:pb-5 md:px-8 lg:p-0">
               <img
-                src="public\img\ustp.jpg"
+                src="https://vcebzlxdqipnbipntjkr.supabase.co/storage/v1/object/public/trailmarket-images/display/ustp.jpg?t=2024-12-12T15%3A52%3A17.649Z"
                 alt="TrailMarket"
                 className="size-full object-cover rounded-xl shadow-md w-full lg:rounded-l-none"
               />
