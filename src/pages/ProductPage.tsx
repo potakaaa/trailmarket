@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
-import { useParams, useNavigate, data } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { CartProd, FactCart, useAuthContext } from "./context/AuthContext";
+import { FactCart, useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
 
@@ -212,6 +212,10 @@ const ProductPage = () => {
     setCount(count + 1);
   };
 
+  const handeUserVisit = () => {
+    nav(`/profile/${product.SELLER_ID}`);
+  };
+
   const handleMinus = () => {
     if (count != 1) {
       setCount(count - 1);
@@ -409,7 +413,7 @@ const ProductPage = () => {
                 <div className="product-details flex-[5] flex flex-col xl:my-4 xl:mr-4 2xl:flex-[0]">
                   <div className="product-name flex-[1] 2xl:flex-[0] items-center justify-centerbg-gray-100 rounded-lg m-2 sm:m-5 md:mx-6">
                     <div>
-                      <button>
+                      <button onClick={handeUserVisit}>
                         <div className="flex flex-row align-middle space-x-2 items-center">
                           <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
                             <img

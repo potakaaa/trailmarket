@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Product as ProductType } from "./context/Globals";
 import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import { v4 as uuidv4 } from "uuid";
 
 type User = {
   id: string;
@@ -14,27 +15,35 @@ type User = {
   email: string;
   facebook: string | null;
   image: string | "https://via.placeholder.com/150";
+  isEditing?: boolean;
 };
 
 const placeholder = "https://via.placeholder.com/150";
 const UserPage = () => {
-  const { user } = useAuthContext();
+  const { user, setIsLoading } = useAuthContext();
   const { userId } = useParams<{ userId: string }>();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [pageOwner, setPageOwner] = useState<User | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
   type PaymentMethod = {
     id: string;
     method: string;
     account: string;
+    isEditing?: boolean;
   };
 
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [allPaymentMethods, setAllPaymentMethods] = useState<
+    (PaymentMethod & { status: "new" | "modified" | "saved" | "deleted" })[]
+  >([]);
+  const [tempPaymentMethods, setTempPaymentMethods] = useState<
+    (PaymentMethod & { status: "new" | "modified" | "saved" | "deleted" })[]
+  >([]);
   const [isEditing, setIsEditing] = useState(false);
   const [newPaymentMethod, setNewPaymentMethod] = useState({
     method: "",
     account: "",
   });
-
   const [formValues, setFormValues] = useState({
     name: pageOwner?.name || "",
     age: pageOwner?.age || "",
@@ -43,6 +52,238 @@ const UserPage = () => {
     facebook: pageOwner?.facebook || "",
     image: pageOwner?.image || placeholder,
   });
+  const [tempFormValues, setTempFormValues] = useState({ ...formValues });
+
+  const handleAddPaymentMethod = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent the form from refreshing the page
+
+    // Validate the input fields
+    if (!newPaymentMethod.method.trim() || !newPaymentMethod.account.trim()) {
+      alert("Please fill in both fields.");
+      return;
+    }
+
+    // Create a new payment method object without an ID
+    const newMethod: PaymentMethod & {
+      status: "new" | "modified" | "saved" | "deleted";
+    } = {
+      id: "", // Temporary empty ID
+      method: newPaymentMethod.method.trim(),
+      account: newPaymentMethod.account.trim(),
+      status: "new", // Mark as new
+    };
+
+    // Update the temporary payment methods
+    setTempPaymentMethods((prev) => [...prev, newMethod]);
+
+    // Reset the input fields
+    setNewPaymentMethod({ method: "", account: "" });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setTempPaymentMethods([...allPaymentMethods]);
+    setTempFormValues({ ...formValues });
+  };
+
+  const handleEditPaymentMethod = (id: string) => {
+    setTempPaymentMethods((prev) =>
+      prev.map((method) =>
+        method.id === id ? { ...method, isEditing: !method.isEditing } : method
+      )
+    );
+  };
+
+  const handleEditPaymentMethodField = (
+    id: string,
+    field: keyof PaymentMethod,
+    value: string
+  ) => {
+    setTempPaymentMethods((prev) =>
+      prev.map((method) =>
+        method.id === id ? { ...method, [field]: value } : method
+      )
+    );
+  };
+
+  const handleSavePaymentMethod = (id: string) => {
+    setTempPaymentMethods((prev) =>
+      prev.map((method) =>
+        method.id === id
+          ? { ...method, isEditing: false, status: "modified" }
+          : method
+      )
+    );
+  };
+
+  const handleDeletePaymentMethod = (id: string) => {
+    setTempPaymentMethods((prev) =>
+      prev.map((method) =>
+        method.id === id ? { ...method, status: "deleted" } : method
+      )
+    );
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    const folderPath = "users";
+    try {
+      let newImageUrl = tempFormValues.image;
+
+      // Upload the image if a new file is present
+      if (imageFile) {
+        const uniqueName = `${folderPath}/${uuidv4()}-${imageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("trailmarket-images")
+          .upload(uniqueName, imageFile);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError.message);
+          return;
+        }
+
+        newImageUrl = supabase.storage
+          .from("trailmarket-images")
+          .getPublicUrl(uniqueName).data.publicUrl;
+      }
+
+      const oldImageUrl = formValues.image;
+
+      // Update user details
+      if (!pageOwner) {
+        console.error("Page owner is null");
+        return;
+      }
+
+      const { error: userError } = await supabase
+        .from("DIM_USER")
+        .update({
+          USER_NAME: tempFormValues.name,
+          USER_AGE: tempFormValues.age,
+          USER_CONTACTNUM: tempFormValues.contact_num,
+          USER_EMAIL: tempFormValues.email,
+          USER_FB: tempFormValues.facebook,
+          USER_IMAGE: newImageUrl,
+        })
+        .eq("STUDENT_ID", pageOwner.id);
+
+      if (userError) {
+        console.error("Error updating user details:", userError.message);
+        return;
+      }
+      if (oldImageUrl) {
+        const filePath = new URL(oldImageUrl).pathname.replace(
+          "/storage/v1/object/public/trailmarket-images/",
+          ""
+        );
+
+        if (filePath) {
+          try {
+            const url = new URL(oldImageUrl);
+            const filePath = url.pathname.replace(
+              "/storage/v1/object/public/trailmarket-images/",
+              ""
+            );
+            console.log("Deleting old image:", oldImageUrl);
+
+            if (filePath) {
+              const { error: deleteError } = await supabase.storage
+                .from("trailmarket-images")
+                .remove([filePath]);
+
+              if (deleteError) {
+                console.error("Error deleting old image:", deleteError.message);
+                return;
+              }
+            }
+          } catch (error) {
+            if (error instanceof Error) {
+              console.error("Invalid URL:", oldImageUrl, error.message);
+            } else {
+              console.error("Invalid URL:", oldImageUrl);
+            }
+            return;
+          }
+        }
+      }
+      const updatedMethods = tempPaymentMethods.filter(
+        (method) => method.status !== "deleted"
+      );
+      const deletedMethods = tempPaymentMethods.filter(
+        (method) => method.status === "deleted"
+      );
+
+      for (const method of updatedMethods) {
+        const { data, error: methodError } = await supabase
+          .from("DIM_PAYMENTMETHOD")
+          .upsert({
+            PAYMENTMETHOD_ID: method.status === "new" ? undefined : method.id,
+            PAYMENT_METHOD: method.method,
+            ACCOUNT_NUMBER: method.account,
+            USER_PAY_FK: pageOwner.id,
+          })
+          .select();
+
+        if (methodError) {
+          console.error("Error updating payment method:", methodError.message);
+          return;
+        }
+
+        // Update the method ID if it was newly inserted
+        if (method.status === "new" && data && data.length > 0) {
+          method.id = data[0].PAYMENTMETHOD_ID;
+          method.status = "saved";
+        }
+      }
+
+      for (const method of deletedMethods) {
+        const { error: deleteError } = await supabase
+          .from("DIM_PAYMENTMETHOD")
+          .delete()
+          .eq("PAYMENTMETHOD_ID", method.id);
+
+        if (deleteError) {
+          console.error("Error deleting payment method:", deleteError.message);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+
+    setIsEditing(false);
+    setIsLoading(false);
+  };
+
+  const handleCancel = () => {
+    setTempFormValues({ ...formValues });
+    setTempPaymentMethods([...allPaymentMethods]);
+    setIsEditing(false);
+  };
+
+  const isOwner = String(user?.id) === String(userId);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setTempFormValues((prev) => ({
+        ...prev,
+        image: reader.result as string,
+      }));
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+    noClick: !isEditing,
+    noDrag: !isEditing,
+  });
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       const { data, error } = await supabase
@@ -68,6 +309,7 @@ const UserPage = () => {
 
       setPageOwner(formattedData);
       setFormValues(formattedData);
+      setTempFormValues(formattedData);
     };
 
     const fetchProducts = async () => {
@@ -127,74 +369,16 @@ const UserPage = () => {
         id: item.PAYMENTMETHOD_ID,
         method: item.PAYMENT_METHOD,
         account: item.ACCOUNT_NUMBER,
+        status: "saved" as const,
       }));
-      setPaymentMethods(formattedData);
+      setAllPaymentMethods(formattedData);
+      setTempPaymentMethods(formattedData);
     };
 
     fetchUserDetails();
     fetchProducts();
     fetchPaymentMethods();
   }, [userId]);
-
-  const handleEdit = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const handleAddPaymentMethod = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    if (!newPaymentMethod.method || !newPaymentMethod.account) {
-      alert("Please fill in both fields.");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("PAYMENT_METHODS")
-      .insert([
-        {
-          USER_PAY_FK: userId,
-          PAYMENT_METHOD: newPaymentMethod.method,
-          ACCOUNT_NUMBER: newPaymentMethod.account,
-        },
-      ])
-      .select("PAYMENTMETHOD_ID");
-
-    if (error) {
-      console.error("Error adding payment method:", error.message);
-      return;
-    }
-
-    if (data) {
-      setPaymentMethods((prev) => [
-        ...prev,
-        {
-          id: data[0].PAYMENTMETHOD_ID,
-          method: newPaymentMethod.method,
-          account: newPaymentMethod.account,
-        },
-      ]);
-    }
-    setNewPaymentMethod({ method: "", account: "" });
-  };
-
-  const isOwner = String(user?.id) === String(userId);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFormValues((prev) => ({ ...prev, image: reader.result as string }));
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: { "image/*": [] },
-    noClick: !isEditing,
-    noDrag: !isEditing,
-  });
 
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
@@ -208,11 +392,11 @@ const UserPage = () => {
                     isEditing ? "w-24 h-24" : "w-12 h-12"
                   } rounded-full overflow-hidden border border-black`}
                 >
-                  <div {...getRootProps()}>
+                  <div {...getRootProps()} className="h-full w-full">
                     <input {...getInputProps()} />
                     <img
                       className="object-cover h-full w-full"
-                      src={formValues.image || placeholder}
+                      src={tempFormValues.image || placeholder}
                       alt="Profile"
                     />
                   </div>
@@ -235,10 +419,10 @@ const UserPage = () => {
                       id="name"
                       className="flex-1 rounded-xl border-2 border-black p-1"
                       type="text"
-                      value={formValues.name}
+                      value={tempFormValues.name}
                       readOnly={!isOwner || !isEditing}
                       onChange={(e) =>
-                        setFormValues((prev) => ({
+                        setTempFormValues((prev) => ({
                           ...prev,
                           name: e.target.value,
                         }))
@@ -251,10 +435,10 @@ const UserPage = () => {
                       id="age"
                       className="flex-1 rounded-xl border-2 border-black p-1"
                       type="number"
-                      value={formValues.age ?? ""}
+                      value={tempFormValues.age ?? ""}
                       readOnly={!isOwner || !isEditing}
                       onChange={(e) =>
-                        setFormValues((prev) => ({
+                        setTempFormValues((prev) => ({
                           ...prev,
                           age: Number(e.target.value),
                         }))
@@ -268,10 +452,10 @@ const UserPage = () => {
                       id="contact"
                       className="flex-1 rounded-xl border-2 border-black p-1"
                       type="text"
-                      value={formValues.contact_num ?? ""}
+                      value={tempFormValues.contact_num ?? ""}
                       readOnly={!isOwner || !isEditing}
                       onChange={(e) =>
-                        setFormValues((prev) => ({
+                        setTempFormValues((prev) => ({
                           ...prev,
                           contact_num: Number(e.target.value),
                         }))
@@ -284,10 +468,10 @@ const UserPage = () => {
                       id="email"
                       className="flex-1 rounded-xl border-2 border-black p-1"
                       type="email"
-                      value={formValues.email}
+                      value={tempFormValues.email}
                       readOnly={!isOwner || !isEditing}
                       onChange={(e) =>
-                        setFormValues((prev) => ({
+                        setTempFormValues((prev) => ({
                           ...prev,
                           email: e.target.value,
                         }))
@@ -300,10 +484,10 @@ const UserPage = () => {
                       id="facebook"
                       className="flex-1 rounded-xl border-2 border-black p-1"
                       type="text"
-                      value={formValues.facebook ?? ""}
+                      value={tempFormValues.facebook ?? ""}
                       readOnly={!isOwner || !isEditing}
                       onChange={(e) =>
-                        setFormValues((prev) => ({
+                        setTempFormValues((prev) => ({
                           ...prev,
                           facebook: e.target.value,
                         }))
@@ -314,28 +498,79 @@ const UserPage = () => {
                   <button type="submit"></button>
                 </form>
 
-                <div className="Payment-options flex flex-row items-center align-start  flex-1 w-full">
+                <div className="Payment-methods flex flex-row items-center align-start  flex-1 w-full">
                   <div className="w-32 flex align-top ">
                     <label className=" font-normal w-32">Payment Options</label>
                   </div>
 
                   <div className="flex flex-col space-y-4 flex-grow-0 w-full">
-                    {paymentMethods.length > 0 ? (
-                      paymentMethods.map((option, index) => (
-                        <div key={index} className="flex flex-row w-full mb-4">
-                          <div className="flex-[1] flex rounded-tl-xl rounded-bl-xl border-black border-2 p-2 w-full bg-gray-100">
-                            {option.method}
+                    {tempPaymentMethods.map(
+                      (method) =>
+                        method.status !== "deleted" && (
+                          <div
+                            key={method.id}
+                            className="flex flex-row items-center space-x-2"
+                          >
+                            <input
+                              type="text"
+                              value={method.method}
+                              readOnly={!method.isEditing}
+                              onChange={(e) =>
+                                handleEditPaymentMethodField(
+                                  method.id,
+                                  "method",
+                                  e.target.value
+                                )
+                              }
+                              className="flex-1 rounded-xl border-2 border-black p-1"
+                            />
+                            <input
+                              type="text"
+                              value={method.account}
+                              readOnly={!method.isEditing}
+                              onChange={(e) =>
+                                handleEditPaymentMethodField(
+                                  method.id,
+                                  "account",
+                                  e.target.value
+                                )
+                              }
+                              className="flex-1 rounded-xl border-2 border-black p-1"
+                            />
+
+                            {isEditing &&
+                              (method.isEditing ? (
+                                <button
+                                  onClick={() =>
+                                    handleSavePaymentMethod(method.id)
+                                  }
+                                  className="px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
+                                >
+                                  Save
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    handleEditPaymentMethod(method.id)
+                                  }
+                                  className="px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
+                                >
+                                  Edit
+                                </button>
+                              ))}
+
+                            {isEditing && (
+                              <button
+                                onClick={() =>
+                                  handleDeletePaymentMethod(method.id)
+                                }
+                                className="px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
+                              >
+                                Delete
+                              </button>
+                            )}
                           </div>
-                          <input
-                            id={`PaymentOption${index + 1}`}
-                            className="flex-[5] flex rounded-tr-xl rounded-br-xl border-2 border-black p-1"
-                            value={option.account}
-                            readOnly
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <p>No payment methods available.</p>
+                        )
                     )}
                     {isOwner && isEditing && (
                       <form onSubmit={handleAddPaymentMethod}>
@@ -375,14 +610,30 @@ const UserPage = () => {
                     )}
                   </div>
                 </div>
-                {isOwner && (
-                  <button
-                    onClick={handleEdit}
-                    className="px-3 py-2 text-xs border-2 border-black bg-black text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
-                  >
-                    {isEditing ? "Save" : "Edit"}
-                  </button>
-                )}
+                {isOwner &&
+                  (isEditing ? (
+                    <div className="flex flex-row">
+                      <button
+                        onClick={handleSave}
+                        className="px-3 py-2 text-xs border-2 border-black bg-black text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancel}
+                        className="px-3 py-2 text-xs border-2 border-black bg-black text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleEdit}
+                      className="px-3 py-2 text-xs border-2 border-black bg-black text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
+                    >
+                      Edit
+                    </button>
+                  ))}
               </div>
             </div>
           </div>
