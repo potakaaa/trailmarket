@@ -62,7 +62,7 @@ const Product: React.FC<ProductProps> = ({
   }, [sellerId]);
 
   return (
-    <div className="PRODUCT-CONTAINER space-y-3 flex flex-col w-full p-4 md:max-w-md">
+    <div className="PRODUCT-CONTAINER group space-y-3 flex flex-col w-60 sm:w-72 p-4 md:max-w-md hover:shadow-xl rounded-xl transition-all duration-300 hover:w-64 sm:hover:w-80">
       <button
         className="flex flex-col gap-3"
         onClick={() => {
@@ -70,13 +70,9 @@ const Product: React.FC<ProductProps> = ({
         }}
       >
         <div className="flex w-full rounded-xl overflow-hidden aspect-square">
-          <img
-            src={imageUrl}
-            className="object-cover w-full h-full"
-            alt={name}
-          />
+          <img src={imageUrl} className="object-cover shadow-md" alt={name} />
         </div>
-        <div className="flex w-full bg-zinc-900 rounded-xl p-4 flex-row">
+        <div className="flex w-full bg-zinc-900 rounded-xl h-36 p-4 flex-col">
           <div className="left-side flex-[3] flex flex-col align-top">
             <div className="flex flex-row align-middle space-x-2">
               <div className="w-4 h-4 rounded-full overflow-hidden border border-black">
@@ -86,15 +82,19 @@ const Product: React.FC<ProductProps> = ({
                   alt="User"
                 />
               </div>
-              <p className="text-xs align-middle text-white">{username}</p>
+              <p className="text-[10px] sm:text-xs align-middle text-left justify-center items-center flex text-white">
+                {username}
+              </p>
             </div>
-            <h2 className="text-white text-left font-normal text-sm">{name}</h2>
-          </div>
-          <div className="right-side flex flex-[2] flex-col justify-start text-right">
-            <h2 className="text-white text-2xl md:text-lg xl:text-2xl">
-              PHP {price.toFixed(2)} pesos
+            <h2 className="text-white font-medium text-center text-xs sm:text-sm my-2">
+              {name}
             </h2>
-            <h2 className="text-white font-normal text-sm md:text-xs xl:text-sm">
+          </div>
+          <div className="right-side flex flex-[2] flex-col justify-start text-center">
+            <h2 className="text-white text-lg md:text-lg xl:text-2xl">
+              ₱ {price.toFixed(2)} pesos
+            </h2>
+            <h2 className="text-white font-normal text-xs md:text-xs xl:text-sm">
               Stock available: {stock}
             </h2>
           </div>

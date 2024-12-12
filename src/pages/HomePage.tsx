@@ -70,7 +70,7 @@ const HomePage = () => {
               Pick one to simplify your search
             </p>
           </div>
-          <div className="CategoriesBody sm:grid-cols-1 grid md:grid-cols-2 lg:grid-cols-4 gap">
+          <div className="CategoriesBody sm:grid-cols-1 grid md:grid-cols-2 xl:grid-cols-4 gap">
             {CategoryArray.filter((_, index) => index !== 0).map(
               (category, index) => (
                 <HomePageCategories
@@ -85,7 +85,7 @@ const HomePage = () => {
             )}
           </div>
         </div>
-        <div className="HomePageProducts flex w-full flex-wrap md:grid-cols-2 xl:grid-cols-4 justify-center">
+        <div className="HomePageProducts flex w-full flex-wrap grid-cols-2 xl:grid-cols-4 justify-center">
           {displayProducts.map((product) => (
             <Product
               key={product.id}
