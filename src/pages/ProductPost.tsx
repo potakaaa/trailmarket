@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { supabase } from "../createClient";
 import Dropdown from "./DropDown";
@@ -9,22 +9,58 @@ import { v4 as uuidv4 } from "uuid";
 
 const placeholder = "https://via.placeholder.com/150";
 const placeholderArr = Array(4).fill(placeholder);
+
+const urlToFile = async (url: string, filename: string, mimeType: string) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new File([blob], filename, { type: mimeType });
+};
+
 const ProductPost = () => {
+  const location = useLocation();
+  const existingProduct = location.state?.product || null;
+  const isEditMode = !!existingProduct;
   const [input, setInput] = useState({
     name: "",
     description: "",
     short_desc: "",
     price: "",
     stock: "",
-    category: 0, // Store category ID as a number
+    category: 0,
     condition: "",
   });
 
   const [images, setImages] = useState<File[]>([]);
   const [mainImage, setMainImage] = useState<File | null>(null);
+  const [galleryImages, setGalleryImages] = useState<File[]>([]);
   const [isPlaceholder, setIsPlaceholder] = useState(true);
   const { user } = useAuthContext();
   const nav = useNavigate();
+
+  useEffect(() => {
+    if (isEditMode && existingProduct) {
+      // Pre-fill form fields with existing product data
+      setInput({
+        name: existingProduct.PROD_NAME || "",
+        description: existingProduct.PROD_DESC || "",
+        short_desc: existingProduct.PROD_SHORTDESC || "",
+        price: existingProduct.PROD_PRICE || "",
+        stock: existingProduct.PROD_STOCKS || "",
+        category: existingProduct.PROD_CATEGORY || 0,
+        condition: existingProduct.PROD_CONDITION || "",
+      });
+
+      setMainImage(existingProduct.mainImage || null);
+      setGalleryImages(existingProduct.galleryImages || []);
+    }
+  }, [isEditMode, existingProduct]);
+
+  useEffect(() => {
+    if (existingProduct) {
+      setMainImage(existingProduct.mainImage || null); // Set the main image
+      setGalleryImages(existingProduct.images || []); // Set additional gallery images
+    }
+  }, [existingProduct]);
 
   useEffect(() => {
     fetchCategories();
@@ -105,8 +141,6 @@ const ProductPost = () => {
     setMainImage(image);
     setIsPlaceholder(false);
   };
-
-  const [galleryImages, setGalleryImages] = useState<File[]>([]);
 
   useEffect(() => {
     setGalleryImages(images.filter((image) => image !== mainImage));
@@ -245,7 +279,9 @@ const ProductPost = () => {
     <div className="app-wrapper bg-white flex flex-col items-center justify-center min-h-screen overflow-y-auto">
       <div className="post-page p-6 flex flex-col flex-1 h-full w-full rounded-xl">
         <div className="justify-center align-center flex bg-gradient-to-r from-[#26245f] to-[#18181b] text-white rounded-xl p-4">
-          <h1 className="text-xl">Post a Product</h1>
+          <h1 className="text-xl">
+            {!isEditMode ? "Post a Product" : "Edit Product"}
+          </h1>
         </div>
         <div className="main-app flex w-full flex-col justify-center space-y-2 lg:flex-row space-x-2">
           <div className="left flex w-full h-full flex-col space-y-4 md:flex-[3] lg:flex-[4] xl:flex-[5.5]">
@@ -258,6 +294,7 @@ const ProductPost = () => {
                     id="name"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                     type="text"
+                    value={input.name}
                     placeholder="Make the product name stand out!"
                     onChange={handleChange}
                   />
@@ -266,6 +303,7 @@ const ProductPost = () => {
                   <label htmlFor="description">Full Description</label>
                   <textarea
                     id="description"
+                    value={input.description}
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y text-wrap"
                     placeholder="Enter the full description"
                     onChange={handleChange}
@@ -277,6 +315,7 @@ const ProductPost = () => {
                     id="short_desc"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                     type="text"
+                    value={input.short_desc}
                     placeholder="Be concise, but poignant"
                     onChange={handleChange}
                   />
@@ -292,6 +331,7 @@ const ProductPost = () => {
                     id="price"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 w-full"
                     type="number"
+                    value={input.price}
                     placeholder="Input a number"
                     onChange={handleChange}
                   />
@@ -302,6 +342,7 @@ const ProductPost = () => {
                     id="stock"
                     className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500  w-full"
                     type="number"
+                    value={input.stock}
                     placeholder="Input a number"
                     onChange={handleChange}
                   />
@@ -316,6 +357,11 @@ const ProductPost = () => {
                       optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                       onSelect={handleCategorySelect}
                       options={options}
+                      selected={
+                        CategoryArray.find(
+                          (cat) => cat.CategoryID === input.category
+                        )?.CategoryName
+                      }
                     ></Dropdown>
                   </div>
                 </div>
@@ -330,6 +376,7 @@ const ProductPost = () => {
                           id="condition"
                           className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
                           type="text"
+                          value={input.condition}
                           placeholder="Set Condition"
                           onChange={handleChange}
                         />

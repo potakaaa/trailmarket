@@ -47,6 +47,10 @@ const router = createHashRouter([
             element: <ProductPage />,
           },
           {
+            path: "product/edit",
+            element: <ProductPost />,
+          },
+          {
             path: "navbar2",
             element: <TopNavBar />,
           },

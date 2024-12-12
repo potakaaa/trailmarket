@@ -805,7 +805,7 @@ const UserPage = () => {
           </div>
         </div>
         <div className="bot-seller-page flex flex-[2]   flex-col rounded-xl">
-          <div className="products-container flex flex-1 p-3 flex-col space-y-3 md:flex-row overflow-x-scroll">
+          <div className="products-container flex flex-1 p-3 flex-col space-y-3 md:flex-row md:overflow-x-scroll">
             {products.map((product) => (
               <Product key={product.id} {...product} />
             ))}
