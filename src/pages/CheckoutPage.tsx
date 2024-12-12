@@ -1,53 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Tax, useAuthContext, UserPayment } from "./context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "../createClient";
 
 const CheckoutPage = () => {
-  const orderItems = [
-    {
-      orderItemId: 1,
-      orderItemImage:
-        "https://www.kalkstore.com/cdn/shop/articles/KL_WEB_BLOG_PORTADA_4420x2400_df689793-0c08-4d64-8872-7b415597a5ac.jpg?v=1654701916&width=700",
-      buyerName: "userAlpha4",
-      productName: "Big K Sling Chainbag",
-      unitPrice: 100,
-      quantity: 4,
-      deliveryLocation: "CITC",
-      deliveryMethodOptions: "Pickup",
-      deliveryDate: "2024-12-07",
-      deliveryTime: "10:00",
-      shippingFee: 0,
-      paymentMethod: "Cash on Delivery",
-    },
-    {
-      orderItemId: 2,
-      orderItemImage:
-        "https://media.karousell.com/media/photos/products/2024/9/9/macbook_air_2018_13inch_core_i_1725901665_e2991c14_progressive.jpg",
-      buyerName: "grandnationalExperimental",
-      productName: "Apple MacBook M1",
-      unitPrice: 40000,
-      quantity: 1,
-      deliveryLocation: "CEA",
-      deliveryMethodOptions: "Delivery",
-      deliveryDate: "2024-12-03",
-      deliveryTime: "11:00",
-      shippingFee: 50,
-      paymentMethod: "GCash",
-    },
-    {
-      orderItemId: 3,
-      orderItemImage:
-        "https://img.ltwebstatic.com/images3_spmp/2023/05/19/1684480567b4c168018d222c224b27ece30b2d14f8_thumbnail_720x.jpg",
-      buyerName: "userAlpha4",
-      productName: "Some Colorful Notebooks",
-      unitPrice: 200,
-      quantity: 1,
-      deliveryLocation: "Study Shed 2",
-      deliveryMethodOptions: "Pickup",
-      deliveryDate: "2024-12-05",
-      deliveryTime: "15:00",
-      shippingFee: 0,
-      paymentMethod: "PayMaya",
-    },
-  ];
+  const {
+    checkoutProd,
+    checkoutProds,
+    setCheckoutProds,
+    taxes,
+    setTaxes,
+    totalAmount,
+    setTotalAmount,
+    user,
+    userPayment,
+    setUserPayment,
+  } = useAuthContext();
+  const [subTotal, setSubTotal] = useState(0);
+  const [tax, setTax] = useState(0);
+  const nav = useNavigate();
+  const loc = useLocation();
 
   const deliveryLocationOptions = [
     "CITC",
@@ -68,6 +40,26 @@ const CheckoutPage = () => {
     "Credit Card",
   ];
 
+  const fetchUserPayment = async () => {
+    const { data, error } = await supabase
+      .from("DIM_PAYMENTMETHOD")
+      .select("*")
+      .eq("USER_PAY_FK", user?.id);
+
+    if (error) {
+      console.error("Error fetching payment data:", error);
+    }
+    if (data) {
+      console.log(data);
+      const tempUserPay: UserPayment[] = data.map((payment: any) => ({
+        paymentMethod: payment.PAYMENT_METHOD,
+        paymentNumber: payment.ACCOUNT_NUMBER,
+      }));
+      setUserPayment(tempUserPay);
+      console.log("USER PAYMENT", userPayment);
+    }
+  };
+
   const PaymentInformation = [
     {
       paymentMethod: "GCash",
@@ -83,7 +75,86 @@ const CheckoutPage = () => {
     },
   ];
 
-  const [orderItemsState, setorderItemsState] = useState(orderItems);
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const fetchTaxes = async () => {
+    try {
+      const { data } = await supabase.from("DIM_TAX").select("*");
+      if (data) {
+        const tempTaxes: Tax[] = data.map((tax: any) => ({
+          id: tax.TAX_ID,
+          low: tax.TAX_BRACKET_LOW,
+          high: tax.TAX_BRACKET_HIGH,
+          amount: tax.TAX_AMOUNT,
+        }));
+        setTaxes(tempTaxes);
+        console.log("TAX", taxes);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const calculateTax = () => {
+    const tempTax = taxes.find(
+      (tax) => subTotal >= tax.low && subTotal <= tax.high
+    );
+    console.log("TAX", tempTax);
+    if (tempTax?.amount) {
+      setTax((tempTax?.amount / 100) * subTotal);
+      console.log("TOTAL", subTotal + tempTax?.amount);
+      setTotalAmount(Math.round(subTotal + (tempTax?.amount / 100) * subTotal));
+    }
+  };
+
+  const calculateSubTotal = () => {
+    const tempSubTotal = checkoutProds.reduce((sum: number, item: any) => {
+      return sum + item?.prodPrice * item?.quantity;
+    }, 0);
+
+    console.log(tempSubTotal);
+    setSubTotal(tempSubTotal);
+  };
+
+  useEffect(() => {
+    fetchTaxes();
+    fetchUserPayment();
+  }, []);
+
+  useEffect(() => {
+    calculateSubTotal();
+  }, [checkoutProds]);
+
+  useEffect(() => {
+    if (subTotal > 0) {
+      calculateTax();
+    }
+  }, [subTotal]);
+
+  // Optional: Effect to log the final total when it's calculated
+  useEffect(() => {
+    console.log("Final Total Amount:", totalAmount);
+  }, [totalAmount]);
+
+  useEffect(() => {
+    if (loc.pathname != "/checkout") {
+      setCheckoutProds([]);
+    }
+  }, [checkoutProds]);
 
   return (
     <div>
@@ -92,138 +163,86 @@ const CheckoutPage = () => {
       </div>
       <div className="OrderBody flex flex-col xl:flex-row m-5 gap-4">
         <div className="OrderItemList shadow-2xl flex flex-col items-stretch xl:w-2/3 sm:w-full h-full rounded-xl px-4">
-          {orderItemsState.map((item) => (
+          {checkoutProds.map((item) => (
             <div
-              key={item.orderItemId}
+              key={item.orderListId}
               className={`orderItem flex-1 h-full flex-col py-4 xl:max-h-[300px] px-4 ${
-                orderItemsState.indexOf(item) !== orderItemsState.length - 1
-                  ? "border-b-2 border-gray-400"
-                  : ""
+                checkoutProds ? "border-b-2 border-gray-400" : ""
               }`}
             >
-              <div className="orderItemTop flex justify-between h-[60px]">
-                <div className="orderItemImage w-[15%] overflow-hidden rounded-xl">
+              <div className="orderItemTop flex justify-between h-full">
+                <div className="orderItemImage size-24 overflow-hidden rounded-xl">
                   <img
-                    src={item.orderItemImage}
-                    alt={item.productName}
-                    className="Image w-32 h-32 object-cover"
+                    src={item.prodImg}
+                    alt={item.prodName}
+                    className="Image size-32 object-cover"
                   />
                 </div>
                 <div className="w-full flex justify-between items-center p-4">
                   <div>
-                    <p className="text-sm">{item.productName}</p>
-                    <p className="text-sm text-gray-700 font-medium">
+                    <p className="text-sm md:text-base xl:text-xl">
+                      {item.prodName}
+                    </p>
+                    <p className="text-sm md:text-base xl:text-lg text-gray-700 font-medium">
                       Qty: {item.quantity}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-right">
-                      PHP {item.unitPrice * item.quantity}
+                    <p className="text-xs sm:text-sm md:text-base xl:text-lg text-right">
+                      PHP {item.prodPrice * item.quantity}
                     </p>
-                    <p className="text-sm text-gray-700 font-medium">
-                      {item.unitPrice} each
+                    <p className="text-xs sm:text-sm md:text-base xl:text-lg text-right text-gray-700 font-medium">
+                      {item.prodPrice} each
                     </p>
                   </div>
                 </div>
               </div>
               <div className="OrderItemInfo flex gap-2 flex-col pt-4 w-full">
                 <div className="OrderItemButtom flex flex-wrap items-end gap-2">
-                  <div className="OrderItemProductLocation grow sm:basis-1/2 md:basis-1/5">
-                    <select
-                      value={item.deliveryLocation}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setorderItemsState(
-                          orderItemsState.map((orderItem) =>
-                            orderItem.orderItemId === item.orderItemId
-                              ? { ...orderItem, deliveryLocation: value }
-                              : orderItem
-                          )
-                        );
-                      }}
-                      className="w-full border-[1px] border-black rounded-2xl px-4"
-                    >
-                      {deliveryLocationOptions.map((option, index) => (
-                        <option key={index} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="OrderItemDeliveryMethod grow sm:basis-1/2 md:basis-1/5">
-                    <select
-                      value={item.deliveryMethodOptions}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setorderItemsState(
-                          orderItemsState.map((orderItem) =>
-                            orderItem.orderItemId === item.orderItemId
-                              ? { ...orderItem, deliveryMethodOptions: value }
-                              : orderItem
-                          )
-                        );
-                      }}
-                      className="w-full border-[1px]  border-black rounded-2xl px-4"
-                    >
-                      {deliveryMethodOptions.map((option, index) => (
-                        <option key={index} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="OrderItemDeliveryTime grow sm:basis-1/2 md:basis-1/5">
-                    <input
-                      type="time"
-                      value={item.deliveryTime}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setorderItemsState(
-                          orderItemsState.map((orderItem) =>
-                            orderItem.orderItemId === item.orderItemId
-                              ? { ...orderItem, deliveryTime: value }
-                              : orderItem
-                          )
-                        );
-                      }}
-                      className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full"
-                    />
+                  <div className="flex flex-col sm:flex-row w-full gap-3">
+                    <div className="OrderItemProductLocation grow sm:basis-1/2 md:basis-1/5 w-full flex">
+                      <select
+                        value={item.meetupLoc}
+                        className="w-full border-[1px] border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
+                      >
+                        {deliveryLocationOptions.map((option, index) => (
+                          <option
+                            key={index}
+                            value={option}
+                            className="font-medium"
+                          >
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="OrderItemDeliveryTime grow sm:basis-1/2 md:basis-1/5 w-full flex">
+                      <input
+                        type="time"
+                        value={item.meetupTime}
+                        className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
+                      />
+                    </div>
                   </div>
                   <div className="OrderItemDeliveryDate grow sm:basis-1/2 md:basis-1/5">
                     <input
                       type="date"
-                      value={item.deliveryDate}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setorderItemsState(
-                          orderItemsState.map((orderItem) =>
-                            orderItem.orderItemId === item.orderItemId
-                              ? { ...orderItem, deliveryDate: value }
-                              : orderItem
-                          )
-                        );
-                      }}
-                      className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full"
+                      value={item.meetupDate}
+                      className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                     />
                   </div>
                 </div>
                 <div className="OrderPaymentMethod grow sm:basis-1/2 md:basis-1/5">
                   <select
                     value={item.paymentMethod}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setorderItemsState(
-                        orderItemsState.map((orderItem) =>
-                          orderItem.orderItemId === item.orderItemId
-                            ? { ...orderItem, paymentMethod: value }
-                            : orderItem
-                        )
-                      );
-                    }}
-                    className="w-full border-[1px]  border-black rounded-2xl px-4"
+                    className="w-full border-[1px]  border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                   >
                     {OrderPaymentMethod.map((option, index) => (
-                      <option key={index} value={option}>
+                      <option
+                        key={index}
+                        value={option}
+                        className="font-medium"
+                      >
                         {option}
                       </option>
                     ))}
@@ -233,23 +252,45 @@ const CheckoutPage = () => {
             </div>
           ))}
         </div>
-        <div className="PaymentInfo flex flex-col lg:flex-col xl:w-1/3 lg:w-full">
-          <div className="PaymentInfoBody shadow-2xl flex flex-col items-stretch sm:w-full rounded-xl p-8">
-            <p className="border-b-2 border-gray-400 pb-4">Payment Info</p>
-            {PaymentInformation.map((payment) => (
-              <div className="PaymentInfoItem pt-4">
-                <p className="PaymentMethod">{payment.paymentMethod}</p>
-                <p className="PaymentInfo border-[1px] border-black p-2 rounded-xl mb-2">
-                  {payment.paymentInfo}
-                </p>
+        <div className="checkoutBottom flex flex-col sm:flex-row gap-3">
+          <div className="CartPayment flex w-full">
+            <div className="CartPaymentWindow flex w-full flex-col items-center shadow-lg rounded-xl p-8">
+              <div className="CartPaymentInfo w-full">
+                <h1 className="text-lg pb-4">Payment Summary</h1>
+                <div className="PaymentTransactionId"></div>
+                <div className="PaymentOrderSummary">
+                  <p className="text-sm font-medium">Sub Total</p>
+                  <h1 className="pb-4 text-2xl">{subTotal}</h1>
+                </div>
+                <div className="PaymentShippingFee">
+                  <p className="text-sm font-medium">Tax</p>
+                  <h1 className="pb-4 text-2xl">{tax}</h1>
+                </div>
+                <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
+                  <p className="text-sm font-normal">Total Amount</p>
+                  <h1 className="text-2xl font-semibold">{totalAmount}</h1>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
-          <div className="PaymentInfoButton mt-4">
-            <button className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full">
-              Place Order
-            </button>
+          <div className="PaymentInfo flex flex-col lg:flex-col w-full mx-1">
+            <div className="PaymentInfoBody shadow-2xl flex flex-col items-stretch sm:w-full rounded-xl p-8">
+              <p className="border-b-2 border-gray-400 pb-4">Payment Info</p>
+              {userPayment.map((payment) => (
+                <div className="PaymentInfoItem pt-4">
+                  <p className="PaymentMethod">{payment.paymentMethod}</p>
+                  <p className="PaymentInfo border-[1px] border-black p-2 rounded-xl mb-2 font-medium">
+                    {payment.paymentNumber}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+        <div className="PaymentInfoButton ">
+          <button className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full">
+            Place Order
+          </button>
         </div>
       </div>
     </div>

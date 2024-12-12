@@ -93,9 +93,9 @@ const CartPage = () => {
     );
     console.log("TAX", tempTax);
     if (tempTax?.amount) {
-      setTax(tempTax?.amount);
+      setTax((tempTax?.amount / 100) * subTotal);
       console.log("TOTAL", subTotal + tempTax?.amount);
-      setTotalAmount(subTotal + tempTax?.amount);
+      setTotalAmount(subTotal + (tempTax?.amount / 100) * subTotal);
     }
   };
 

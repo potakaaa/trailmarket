@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../createClient";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { useAuthContext } from "./context/AuthContext";
+import { CheckoutProd, FactCart, useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
 
@@ -31,9 +31,9 @@ const ProductPage = () => {
 
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>(null);
-  const { setIsLoading } = useAuthContext();
   const [mainImage, setMainImage] = useState<string>("");
-  const { user } = useAuthContext();
+  const { user, setIsLoading, checkoutProds, setCheckoutProds } =
+    useAuthContext();
   const [otherImages, setOtherImages] = useState<string[]>([]);
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
@@ -208,7 +208,9 @@ const ProductPage = () => {
   }
 
   const handlePlus = () => {
-    setCount(count + 1);
+    if (count < product.PROD_STOCKS) {
+      setCount(count + 1);
+    }
   };
 
   const handeUserVisit = () => {
@@ -298,6 +300,27 @@ const ProductPage = () => {
       alert("An error occurred while adding the product to your cart.");
       return;
     }
+  };
+
+  const handleCheckout = () => {
+    const tempCheckoutProd: CheckoutProd = {
+      orderId: null,
+      orderListId: null,
+      prod_fk: product.PRODUCT_ID,
+      meetupLoc: null,
+      meetupDate: null,
+      meetupTime: null,
+      quantity: count,
+      prodName: product.PROD_NAME,
+      prodPrice: product.PROD_PRICE,
+      prodImg: mainImage,
+      paymentMethod: null,
+      paymentDate: null,
+      paymentStatus: null,
+    };
+    setCheckoutProds([...checkoutProds, tempCheckoutProd]);
+    nav("/checkout");
+    console.log(checkoutProds);
   };
 
   const handleAddCart = async (productId: number, quantity: number = 1) => {
@@ -452,7 +475,12 @@ const ProductPage = () => {
                       >
                         Add to Cart
                       </button>
-                      <button className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-base 2xl:text-xl">
+                      <button
+                        className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-base 2xl:text-xl"
+                        onClick={() => {
+                          handleCheckout();
+                        }}
+                      >
                         Proceed to Checkout
                       </button>
                     </div>

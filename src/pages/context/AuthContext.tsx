@@ -85,6 +85,27 @@ export interface FactCart {
   cartMaxProdId: number | null;
 }
 
+export interface CheckoutProd {
+  orderId: number | null;
+  orderListId: number | null;
+  prod_fk: number;
+  meetupLoc: string | null;
+  meetupDate: string | null;
+  meetupTime: string | null;
+  quantity: number;
+  prodName: string;
+  prodPrice: number;
+  prodImg: string | undefined;
+  paymentMethod: string | null;
+  paymentDate: string | null;
+  paymentStatus: string | null;
+}
+
+export interface UserPayment {
+  paymentMethod: string;
+  paymentNumber: string;
+}
+
 // Define types for the context value
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -121,6 +142,12 @@ interface AuthContextType {
   setProdList: (prodList: Prod[]) => void;
   totalAmount: number;
   setTotalAmount: (value: number) => void;
+  checkoutProd: CheckoutProd | null;
+  setCheckoutProd: (value: CheckoutProd) => void;
+  checkoutProds: CheckoutProd[];
+  setCheckoutProds: (value: CheckoutProd[]) => void;
+  userPayment: UserPayment[];
+  setUserPayment: (value: UserPayment[]) => void;
 }
 
 // Create the context with a default value of `undefined`
@@ -181,6 +208,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [prodList, setProdList] = useState<Prod[]>([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
+  const [checkoutProd, setCheckoutProd] = useState<CheckoutProd | null>(null);
+  const [checkoutProds, setCheckoutProds] = useState<CheckoutProd[]>([]);
+  const [userPayment, setUserPayment] = useState<UserPayment[]>([]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -218,6 +249,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setProdList,
         totalAmount,
         setTotalAmount,
+        checkoutProd,
+        setCheckoutProd,
+        checkoutProds,
+        setCheckoutProds,
+        userPayment,
+        setUserPayment,
       }}
     >
       {children}
