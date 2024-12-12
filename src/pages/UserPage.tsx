@@ -44,6 +44,17 @@ const UserPage = () => {
     (PaymentMethod & { status: "new" | "modified" | "saved" | "deleted" })[]
   >([]);
   const [isEditing, setIsEditing] = useState(false);
+  type UserTransactions = {
+    totalFulfilled: number;
+    totalInProgress: number;
+    totalSales: number;
+  };
+
+  const [userTransactions, setUserTransactions] = useState<UserTransactions>({
+    totalFulfilled: 0,
+    totalInProgress: 0,
+    totalSales: 0,
+  });
   const [newPaymentMethod, setNewPaymentMethod] = useState({
     method: "",
     account: "",
@@ -233,7 +244,6 @@ const UserPage = () => {
           return;
         }
 
-        // Update the method ID if it was newly inserted
         if (method.status === "new" && data && data.length > 0) {
           method.id = data[0].PAYMENTMETHOD_ID;
           method.status = "saved";
@@ -289,6 +299,7 @@ const UserPage = () => {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchUserDetails = async () => {
       const { data, error } = await supabase
         .from("DIM_USER")
@@ -379,9 +390,117 @@ const UserPage = () => {
       setTempPaymentMethods(formattedData);
     };
 
+    const fetchTransactions = async () => {
+      if (!userId) {
+        console.error("No userId provided");
+        return;
+      }
+
+      try {
+        const { data: products, error: productsError } = await supabase
+          .from("DIM_PRODUCT")
+          .select("PRODUCT_ID")
+          .eq("SELLER_ID", userId);
+
+        if (productsError) {
+          console.error("Error fetching products:", productsError.message);
+          return;
+        }
+
+        const productIds = products.map((product) => product.PRODUCT_ID);
+
+        const { data: orderItems, error: orderItemsError } = await supabase
+          .from("DIM_ORDER_ITEM")
+          .select("ORDER_FK, PRODUCT_FK, QUANTITY")
+          .in("PRODUCT_FK", productIds);
+
+        if (orderItemsError) {
+          console.error("Error fetching order items:", orderItemsError.message);
+          return;
+        }
+
+        const orderIds = orderItems.map((item) => item.ORDER_FK);
+
+        const { data: fulfilledOrders, error: fulfilledError } = await supabase
+          .from("DIM_PAYMENT")
+          .select("ORDER_FK")
+          .in("ORDER_FK", orderIds)
+          .eq("PAYMENT_STATUS", "Fulfilled");
+
+        if (fulfilledError) {
+          console.error(
+            "Error fetching fulfilled orders:",
+            fulfilledError.message
+          );
+          return;
+        }
+
+        const fulfilledOrderIds = fulfilledOrders.map(
+          (order) => order.ORDER_FK
+        );
+
+        const fulfilledOrderItems = orderItems.filter((item) =>
+          fulfilledOrderIds.includes(item.ORDER_FK)
+        );
+
+        const { data: productPrices, error: productPricesError } =
+          await supabase.from("DIM_PRODUCT").select("PRODUCT_ID, PROD_PRICE");
+
+        if (productPricesError) {
+          console.error(
+            "Error fetching product prices:",
+            productPricesError.message
+          );
+          return;
+        }
+
+        const productPriceMap = productPrices.reduce(
+          (acc: { [key: string]: number }, product) => {
+            acc[product.PRODUCT_ID] = product.PROD_PRICE;
+            return acc;
+          },
+          {}
+        );
+
+        const totalSales = fulfilledOrderItems.reduce((sum, item) => {
+          const price = productPriceMap[item.PRODUCT_FK] || 0;
+          return sum + item.QUANTITY * price;
+        }, 0);
+
+        const { data: inProgressOrders, error: inProgressError } =
+          await supabase
+            .from("DIM_PAYMENT")
+            .select("ORDER_FK")
+            .in("ORDER_FK", orderIds)
+            .eq("PAYMENT_STATUS", "Pending");
+
+        if (inProgressError) {
+          console.error(
+            "Error fetching in-progress orders:",
+            inProgressError.message
+          );
+          return;
+        }
+
+        setUserTransactions({
+          totalFulfilled: fulfilledOrders.length,
+          totalInProgress: inProgressOrders.length,
+          totalSales,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error fetching transactions:", error.message);
+        } else {
+          console.error("Error fetching transactions:", error);
+        }
+      }
+    };
+
     fetchUserDetails();
     fetchProducts();
     fetchPaymentMethods();
+    fetchTransactions();
+    setIsLoading(false);
   }, [userId]);
 
   return (
@@ -653,19 +772,29 @@ const UserPage = () => {
           <div className="flex flex-1 bg-gradient-to-t from-[#26245f] to-[#18181b] rounded-xl flex-col pt-24 p-7 space-y-6">
             <h2 className="text-white font-normal text-xs">Quick stat</h2>
             <div>
-              <h1 className="text-white text-3xl">PHP 100000</h1>
+              <h1 className="text-white text-3xl">
+                PHP {userTransactions.totalSales}
+              </h1>
               <h2 className="text-white font-normal text-xs">Total Sales</h2>
             </div>
 
             <div className="flex flex-row space-x-9">
               <div className="flex flex-col">
-                <h1 className="text-white text-3xl">245</h1>
-                <h2 className="text-white font-normal text-xs">Total Orders</h2>
+                <h1 className="text-white text-3xl">
+                  {userTransactions.totalFulfilled}
+                </h1>
+                <h2 className="text-white font-normal text-xs">
+                  Total Orders Fulfilled
+                </h2>
               </div>
 
               <div className="flex flex-col">
-                <h1 className="text-white text-3xl">245</h1>
-                <h2 className="text-white font-normal text-xs">On Delivery</h2>
+                <h1 className="text-white text-3xl">
+                  {userTransactions.totalInProgress}
+                </h1>
+                <h2 className="text-white font-normal text-xs">
+                  Total Orders in Progress
+                </h2>
               </div>
 
               <div className="flex flex-col">
@@ -676,7 +805,7 @@ const UserPage = () => {
           </div>
         </div>
         <div className="bot-seller-page flex flex-[2]   flex-col rounded-xl">
-          <div className="products container flex flex-1 p-3 flex-col space-y-3 md:flex-row">
+          <div className="products-container flex flex-1 p-3 flex-col space-y-3 md:flex-row overflow-x-scroll">
             {products.map((product) => (
               <Product key={product.id} {...product} />
             ))}
