@@ -7,10 +7,18 @@ import TopNavBar from "./pages/navbar/TopNavBar";
 import { CategoryArray } from "./pages/context/Globals";
 import SearchResults from "./pages/SearchResults";
 import LoadingSpinner from "./pages/Loader/LoadingSpinner";
+import { useEffect } from "react";
 
 const App = () => {
-  const { searchState, isLoading } = useAuthContext();
+  const { searchState, isLoading, checkoutProds, setCheckoutProds } =
+    useAuthContext();
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname !== "/checkout") {
+      setCheckoutProds([]);
+    }
+  }, [location]);
 
   return (
     <div className="main-layout size-screen h-screen justify-center items-center">
