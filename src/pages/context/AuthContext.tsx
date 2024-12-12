@@ -69,7 +69,6 @@ export interface Issue {
   status: string;
   user: string;
   assigned: string;
-  prod_id: number | null;
 }
 
 export interface Tax {

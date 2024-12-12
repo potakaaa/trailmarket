@@ -38,7 +38,6 @@ const AdminPage = () => {
        FEEDBACK_FK,
         DIM_FEEDBACK (
           FEEDBACK_USER,
-          FEEDBACK_PROD,
           FEEDBACK_CAT,
           FEEDBACK_TITLE,
           FEEDBACK_DESC
@@ -63,7 +62,6 @@ const AdminPage = () => {
           status: issueDets?.ISSUE_STAT,
           user: feedbackDets?.FEEDBACK_USER,
           assigned: issueDets?.ASSIGNED_EMP,
-          prod_id: feedbackDets?.FEEDBACK_PROD,
         };
         console.log(issue);
       });
@@ -525,9 +523,6 @@ const AdminPage = () => {
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
                     DESCRIPTION
                   </th>
-                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2 ">
-                    PRODUCT ID
-                  </th>
                 </tr>
               </thead>
               {/* Table Body */}
@@ -607,9 +602,6 @@ const AdminPage = () => {
                       </td>
                       <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
                         {issue?.desc}
-                      </td>
-                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
-                        {issue?.prod_id}
                       </td>
                     </tr>
                   ))}
