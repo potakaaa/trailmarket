@@ -5,7 +5,7 @@ interface DropdownProps {
   onSelect: (value: string) => void;
   buttonStyle: string;
   optionStyle: string;
-  selected?: string; // Make the selected prop optional
+  selected?: string; // The selected value passed from the parent
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -13,27 +13,23 @@ const Dropdown: React.FC<DropdownProps> = ({
   onSelect,
   buttonStyle,
   optionStyle,
-  selected, // Destructure the selected prop
+  selected, // Use the selected prop directly
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>(
-    selected || options[0]
-  );
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const handleSelect = (option: string) => {
-    setSelectedOption(option);
-    onSelect(option);
-    setIsOpen(false);
+    onSelect(option); // Notify parent about the selection
+    setIsOpen(false); // Close the dropdown
   };
 
   return (
     <div className="relative">
       <button className={buttonStyle} onClick={toggleDropdown}>
-        {selectedOption}
+        {selected || "Select a category"} {/* Use selected value or fallback */}
       </button>
 
       {isOpen && (

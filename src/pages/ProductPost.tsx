@@ -29,55 +29,136 @@ const ProductPost = () => {
     category: 0,
     condition: "",
   });
-
+  type Category = {
+    CategoryID: number;
+    CategoryName: string;
+  };
   const [images, setImages] = useState<File[]>([]);
   const [mainImage, setMainImage] = useState<File | null>(null);
   const [galleryImages, setGalleryImages] = useState<File[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+
   const [isPlaceholder, setIsPlaceholder] = useState(true);
-  const { user } = useAuthContext();
+  const { user, setIsLoading } = useAuthContext();
   const nav = useNavigate();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const fetchedCategories = await fetchCategories(); // Fetch categories here
+      if (fetchedCategories) {
+        setCategories(fetchedCategories);
+      } else {
+        console.error("Failed to fetch categories.");
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  useEffect(() => {
+    if (isEditMode && existingProduct && categories.length > 0) {
+      console.log("Existing Product Category:", existingProduct.CATEGORY);
+      console.log("Fetched Categories:", categories);
+
+      const matchingCategory = categories.find(
+        (category) =>
+          category.CategoryName.toLowerCase().trim() ===
+          existingProduct.CATEGORY?.CATEGORY_NAME.toLowerCase().trim()
+      );
+
+      if (matchingCategory) {
+        console.log("Matching Category Found:", matchingCategory);
+        setSelectedCategory(matchingCategory);
+        setInput((prevState) => ({
+          ...prevState,
+          category: matchingCategory.CategoryID,
+        }));
+      } else {
+        console.warn(
+          `No matching category for "${existingProduct.CATEGORY?.CATEGORY_NAME}"`
+        );
+      }
+    }
+  }, [isEditMode, existingProduct, categories]);
 
   useEffect(() => {
     if (isEditMode && existingProduct) {
       // Pre-fill form fields with existing product data
-      setInput({
+      setInput((prevState) => ({
+        ...prevState,
         name: existingProduct.PROD_NAME || "",
         description: existingProduct.PROD_DESC || "",
         short_desc: existingProduct.PROD_SHORTDESC || "",
         price: existingProduct.PROD_PRICE || "",
         stock: existingProduct.PROD_STOCKS || "",
-        category: existingProduct.PROD_CATEGORY || 0,
         condition: existingProduct.PROD_CONDITION || "",
-      });
+      }));
 
-      setMainImage(existingProduct.mainImage || null);
-      setGalleryImages(existingProduct.galleryImages || []);
+      const matchingCategory = CategoryArray.find(
+        (category) =>
+          category.CategoryName === existingProduct.CATEGORY?.CATEGORY_NAME
+      );
+
+      if (matchingCategory) {
+        setInput((prevState) => ({
+          ...prevState,
+          category: matchingCategory.CategoryID,
+        }));
+      }
+
+      console.log("Existing Product:", existingProduct);
+      console.log("Category Array:", CategoryArray);
+      console.log("Existing Product Category:", existingProduct.CATEGORY);
     }
   }, [isEditMode, existingProduct]);
 
   useEffect(() => {
-    if (existingProduct) {
-      setMainImage(existingProduct.mainImage || null); // Set the main image
-      setGalleryImages(existingProduct.images || []); // Set additional gallery images
-    }
+    const fetchImages = async () => {
+      const mainImageFile = await urlToFile(
+        existingProduct.mainImage,
+        "main.jpg",
+        "image/jpeg"
+      );
+      const galleryImageFiles = await Promise.all(
+        existingProduct.galleryImages.map((url: string, index: number) =>
+          urlToFile(url, `gallery-${index}.jpg`, "image/jpeg")
+        )
+      );
+      setMainImage(mainImageFile);
+      setGalleryImages(galleryImageFiles || []);
+      setImages([mainImageFile, ...galleryImageFiles]);
+      console.log("Main Image:", mainImage);
+      console.log("Gallery Images:", galleryImages);
+      console.log("Images:", images);
+    };
+    fetchCategories();
+    fetchImages();
   }, [existingProduct]);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchCategories();
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // Create a File object from the placeholder URL
-    const createPlaceholderFile = async () => {
-      const response = await fetch(placeholder);
-      const blob = await response.blob();
-      const file = new File([blob], "placeholder.jpg", { type: "image/jpeg" });
-      setMainImage(file);
-      setIsPlaceholder(true);
-    };
-
-    createPlaceholderFile();
-  }, []);
+    if (!mainImage && images.length === 0) {
+      const createPlaceholderFile = async () => {
+        const response = await fetch(placeholder);
+        const blob = await response.blob();
+        const file = new File([blob], "placeholder.jpg", {
+          type: "image/jpeg",
+        });
+        setMainImage(file);
+        setIsPlaceholder(true);
+      };
+      createPlaceholderFile();
+    }
+  }, [mainImage, images]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -126,14 +207,18 @@ const ProductPost = () => {
   });
 
   const handleCategorySelect = (selectedCategoryName: string) => {
-    const selectedCategory = CategoryArray.find(
+    const matchingCategory = CategoryArray.find(
       (category) => category.CategoryName === selectedCategoryName
     );
-    if (selectedCategory) {
+
+    if (matchingCategory) {
+      setSelectedCategory(matchingCategory); // Update the selected category
       setInput((prevFormData) => ({
         ...prevFormData,
-        category: selectedCategory.CategoryID,
+        category: matchingCategory.CategoryID, // Set the category ID directly
       }));
+    } else {
+      console.warn(`Category "${selectedCategoryName}" not found.`);
     }
   };
 
@@ -176,6 +261,165 @@ const ProductPost = () => {
     }
 
     return uploadedImageUrls;
+  };
+
+  const handleEditPost = async () => {
+    console.log("Editing product with data:", input);
+
+    if (!input.name || !mainImage || images.length === 0) {
+      alert(
+        "Please ensure all required fields are filled and an image is provided."
+      );
+      return;
+    }
+
+    try {
+      const productId = existingProduct?.PRODUCT_ID;
+      if (!productId) {
+        console.error("Product ID is required for editing.");
+        return;
+      }
+
+      // Separate new images and existing image URLs
+      const newImages = images.filter((image) => image instanceof File);
+      const existingImageUrls = images.filter(
+        (image) => typeof image === "string"
+      );
+
+      // Upload new images
+      const uploadedNewImageUrls = newImages.length
+        ? await uploadImages(newImages)
+        : [];
+
+      // Combine existing and new image URLs
+      const updatedImages = [...existingImageUrls, ...uploadedNewImageUrls];
+
+      // Determine the main image URL
+      const mainImageUrl =
+        typeof mainImage === "string" ? mainImage : uploadedNewImageUrls[0];
+
+      // Update product details
+      const { error: productError } = await supabase
+        .from("DIM_PRODUCT")
+        .update({
+          PROD_NAME: input.name,
+          PROD_DESC: input.description,
+          PROD_SHORTDESC: input.short_desc,
+          PROD_PRICE: input.price,
+          PROD_STOCKS: input.stock,
+          PROD_CATEGORY: input.category,
+          PROD_CONDITION: input.condition,
+        })
+        .eq("PRODUCT_ID", productId);
+
+      if (productError) {
+        console.error("Error updating product:", productError.message);
+        return;
+      }
+
+      // Fetch existing images from the database
+      const { data: existingImages, error: existingImagesError } =
+        await supabase
+          .from("DIM_PRODUCTIMAGES")
+          .select("PRODUCT_IMAGE")
+          .eq("PRODUCT_PICTURED_FK", productId);
+
+      if (existingImagesError) {
+        console.error(
+          "Error fetching existing images:",
+          existingImagesError.message
+        );
+        return;
+      }
+
+      const existingImageUrlsInDb = existingImages.map(
+        (img) => img.PRODUCT_IMAGE
+      );
+
+      // Determine removed images
+      const removedImages = existingImageUrlsInDb.filter(
+        (url) => !updatedImages.includes(url)
+      );
+
+      // Delete removed images from storage and database
+      for (const imageUrl of removedImages) {
+        const filePath = imageUrl.replace(
+          `${
+            supabase.storage.from("trailmarket-images").getPublicUrl("").data
+              .publicUrl
+          }/`,
+          ""
+        );
+
+        const { error: deleteError } = await supabase.storage
+          .from("trailmarket-images")
+          .remove([filePath]);
+
+        if (deleteError) {
+          console.error("Error deleting image:", deleteError.message);
+          continue;
+        }
+
+        const { error: dbDeleteError } = await supabase
+          .from("DIM_PRODUCTIMAGES")
+          .delete()
+          .eq("PRODUCT_IMAGE", imageUrl);
+
+        if (dbDeleteError) {
+          console.error("Error removing image record:", dbDeleteError.message);
+          continue;
+        }
+      }
+
+      // Clear all existing image records and insert updated ones
+      const { error: clearImagesError } = await supabase
+        .from("DIM_PRODUCTIMAGES")
+        .delete()
+        .eq("PRODUCT_PICTURED_FK", productId);
+
+      if (clearImagesError) {
+        console.error("Error clearing old images:", clearImagesError.message);
+        return;
+      }
+
+      const mainImageRecord = {
+        PRODUCT_PICTURED_FK: productId,
+        PRODUCT_IMAGE: mainImageUrl,
+        isMainImage: true,
+      };
+
+      const galleryImageRecords = updatedImages
+        .filter((url) => url !== mainImageUrl)
+        .map((url) => ({
+          PRODUCT_PICTURED_FK: productId,
+          PRODUCT_IMAGE: url,
+          isMainImage: false,
+        }));
+
+      const { error: insertImagesError } = await supabase
+        .from("DIM_PRODUCTIMAGES")
+        .insert([mainImageRecord, ...galleryImageRecords]);
+
+      if (insertImagesError) {
+        console.error(
+          "Error inserting updated images:",
+          insertImagesError.message
+        );
+        return;
+      }
+
+      nav("/home");
+    } catch (error) {
+      console.error("Error handling product edit:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (isEditMode) {
+      await handleEditPost();
+    } else {
+      await handlePost();
+    }
   };
 
   const handlePost = async () => {
@@ -357,11 +601,7 @@ const ProductPost = () => {
                       optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                       onSelect={handleCategorySelect}
                       options={options}
-                      selected={
-                        CategoryArray.find(
-                          (cat) => cat.CategoryID === input.category
-                        )?.CategoryName
-                      }
+                      selected={selectedCategory?.CategoryName}
                     ></Dropdown>
                   </div>
                 </div>
@@ -477,10 +717,10 @@ const ProductPost = () => {
               </p>
             </div>
             <button
-              onClick={handlePost}
+              onClick={handleSubmit}
               className="bg-gradient-to-r from-[#26245f] to-[#18181b] text-white font-normal rounded-full w-full h-10 mt-3 self-end shadow-md"
             >
-              Add Product
+              {isEditMode ? "Edit Product" : "Post Product"}
             </button>
           </div>
         </div>

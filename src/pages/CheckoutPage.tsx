@@ -33,13 +33,6 @@ const CheckoutPage = () => {
     "Old CSM",
   ];
 
-  const OrderPaymentMethod = [
-    "Cash on Delivery",
-    "GCash",
-    "PayMaya",
-    "Credit Card",
-  ];
-
   const fetchSellerPaymentMethods = async () => {
     try {
       // Extract unique seller IDs
