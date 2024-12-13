@@ -6,6 +6,7 @@ import { Product as ProductType } from "./context/Globals";
 import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 type User = {
   id: string;
@@ -20,6 +21,7 @@ type User = {
 
 const placeholder = "https://via.placeholder.com/150";
 const UserPage = () => {
+  const nav = useNavigate();
   const { user, setIsLoading } = useAuthContext();
   const { userId } = useParams<{ userId: string }>();
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -509,6 +511,44 @@ const UserPage = () => {
     setIsLoading(false);
   }, [userId]);
 
+  async function deleteUser() {
+    if (!pageOwner) {
+      console.error("Page owner is null");
+      return;
+    }
+
+    try {
+      const { error: userError } = await supabase
+        .from("DIM_USER")
+        .delete()
+        .eq("STUDENT_ID", pageOwner.id);
+
+      if (userError) {
+        console.error("Error deleting user:", userError.message);
+        return;
+      }
+      const url = new URL(pageOwner.image);
+      const basePath = "trailmarket-images/";
+      const imagePath = url.pathname.replace(
+        `/storage/v1/object/public/${basePath}`,
+        ""
+      );
+      const { error: imageError } = await supabase.storage
+        .from("trailmarket-images")
+        .remove([imagePath]);
+
+      if (imageError) {
+        console.error("Error deleting image:", imageError.message);
+        return;
+      }
+
+      alert("User deleted successfully");
+      nav("/login");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }
+
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
       <div className="seller-page p-6 flex flex-col flex-1 h-full w-full rounded-xl overflow-hidden">
@@ -626,7 +666,6 @@ const UserPage = () => {
 
                   <button type="submit"></button>
                 </form>
-
                 <div className="Payment-methods flex flex-row items-center align-start  flex-1 w-full">
                   <div className="w-32 flex align-top ">
                     <label className=" font-normal w-32">Payment Options</label>
@@ -784,6 +823,14 @@ const UserPage = () => {
                       Edit
                     </button>
                   ))}
+                {isOwner && (
+                  <button
+                    onClick={deleteUser}
+                    className="px-3 py-2 text-xs border-2 border-black bg-red-700 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
+                  >
+                    Delete User
+                  </button>
+                )}
               </div>
             </div>
           </div>

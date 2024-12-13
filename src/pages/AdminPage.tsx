@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
 import TopNavBar from "./navbar/TopNavBar";
@@ -13,11 +13,41 @@ const AdminPage = () => {
 
   const [isAddClicked, setIsAddClicked] = useState(false);
   const [isTaxClicked, setIsTaxClicked] = useState(false);
+  const [isEmpClicked, setIsEmpClicked] = useState(false);
+  interface EmpFormData {
+    name: string;
+    email: string;
+    age: number;
+    contact_num: number;
+    role: string;
+    emergency_name: string;
+    emergency_contact: number;
+    sss?: number;
+    philhealth?: number;
+    pagibig?: number;
+    tin?: number;
+  }
+
+  const [empFormData, setEmpFormData] = useState<EmpFormData>({
+    name: "",
+    email: "",
+    age: 0,
+    contact_num: 0,
+    role: "",
+    emergency_name: "",
+    emergency_contact: 0,
+    sss: 0,
+    philhealth: 0,
+    pagibig: 0,
+    tin: 0,
+  });
+  const [isAddCatClicked, setIsAddCatClicked] = useState(false);
 
   const {
     issues,
     setIssues,
     empList,
+    emp,
     setEmpList,
     setIsLoading,
     taxes,
@@ -129,12 +159,16 @@ const AdminPage = () => {
     role: "",
     emergency_contact_name: "",
     emergency_contact_num: "",
+    sss: "",
+    philhealth: "",
+    pagibig: "",
+    tin: "",
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  ): void => {
+    const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -470,6 +504,368 @@ const AdminPage = () => {
     }
   };
 
+  const handleChangeEmp = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setEmpFormData((prevData) => ({
+      ...prevData,
+      [name]:
+        name === "age" ||
+        name === "contact_num" ||
+        name === "sss" ||
+        name === "philhealth" ||
+        name === "pagibig" ||
+        name === "tin" ||
+        name === "emergency_contact"
+          ? Number(value) // Ensure numeric fields are updated as numbers
+          : value,
+    }));
+  };
+
+  useEffect(() => {
+    setEmpFormData({
+      name: emp?.name || "",
+      email: emp?.email || "",
+      age: emp?.age || 0,
+      contact_num: emp?.contact_num || 0,
+      role: emp?.role || "",
+      emergency_name: emp?.emergency_name || "",
+      emergency_contact: emp?.emergency_contact || 0,
+      sss: emp?.sss || 0,
+      philhealth: emp?.philhealth || 0,
+      pagibig: emp?.pagibig || 0,
+      tin: emp?.tin || 0,
+    });
+  }, [emp]);
+
+  interface Category {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+  }
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const fetchCategories = async (): Promise<Category[]> => {
+    const { data, error } = await supabase.from("DIM_CATEGORY").select("*");
+    if (error) {
+      console.error("Error fetching categories:", error.message);
+      return [];
+    }
+    console.log("Fetched categories:", data);
+    return data;
+  };
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const fetchedCategories = await fetchCategories();
+      if (fetchedCategories) {
+        const formattedCategories = fetchedCategories.map((category: any) => ({
+          id: category.CATEGORY_ID,
+          name: category.CATEGORY_NAME, // Column `name` in database -> `name` in state
+          description: category.CATEGORY_DESC, // Column `description` in database -> `description` in state
+          image: category.CATEGORY_IMAGE, // Column `image` in database -> `image` in state
+        }));
+        setCategories(formattedCategories);
+      } else {
+        console.error("Failed to fetch categories.");
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+
+  const handleCategorySelect = (category: Category) => {
+    setSelectedCategory(category); // Set the selected category
+  };
+
+  const handleCategoryInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    if (selectedCategory) {
+      setSelectedCategory((prev) => (prev ? { ...prev, [name]: value } : prev));
+    }
+  };
+
+  const saveCategoryChanges = async () => {
+    if (!selectedCategory) {
+      alert("No category selected.");
+      return;
+    }
+
+    const { id, name, description, image } = selectedCategory;
+
+    try {
+      const { error } = await supabase
+        .from("DIM_CATEGORY")
+        .update({
+          CATEGORY_NAME: name,
+          CATEGORY_DESC: description,
+          CATEGORY_IMAGE: image,
+        })
+        .eq("CATEGORY_ID", id);
+
+      if (error) {
+        console.error("Error saving category:", error.message);
+        alert("Failed to save category changes.");
+      } else {
+        alert("Category updated successfully!");
+
+        // Fetch updated categories immediately
+        const updatedCategories = await fetchCategories();
+        const formattedCategories = updatedCategories.map((category: any) => ({
+          id: category.CATEGORY_ID,
+          name: category.CATEGORY_NAME,
+          description: category.CATEGORY_DESC,
+          image: category.CATEGORY_IMAGE,
+        }));
+        setCategories(formattedCategories); // Update state with fresh data
+        setSelectedCategory(null); // Deselect category after saving
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred while saving the category.");
+    }
+  };
+
+  const renderCategoryMenu = () => (
+    <div className="flex flex-col w-full gap-4">
+      <div className="category-list grid grid-cols-2 gap-4">
+        {categories.map((category) => (
+          <div
+            key={category.id}
+            className="p-4 border rounded-lg hover:shadow-lg cursor-pointer"
+            onClick={() => handleCategorySelect(category)} // Select category on click
+          >
+            <h3 className="text-lg font-bold">{category.name}</h3>
+            <p className="text-sm">{category.description}</p>
+          </div>
+        ))}
+      </div>
+
+      {selectedCategory && (
+        <div className="edit-category-form flex flex-col gap-4 p-4 border rounded-lg w-full">
+          <h3 className="text-lg font-bold">Edit Category</h3>
+          <div className="flex gap-4 flex-row w-full items-center">
+            <div className="flex gap-4 flex-col w-full">
+              <input
+                type="text"
+                name="name"
+                placeholder="Category Name"
+                value={selectedCategory.name}
+                onChange={handleCategoryInputChange}
+                className="border p-2 rounded-lg"
+              />
+              <input
+                type="text"
+                name="description"
+                placeholder="Category Description"
+                value={selectedCategory.description}
+                onChange={handleCategoryInputChange}
+                className="border p-2 rounded-lg"
+              />
+            </div>
+            <img
+              src={selectedCategory.image}
+              alt="Category Image"
+              className="w-32 h-32 object-cover rounded-lg"
+            />
+          </div>
+          <button
+            onClick={saveCategoryChanges}
+            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+          >
+            Save Changes
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderEmployeeProfile = () => {
+    return (
+      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
+        <div className="flex-none sm:flex sm:gap-2">
+          <input
+            placeholder="Name"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="name"
+            value={empFormData?.name}
+            onChange={handleChangeEmp}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="email"
+            value={empFormData?.email}
+            onChange={handleChangeEmp}
+          />
+        </div>
+        <div className="flex-none sm:flex sm:gap-2">
+          <input
+            type="number"
+            placeholder="Age"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="age"
+            value={empFormData?.age}
+            onChange={handleChangeEmp}
+          />
+          <input
+            type="number"
+            placeholder="Contact Number"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="number"
+            value={empFormData?.contact_num}
+            onChange={handleChangeEmp}
+          />
+        </div>
+
+        <div className="flex-none sm:flex sm:gap-2">
+          <select
+            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
+            value={empFormData?.role}
+            onChange={handleChangeEmp} // Set the current value
+            name="role"
+          >
+            <option value="Admin" className="font-normal">
+              Admin
+            </option>
+            <option value="Moderator" className="font-normal">
+              Moderator
+            </option>
+          </select>
+          <input
+            placeholder="Emergency Contact Name"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="emergency_contact_name"
+            value={empFormData?.emergency_name}
+            onChange={handleChangeEmp}
+          />
+          <input
+            type="number"
+            placeholder="Emergency Contact Number"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="emergency_contact_num"
+            value={empFormData?.emergency_contact}
+            onChange={handleChangeEmp}
+          />
+        </div>
+        <div className="flex-none sm:flex sm:gap-2">
+          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
+            SSS
+          </label>
+          <input
+            type="number"
+            placeholder="SSS"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="sss"
+            value={empFormData?.sss ?? ""}
+            onChange={handleChangeEmp}
+          />
+          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
+            Philhealth
+          </label>
+          <input
+            type="number"
+            placeholder="Philhealth"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="philhealth"
+            value={empFormData?.philhealth ?? ""}
+            onChange={handleChangeEmp}
+          />
+          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
+            Pagibig
+          </label>
+          <input
+            type="number"
+            placeholder="Pagibig"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="pagibig"
+            value={empFormData?.pagibig ?? ""}
+            onChange={handleChangeEmp}
+          />
+          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
+            TIN
+          </label>
+          <input
+            type="number"
+            placeholder="TIN"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            name="tin"
+            value={empFormData?.tin ?? ""}
+            onChange={handleChangeEmp}
+          />
+        </div>
+        <div className="flex-none sm:flex sm:gap-2"></div>
+        <button
+          id="login-button"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          onClick={() => handleAdminUpdate(empFormData)}
+        >
+          Update
+        </button>
+      </div>
+    );
+  };
+
+  const handleAdminUpdate = async (input: any) => {
+    console.log(input);
+
+    if (
+      input.name === "" ||
+      input.email === "" ||
+      input.age === "" ||
+      input.number === "" ||
+      input.city === "" ||
+      input.role === "" ||
+      input.emergency_contact_name === "" ||
+      input.emergency_contact_num === ""
+    ) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const { error } = await supabase
+        .from("DIM_EMPLOYEE")
+        .update({
+          EMP_NAME: input.name,
+          EMP_EMAIL: input.email,
+          EMP_AGE: input.age,
+          EMP_CONTACTNUM: input.number,
+          EMP_CITY: input.city,
+          EMP_ROLE: input.role,
+          EMP_EMERGENCY_NAME: input.emergency_contact_name,
+          EMP_EMERGENCY_CONTACTNUM: input.emergency_contact_num,
+          EMP_SSS: input.sss,
+          EMP_PHILHEALTH: input.philhealth,
+          EMP_PAGIBIG: input.pagibig,
+          EMP_TIN: input.tin,
+        })
+        .eq("EMP_ID", emp?.id);
+      if (error) {
+        console.error("Error inserting data:", error.message);
+      } else {
+        alert("Admin updated successfully!");
+        setIsLoading(false);
+        setIsEmpClicked(false);
+      }
+    } catch (error) {
+      console.error("Error inserting data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="app-wrapper size-full ">
       <TopNavBar />
@@ -494,9 +890,24 @@ const AdminPage = () => {
           >
             {isTaxClicked ? "Cancel Tax" : "Update Tax"}
           </button>
+          <button
+            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
+            onClick={() => setIsEmpClicked(!isEmpClicked)}
+          >
+            {!isEmpClicked ? "Employee Profile" : "Close Employee Profile"}
+          </button>
+          <button
+            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
+            onClick={() => setIsAddCatClicked(!isAddCatClicked)}
+          >
+            {!isAddCatClicked ? "Category Menu" : "Close Category Menu"}
+          </button>
         </div>
         {isAddClicked && renderAddAdmin()}
         {isTaxClicked && renderUpdateTax()}
+        {isEmpClicked && renderEmployeeProfile()}
+        {isAddCatClicked && renderCategoryMenu()}
+
         <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg sm:px-2 ">
           <hr className="border-2" />
           <h1 className="text-center bg-gray-100 rounded-md text-lg p-1 md:text-xl md:p-3 xl:p-5 2xl:text-2xl">

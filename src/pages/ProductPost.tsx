@@ -678,7 +678,10 @@ const ProductPost = () => {
                         <div
                           key={index}
                           className="bg-gray-100 rounded-lg border aspect-square shadow-sm"
-                          onClick={() => handleImageClick(src)}
+                          onClick={(e) => {
+                            e.stopPropagation;
+                            handleImageClick(src);
+                          }}
                         >
                           <img
                             className="h-full w-full object-cover rounded-lg"
