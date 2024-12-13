@@ -328,6 +328,7 @@ const ProductPage = () => {
       paymentMethod: undefined,
       paymentDate: undefined,
       paymentStatus: undefined,
+      sellerId: product.SELLER_ID,
     };
     setCheckoutProds([...checkoutProds, tempCheckoutProd]);
     nav("/checkout");

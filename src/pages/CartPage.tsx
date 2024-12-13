@@ -99,6 +99,7 @@ const CartPage = () => {
         paymentMethod: undefined,
         paymentDate: undefined,
         paymentStatus: undefined,
+        sellerId: item.seller_id,
       };
     });
     setCheckoutProds(tempCheckoutProd);
@@ -118,6 +119,7 @@ const CartPage = () => {
       PRODUCT_FK,
       CART_QUANTITY,
        DIM_PRODUCT (
+        SELLER_ID,
         PROD_NAME,
         PROD_PRICE,
         PROD_CONDITION,
@@ -160,6 +162,7 @@ const CartPage = () => {
             condition: productDets?.PROD_CONDITION,
             category: productDets?.PROD_CATEGORY,
             seller: productDets?.DIM_USER?.USER_NAME,
+            seller_id: productDets?.SELLER_ID,
             img: mainImage ? mainImage.PRODUCT_IMAGE : null, // Use the main image if found, otherwise null
             quantity: tempData[index].CART_QUANTITY,
           };

@@ -59,6 +59,7 @@ export interface CartProd {
   seller: string;
   img: string | undefined;
   quantity: number;
+  seller_id: number;
 }
 
 export interface Issue {
@@ -99,6 +100,7 @@ export interface CheckoutProd {
   paymentMethod: string | undefined;
   paymentDate: string | undefined;
   paymentStatus: string | undefined;
+  sellerId: number;
 }
 
 export interface UserPayment {

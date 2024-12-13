@@ -107,7 +107,14 @@ const SearchResults = () => {
                 <h1>By Tags</h1>
                 <div className="space-y-2 lg:space-x-1">
                   {categories.map((category) => (
-                    <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                    <button
+                      className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                        selectedCategory === category
+                          ? "bg-black text-white"
+                          : "bg-white"
+                      }`}
+                      onClick={() => handleCategoryClicked(category)}
+                    >
                       {category}
                     </button>
                   ))}

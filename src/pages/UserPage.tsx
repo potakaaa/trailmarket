@@ -26,8 +26,14 @@ const UserPage = () => {
   const [pageOwner, setPageOwner] = useState<User | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const paymentMethodOptions = [
-    { value: "GCash", label: "Gcash" },
-    { value: "Bank", label: "Bank Transfer" },
+    { value: "GCash", label: "GCash" },
+    { value: "Bank Transfer", label: "Bank Transfer" },
+    { value: "PayMaya", label: "PayMaya" },
+    { value: "Paypal", label: "Paypal" },
+    { value: "Apple Pay", label: "Apple Pay" },
+    { value: "Google Pay", label: "Google Pay" },
+    { value: "UnionBank Online", label: "UnionBank Online" },
+    { value: "BDO Online", label: "BDO Online" },
   ];
 
   type PaymentMethod = {
@@ -656,7 +662,11 @@ const UserPage = () => {
                             </select>
                             <input
                               type="text"
-                              value={method.account}
+                              value={
+                                isOwner
+                                  ? method.account
+                                  : "********" + method.account.slice(-4)
+                              }
                               readOnly={!method.isEditing}
                               onChange={(e) =>
                                 handleEditPaymentMethodField(
@@ -665,9 +675,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className={`flex-1 rounded-xl border-2 border-black p-1 ${
-                                !method.isEditing ? "no-arrow" : ""
-                              }`}
+                              className="flex-1 rounded-xl border-2 border-black p-1"
                             />
 
                             {isEditing &&
@@ -707,9 +715,8 @@ const UserPage = () => {
                     {isOwner && isEditing && (
                       <form onSubmit={handleAddPaymentMethod}>
                         <div className="flex flex-row">
-                          <input
-                            type="text"
-                            placeholder="Payment Method"
+                          {/* Dropdown for Payment Method */}
+                          <select
                             className="flex-[1] flex rounded-tl-xl text-xs rounded-bl-xl border-black border-2 p-2 w-full bg-gray-100"
                             value={newPaymentMethod.method}
                             onChange={(e) =>
@@ -718,7 +725,18 @@ const UserPage = () => {
                                 method: e.target.value,
                               }))
                             }
-                          />
+                          >
+                            <option value="" disabled>
+                              Select Payment Method
+                            </option>
+                            {paymentMethodOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+
+                          {/* Input for Account Number */}
                           <input
                             type="text"
                             placeholder="Account Number"
