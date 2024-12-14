@@ -139,6 +139,25 @@ const AdminPage = () => {
     }
   };
 
+  const handleRemoveIssue = async (issueId: number) => {
+    const { data, error } = await supabase
+      .from("FACT_ISSUE_TRACKER")
+      .delete()
+      .eq("ISSUE_ID", issueId);
+
+    if (data) {
+      console.log("Deleted issue:", data);
+    }
+
+    if (error) {
+      alert("Error deleting issue: " + error.message);
+      console.log("Error deleting issue:", error.message);
+    }
+
+    alert("Issue deleted successfully!");
+    fetchIssues();
+  };
+
   const fetchEmpList = async () => {
     const { data, error } = await supabase.from("DIM_EMPLOYEE").select("*");
 
@@ -1116,7 +1135,7 @@ const AdminPage = () => {
         <div className="add-admin-update-tax-container items-center justify-center flex flex-col gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
           <div className="w-full flex gap-2">
             <button
-              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-sm transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
                 isAddClicked && "bg-green-200"
               }`}
               onClick={() => setIsAddClicked(!isAddClicked)}
@@ -1124,7 +1143,7 @@ const AdminPage = () => {
               {isAddClicked ? "Cancel Add" : "Add Admin"}
             </button>
             <button
-              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-sm transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
                 isTaxClicked && "bg-green-200"
               }`}
               onClick={() => setIsTaxClicked(!isTaxClicked)}
@@ -1134,7 +1153,7 @@ const AdminPage = () => {
           </div>
           <div className="w-full flex gap-2">
             <button
-              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-sm transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
                 isEmpClicked && "bg-green-200"
               }`}
               onClick={() => setIsEmpClicked(!isEmpClicked)}
@@ -1142,7 +1161,7 @@ const AdminPage = () => {
               {!isEmpClicked ? "My Profile" : "Close Profile"}
             </button>
             <button
-              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-sm transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
                 isAddCatClicked && "bg-green-200"
               }`}
               onClick={() => setIsAddCatClicked(!isAddCatClicked)}
@@ -1183,6 +1202,9 @@ const AdminPage = () => {
                   </th>
                   <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
                     DESCRIPTION
+                  </th>
+                  <th className="text-xs md:text-sm 2xl:text-lg 2xl:py-4 font-semibold text-left px-2 py-2">
+                    ACTIONS
                   </th>
                 </tr>
               </thead>
@@ -1225,7 +1247,7 @@ const AdminPage = () => {
                               : issue?.status === issueStat[2]
                               ? "bg-green-200"
                               : ""
-                          } px-2 rounded-full text-xs md:text-sm xl:text-base focus:outline-none`}
+                          } px-2 rounded-full text-xs md:text-sm xl:text-base focus:outline-none xl:p-3 shadow-md`}
                           value={issue?.status} // Set the current value
                           onChange={(e) =>
                             handleStatChange(index, e.target.value)
@@ -1248,7 +1270,7 @@ const AdminPage = () => {
                           onChange={(e) =>
                             handleEmpChange(index, e.target.value)
                           }
-                          className="bg-slate-50 p-1 rounded-full focus:outline-none "
+                          className="bg-slate-50 p-1 rounded-full focus:outline-none xl:p-3 shadow-md"
                         >
                           {empList.map((emp) => (
                             <option
@@ -1261,8 +1283,16 @@ const AdminPage = () => {
                           ))}
                         </select>
                       </td>
-                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3 whitespace-normal flex w-64">
                         {issue?.desc}
+                      </td>
+                      <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-1 md:py-3">
+                        <button
+                          className="font-semibold text-xs md:text-sm xl:text-base py-1 bg-red-200 px-4 md:px-7 md:py-3 xl:px-10 xl:py-4 rounded-full shadow-md hover:bg-transparent hover:text-sm md:hover:text-base xl:hover:text-lg transition-all duration-200 hover:shadow-lg"
+                          onClick={() => handleRemoveIssue(issue?.id)}
+                        >
+                          Remove
+                        </button>
                       </td>
                     </tr>
                   ))}
