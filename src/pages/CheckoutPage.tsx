@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Tax, useAuthContext, UserPayment } from "./context/AuthContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
 
 const CheckoutPage = () => {
@@ -22,6 +22,7 @@ const CheckoutPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
   const loc = useLocation();
+  const nav = useNavigate();
 
   const deliveryLocationOptions = [
     "CITC",
@@ -347,7 +348,10 @@ const CheckoutPage = () => {
           </div>
         </div>
         <div className="PaymentInfoButton ">
-          <button className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full">
+          <button
+            className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full"
+            onClick={() => nav("/purchaseHistory")}
+          >
             Place Order
           </button>
         </div>
