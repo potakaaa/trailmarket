@@ -7,12 +7,14 @@ import PurchaseHistory from "../../../public/assets/Order.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangeEvent } from "react";
+import add_post from "../../../public/assets/add_post.svg";
 
 const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
   { Icon: Person, IconName: "Person" },
   { Icon: ShoppingCart, IconName: "Shopping Cart" },
   { Icon: PurchaseHistory, IconName: "Purchase History" },
+  { Icon: add_post, IconName: "Post Product" },
 ];
 
 interface Categories {
@@ -46,6 +48,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
     () => nav("/myprofile"),
     () => nav("/cart"),
     () => nav("/purchasehistory"),
+    () => nav("/post"),
   ];
 
   const handleSearch = (value: string) => {
@@ -134,13 +137,6 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
             rounded-full flex justify-center items-center text-[10px]
             font-semibold "
           >
-            <button>
-              <img
-                src={Person}
-                alt="Post Product"
-                className="sm:hidden min-w-5"
-              ></img>
-            </button>
             <button
               className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14 transition-all duration-300"
               onClick={() => nav("/post")}
@@ -193,7 +189,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
                    hover:bg-gray-100 w-full font-light"
                     onClick={navArr[index]}
                   >
-                    <img src={icons.Icon} alt={icons.IconName}/>
+                    <img src={icons.Icon} alt={icons.IconName} />
                     <p className="font-normal text-[12px] sm:text-sm items-center flex-grow">
                       {icons.IconName}
                     </p>

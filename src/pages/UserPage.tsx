@@ -553,12 +553,12 @@ const UserPage = () => {
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
       <div className="seller-page p-6 flex flex-col flex-1 h-full w-full rounded-xl overflow-hidden">
         <div className="top-seller-page md:flex-row border flex flex-[5] flex-col rounded-xl p-4 border-gray-300">
-          <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-6 flex-col">
+          <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-1 lg:p-6 flex-col">
             <div className="bigcontain flex flex-col ">
               <div className="flex flex-row">
                 <div
                   className={`${
-                    isEditing ? "w-24 h-24" : "w-12 h-12"
+                    isEditing ? "w-24 h-24" : "size-10 lg:size-12"
                   } rounded-full overflow-hidden border border-black`}
                 >
                   <div {...getRootProps()} className="h-full w-full">
@@ -571,8 +571,10 @@ const UserPage = () => {
                   </div>
                 </div>
                 <div className="flex flex-col ml-4">
-                  <p className=" font-normal text-sm">Seller Dashboard</p>
-                  <h1 className=" text-2xl">{pageOwner?.name}</h1>
+                  <p className=" font-normal text-xs lg:text-sm">
+                    Seller Dashboard
+                  </p>
+                  <h1 className=" text-xl lg:text-2xl">{pageOwner?.name}</h1>
                 </div>
               </div>
               {isEditing && (
@@ -581,12 +583,14 @@ const UserPage = () => {
                 </p>
               )}
               <div className="details mt-6 flex flex-col space-y-4">
-                <form className="flex flex-col md: space-y-4">
-                  <div className="flex flex-row items-center">
-                    <label className=" font-normal w-32">Name</label>
+                <form className="flex flex-col space-y-4">
+                  <div className="flex flex-col lg:flex-row items-center">
+                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Name
+                    </label>
                     <input
                       id="name"
-                      className="flex-1 rounded-xl border-2 border-black p-1"
+                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                       type="text"
                       value={tempFormValues.name}
                       readOnly={!isOwner || !isEditing}
@@ -598,11 +602,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-row items-center">
-                    <label className=" font-normal w-32">Age</label>
+                  <div className="flex flex-col lg:flex-row items-center">
+                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Age
+                    </label>
                     <input
                       id="age"
-                      className="flex-1 rounded-xl border-2 border-black p-1"
+                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                       type="number"
                       value={tempFormValues.age ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -615,11 +621,13 @@ const UserPage = () => {
                     />
                   </div>
 
-                  <div className="flex flex-row items-center">
-                    <label className="font-normal w-32">Contact No</label>
+                  <div className="flex flex-col lg:flex-row items-center">
+                    <label className="w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Contact No
+                    </label>
                     <input
                       id="contact"
-                      className="flex-1 rounded-xl border-2 border-black p-1"
+                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                       type="text"
                       value={tempFormValues.contact_num ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -631,11 +639,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-row items-center">
-                    <label className=" font-normal w-32">Email Address</label>
+                  <div className="flex flex-col lg:flex-row items-center">
+                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Email Address
+                    </label>
                     <input
                       id="email"
-                      className="flex-1 rounded-xl border-2 border-black p-1"
+                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                       type="email"
                       value={tempFormValues.email}
                       readOnly={!isOwner || !isEditing}
@@ -647,11 +657,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-row items-center">
-                    <label className=" font-normal w-32">Facebook</label>
+                  <div className="flex flex-col lg:flex-row items-center">
+                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Facebook
+                    </label>
                     <input
                       id="facebook"
-                      className="flex-1 rounded-xl border-2 border-black p-1"
+                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                       type="text"
                       value={tempFormValues.facebook ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -666,9 +678,11 @@ const UserPage = () => {
 
                   <button type="submit"></button>
                 </form>
-                <div className="Payment-methods flex flex-row items-center align-start  flex-1 w-full">
-                  <div className="w-32 flex align-top ">
-                    <label className=" font-normal w-32">Payment Options</label>
+                <div className="Payment-methods flex flex-col lg:flex-row items-center align-start  flex-1 w-full">
+                  <div className="w-full lg:w-32 flex align-top ">
+                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                      Payment Options
+                    </label>
                   </div>
 
                   <div className="flex flex-col space-y-4 flex-grow-0 w-full">
@@ -677,7 +691,7 @@ const UserPage = () => {
                         method.status !== "deleted" && (
                           <div
                             key={method.id}
-                            className="flex flex-row items-center space-x-2"
+                            className="flex flex-row items-center space-x-2 w-full"
                           >
                             <select
                               value={method.method}
@@ -691,7 +705,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl border-2 border-black p-1"
+                              className="rounded-xl flex-0 w-[2em] lg:flex-1 sm:w-52 md:w-32 font-medium text-xs md:text-sm lg:text-base border-2 border-black p-1"
                             >
                               {paymentMethodOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -714,7 +728,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl border-2 border-black p-1"
+                              className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
                             />
 
                             {isEditing &&
