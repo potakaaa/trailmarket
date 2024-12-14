@@ -352,8 +352,7 @@ const ProductPage = () => {
 
   const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd = {
-      orderId: undefined,
-      orderListId: undefined,
+      order_id: undefined,
       prod_fk: product.PRODUCT_ID,
       meetupLoc: undefined,
       meetupDate: undefined,
@@ -560,7 +559,7 @@ const ProductPage = () => {
                 </div>
                 <div className="product-bottom flex-col mr-7 ml-1 hidden 2xl:flex">
                   <div className="product-info flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 ml-2 p-4 mb-6">
-                    <h1 className="mx-4 mt-1.5 text-lg">Product Information</h1>
+                    <h1 className="mx-4 mt-1.5 ">Product Information</h1>
                     <p className="text-[10px] font-normal mx-4 xl:text-sm xl:ml-[18px]">
                       Product Details
                     </p>
@@ -609,7 +608,7 @@ const ProductPage = () => {
                       </div>
                       <input
                         id="reviewtitle"
-                        className="bg-gray-100 mt-2 p-2 rounded border-black border-2"
+                        className="bg-gray-100 mt-2 p-2 border-black border-2"
                         placeholder="Title your review!"
                         onChange={handleChange}
                       ></input>
