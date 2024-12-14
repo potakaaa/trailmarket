@@ -829,6 +829,15 @@ const AdminPage = () => {
 
   const renderCategoryMenu = () => (
     <div className="flex flex-col w-full gap-4 px-4 max-w-4xl">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg xl:text-xl font-semibold">Categories</h2>
+        <button
+          onClick={() => setIsCatModalOpen(true)}
+          className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal xl:text-base text-sm rounded-full h-10 shadow-md w-36 self-center xl:h-14 hover:bg-red-400"
+        >
+          Add Category
+        </button>
+      </div>
       <div className="category-list grid grid-cols-2 gap-4">
         {categories.map((category) => (
           <div
