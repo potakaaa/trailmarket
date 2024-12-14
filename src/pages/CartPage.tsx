@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
-import { CartProd, Tax, useAuthContext } from "./context/AuthContext";
+import {
+  CartProd,
+  CheckoutProd,
+  Tax,
+  useAuthContext,
+} from "./context/AuthContext";
 import { BiTrash } from "react-icons/bi";
 
 const CartPage = () => {
@@ -10,8 +15,6 @@ const CartPage = () => {
   const [quantity, setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
-
-  console.log(tax);
 
   const {
     cart,
@@ -22,9 +25,9 @@ const CartPage = () => {
     setTotalAmount,
     setTaxes,
     taxes,
+    setCheckoutProds,
+    checkoutProds,
   } = useAuthContext();
-
-  console.log(totalAmount);
 
   const handleDelete = async (prod_id: number) => {
     const { error: deleteError } = await supabase
@@ -80,8 +83,7 @@ const CartPage = () => {
     setSubTotal(tempSubTotal);
   };
 
-  {
-    /*const handleCheckout = () => {
+  const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd[] = cart.map((item) => {
       return {
         order_id: undefined,
@@ -102,8 +104,7 @@ const CartPage = () => {
     setCheckoutProds(tempCheckoutProd);
     nav("/checkout");
     console.log(checkoutProds);
-  };*/
-  }
+  };
 
   const getOrders = async () => {
     setIsLoading(true);
@@ -184,28 +185,28 @@ const CartPage = () => {
   }, [cart]);
 
   return (
-    <div>
+    <div className="mb-5">
       <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
         <p className="text-xl sm:text-3xl text-white text-center font-semibold">
           Shopping Cart
         </p>
       </div>
-      <div className="CartBody flex flex-col m-5">
-        <div className="CartItemList flex flex-col items-stretch sm:w-full gap-5 h-full mb-5">
+      <div className="CartBody flex flex-col lg:flex-row h-full m-5  min-h-screen">
+        <div className="CartItemList flex flex-col items-stretch lg:w-2/3 sm:w-full gap-5 h-full">
           {cart.map((item) => (
             <button
               key={item?.prod_id}
-              className="CartItem shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex-1 h-screen flex flex-row rounded-xl text-left max-h-[250px] items-center"
+              className="CartItem shadow-lg flex-1 h-full flex rounded-xl xl:max-h-[300px] text-left"
               onClick={() => nav(`/product/${item?.prod_id}`)}
             >
-              <div className="w-1/4 h-full flex-1 flex flex-col">
+              <div className="CartItemImage w-[30%] overflow-hidden rounded-xl">
                 <img
                   src={item?.img}
                   alt={item?.name}
-                  className="Image flex-1 rounded-2xl object-cover max-h-[250px] min-h-[250px]" 
+                  className="Image w-full h-full object-cover"
                 />
               </div>
-              <div className="CartItemInfo m-6 flex flex-col w-[70%]">
+              <div className="CartItemInfo m-6 flex gap-2 flex-col w-[70%]">
                 <div className="CartItemTop">
                   <div className="CartItemSeller flex items-center w-full">
                     <div className="CartItemSellerImage bg-gray-700 size-3 mr-2 rounded-full"></div>
@@ -250,9 +251,7 @@ const CartPage = () => {
                     </div>
                     <div className="CartItemsTotalPrice w-1/3">
                       <p className="text-sm font-medium">Total Price</p>
-                      <h1 className="text-2xl">
-                        {item?.price * item?.quantity}
-                      </h1>
+                      <h1 className="text-2xl">{totalAmount}</h1>
                     </div>
                   </div>
                 </div>
