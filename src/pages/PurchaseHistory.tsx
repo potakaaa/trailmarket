@@ -18,9 +18,71 @@ const OrderPage = () => {
 
   const [placedOrders, setPlacedOrders] = useState<any[]>([]);
   const [receivedOrders, setReceivedOrders] = useState<any[]>([]);
+  const [filteredPlacedOrders, setFilteredPlacedOrders] = useState<any[]>([]);
+  const [filteredReceivedOrders, setFilteredReceivedOrders] = useState<any[]>(
+    []
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+
+  const [placedFilter, setPlacedFilter] = useState("All");
+  const [receivedFilter, setReceivedFilter] = useState("All");
 
   const { setIsLoading, user } = useAuthContext();
   const [taxes, setTaxes] = useState<Tax[]>([]);
+
+  const handleOpenModal = (order: any) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const applyFilters = () => {
+    console.log("Applying Filters...");
+    console.log("Current Placed Orders:", placedOrders);
+    console.log("Current Received Orders:", receivedOrders);
+
+    console.log("Placed Filter:", placedFilter);
+    console.log("Received Filter:", receivedFilter);
+
+    // Apply placed filter
+    const updatedPlacedOrders =
+      placedFilter === "All"
+        ? placedOrders
+        : placedOrders.filter((order) => {
+            console.log(
+              `Checking Placed Order: ${order.payment.payment_status?.toLowerCase()} against ${placedFilter.toLowerCase()}`
+            );
+            return (
+              order.payment.payment_status &&
+              order.payment.payment_status.toLowerCase() ===
+                placedFilter.toLowerCase()
+            );
+          });
+
+    // Apply received filter
+    const updatedReceivedOrders =
+      receivedFilter === "All"
+        ? receivedOrders
+        : receivedOrders.filter((order) => {
+            console.log(
+              `Checking Received Order: ${order.payment.payment_status?.toLowerCase()} against ${receivedFilter.toLowerCase()}`
+            );
+            return (
+              order.payment.payment_status &&
+              order.payment.payment_status.toLowerCase() ===
+                receivedFilter.toLowerCase()
+            );
+          });
+
+    console.log("Filtered Placed Orders:", updatedPlacedOrders);
+    console.log("Filtered Received Orders:", updatedReceivedOrders);
+
+    setFilteredPlacedOrders(updatedPlacedOrders);
+    setFilteredReceivedOrders(updatedReceivedOrders);
+  };
+  useEffect(() => {
+    applyFilters();
+  }, [placedOrders, receivedOrders, placedFilter, receivedFilter]);
 
   async function getPlacedOrders() {
     setIsLoading(true);
@@ -31,8 +93,8 @@ const OrderPage = () => {
         ORDER_ID, 
         QUANTITY, 
         DIM_PRODUCT(PRODUCT_ID, PROD_NAME, PROD_PRICE, DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage)), 
-        DIM_MEETUP(MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
-        DIM_PAYMENT(PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
+        DIM_MEETUP(MEETUP_ID, MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
+        DIM_PAYMENT(PAYMENT_STATUS, PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
         `
       )
       .eq("BUYER_FK", user?.id);
@@ -59,11 +121,13 @@ const OrderPage = () => {
               image: order.DIM_PRODUCT.DIM_PRODUCTIMAGES[0].PRODUCT_IMAGE,
             },
             meetup: {
+              meetup_id: order.DIM_MEETUP.MEETUP_ID,
               meetup_location: order.DIM_MEETUP.MEETUP_LOCATION,
               meetup_date: order.DIM_MEETUP.MEETUP_DATE,
               meetup_time: order.DIM_MEETUP.MEETUP_TIME,
             },
             payment: {
+              payment_status: order.DIM_PAYMENT[0].PAYMENT_STATUS,
               payment_method: {
                 payment_method:
                   order.DIM_PAYMENT[0]?.PAYMENT_METHOD.PAYMENT_METHOD,
@@ -79,6 +143,45 @@ const OrderPage = () => {
       setIsLoading(false);
     }
   }
+  const updatePaymentStatus = async (orderId: number, newStatus: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("DIM_PAYMENT")
+        .update({ PAYMENT_STATUS: newStatus })
+        .eq("ORDER_FK", orderId);
+
+      if (error) {
+        console.error("Error updating payment status:", error.message);
+        alert("An error occurred while updating the payment status.");
+        return;
+      }
+
+      console.log("Payment status updated:", data);
+
+      // Update state
+      setReceivedOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.order_id === orderId
+            ? {
+                ...order,
+                payment: {
+                  ...order.payment,
+                  payment_status: newStatus,
+                },
+              }
+            : order
+        )
+      );
+
+      alert("Payment status updated successfully!");
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   async function getReceivedOrders() {
     setIsLoading(true);
@@ -89,8 +192,8 @@ const OrderPage = () => {
     ORDER_ID, 
     QUANTITY, 
     DIM_PRODUCT!inner(PRODUCT_ID, PROD_NAME, PROD_PRICE, SELLER_ID, DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage)), 
-    DIM_MEETUP(MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
-    DIM_PAYMENT(PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
+    DIM_MEETUP(MEETUP_ID, MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
+    DIM_PAYMENT(PAYMENT_STATUS, PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
     `
       )
       .eq("DIM_PRODUCT.SELLER_ID", user?.id);
@@ -117,11 +220,13 @@ const OrderPage = () => {
               image: order.DIM_PRODUCT.DIM_PRODUCTIMAGES[0].PRODUCT_IMAGE,
             },
             meetup: {
+              meetup_id: order.DIM_MEETUP.MEETUP_ID,
               meetup_location: order.DIM_MEETUP.MEETUP_LOCATION,
               meetup_date: order.DIM_MEETUP.MEETUP_DATE,
               meetup_time: order.DIM_MEETUP.MEETUP_TIME,
             },
             payment: {
+              payment_status: order.DIM_PAYMENT[0].PAYMENT_STATUS,
               payment_method: {
                 payment_method:
                   order.DIM_PAYMENT[0]?.PAYMENT_METHOD.PAYMENT_METHOD,
@@ -138,9 +243,37 @@ const OrderPage = () => {
     setIsLoading(false);
   }
 
+  const deleteOrder = async (meetupId: number) => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from("DIM_MEETUP")
+        .delete()
+        .eq("MEETUP_ID", meetupId);
+
+      if (error) {
+        console.error("Error deleting order:", error.message);
+        alert("An error occurred while deleting the order.");
+        return;
+      }
+
+      alert("Order deleted successfully!");
+
+      // Refresh the orders after deletion
+      getPlacedOrders();
+      getReceivedOrders();
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getPlacedOrders();
     getReceivedOrders();
+    applyFilters();
   }, []);
 
   return (
@@ -152,9 +285,18 @@ const OrderPage = () => {
         <div className={"orderItem flex-1 flex-col p-5"}>
           <div className="orderItemTop flex flex-col justify-between">
             <p className="text-2xl py-4">Orders Placed</p>
+            <select
+              value={placedFilter}
+              onChange={(e) => setPlacedFilter(e.target.value)}
+              className="border-2 border-black rounded-lg p-2"
+            >
+              <option value="All">All</option>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
             <div></div>
-            {placedOrders.length > 0 ? (
-              placedOrders?.map((order) => (
+            {filteredPlacedOrders.length > 0 ? (
+              filteredPlacedOrders?.map((order) => (
                 <div key={order.id} className="flex flex-row my-5">
                   <button
                     className="flex flex-row"
@@ -191,6 +333,39 @@ const OrderPage = () => {
                       </div>
                     </div>
                   </button>
+                  <select
+                    className="border-2 border-black rounded-lg p-2 ml-5"
+                    value={order.payment.payment_status}
+                    disabled
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+
+                  <select
+                    className="border-2 border-black rounded-lg p-2 ml-5"
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      if (value === "Delete") {
+                        deleteOrder(order.meetup.meetup_id); // Call delete function
+                      } else if (value === "Details") {
+                        handleOpenModal(order); // Open the modal with order details
+                      }
+
+                      // Reset the select value back to "Options" after the action
+                      e.target.value = "Options";
+                    }}
+                    defaultValue="Options"
+                  >
+                    <option value="Options" disabled>
+                      Options
+                    </option>
+                    {order.payment.payment_status === "Completed" && (
+                      <option value="Delete">Delete</option>
+                    )}
+                    <option value="Details">Details</option>
+                  </select>
                 </div>
               ))
             ) : (
@@ -203,9 +378,18 @@ const OrderPage = () => {
         <div className={"orderItem flex-1 flex-col p-5"}>
           <div className="orderItemTop flex flex-col justify-between">
             <p className="text-2xl py-4">Orders Recieved</p>
+            <select
+              value={receivedFilter}
+              onChange={(e) => setReceivedFilter(e.target.value)} // Use receivedFilter
+              className="border-2 border-black rounded-lg p-2"
+            >
+              <option value="All">All</option>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
             <div></div>
-            {receivedOrders.length > 0 ? (
-              receivedOrders?.map((order) => (
+            {filteredReceivedOrders.length > 0 ? (
+              filteredReceivedOrders?.map((order) => (
                 <div key={order.id} className="flex flex-row my-5">
                   <button
                     className="flex flex-row"
@@ -242,6 +426,32 @@ const OrderPage = () => {
                       </div>
                     </div>
                   </button>
+                  <select
+                    className="border-2 border-black rounded-lg p-2 ml-5"
+                    value={order.payment.payment_status}
+                    onChange={(e) =>
+                      updatePaymentStatus(order.order_id, e.target.value)
+                    }
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                  {order.payment.payment_status === "Completed" && (
+                    <select
+                      className="border-2 border-black rounded-lg p-2 ml-5"
+                      onChange={(e) => {
+                        if (e.target.value === "Delete") {
+                          deleteOrder(order.meetup.meetup_id);
+                        }
+                      }}
+                      defaultValue="Options"
+                    >
+                      <option value="Options" disabled>
+                        Options
+                      </option>
+                      <option value="Delete">Delete</option>
+                    </select>
+                  )}
                 </div>
               ))
             ) : (
@@ -250,8 +460,63 @@ const OrderPage = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <OrderDetailsModal
+          order={selectedOrder}
+          onClose={() => setIsModalOpen(false)}
+        ></OrderDetailsModal>
+      )}
     </div>
   );
 };
 
 export default OrderPage;
+
+const OrderDetailsModal = ({
+  order,
+  onClose,
+}: {
+  order: any;
+  onClose: () => void;
+}) => {
+  if (!order) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-lg p-5 w-3/4 max-w-lg">
+        <h2 className="text-xl font-semibold mb-4">Order Details</h2>
+        <p>
+          <strong>Product:</strong> {order.product.name}
+        </p>
+        <p>
+          <strong>Quantity:</strong> {order.quantity}
+        </p>
+        <p>
+          <strong>Price: NEED TO APPLY TAXES</strong> PHP {order.product.price}
+        </p>
+        <p>
+          <strong>Meetup Location:</strong> {order.meetup.meetup_location}
+        </p>
+        <p>
+          <strong>Meetup Date:</strong> {order.meetup.meetup_date}
+        </p>
+        <p>
+          <strong>Meetup Time:</strong> {order.meetup.meetup_time}
+        </p>
+        <p>
+          <strong>Payment Method:</strong>{" "}
+          {order.payment.payment_method.payment_method}
+        </p>
+        <p>
+          <strong>Payment Status:</strong> {order.payment.payment_status}
+        </p>
+        <button
+          onClick={onClose}
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
