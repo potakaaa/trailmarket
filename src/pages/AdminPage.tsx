@@ -19,6 +19,9 @@ const AdminPage = () => {
   const [isEmpClicked, setIsEmpClicked] = useState(false);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { setIsLoggedIn } = useAuthContext();
+
+  setIsLoggedIn(false);
 
   interface EmpFormData {
     name: string;
@@ -464,11 +467,11 @@ const AdminPage = () => {
 
   const renderAddAdmin = () => {
     return (
-      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
+      <div className="form-container flex flex-col w-full sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
         <div className="flex-none sm:flex sm:gap-2">
           <input
             placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -476,7 +479,7 @@ const AdminPage = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -485,7 +488,7 @@ const AdminPage = () => {
         <input
           type="password"
           placeholder="Password"
-          className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px] "
+          className=" w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px] "
           name="password"
           value={formData.password}
           onChange={handleChange}
@@ -494,7 +497,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="age"
             value={formData.age}
             onChange={handleChange}
@@ -502,14 +505,14 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="number"
             value={formData.number}
             onChange={handleChange}
           />
           <input
             placeholder="City"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="city"
             value={formData.city}
             onChange={handleChange}
@@ -518,7 +521,7 @@ const AdminPage = () => {
 
         <div className="flex-none sm:flex sm:gap-2">
           <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
             value={formData.role}
             onChange={handleChange} // Set the current value
             name="role"
@@ -532,7 +535,7 @@ const AdminPage = () => {
           </select>
           <input
             placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_name"
             value={formData.emergency_contact_name}
             onChange={handleChange}
@@ -540,7 +543,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_num"
             value={formData.emergency_contact_num}
             onChange={handleChange}
@@ -548,7 +551,7 @@ const AdminPage = () => {
         </div>
         <button
           id="login-button"
-          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white xl:text-base font-normal text-sm rounded-full h-10 mt-3 shadow-md transition duration-300 w-full self-center xl:h-14"
           onClick={() => handleAdminSubmit(formData)}
         >
           Submit
@@ -810,13 +813,7 @@ const AdminPage = () => {
   };
 
   const renderCategoryMenu = () => (
-    <div className="flex flex-col w-full gap-4">
-      <button
-        onClick={handleAddCategory}
-        className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
-      >
-        Add Category
-      </button>
+    <div className="flex flex-col w-full gap-4 px-4 max-w-4xl">
       <div className="category-list grid grid-cols-2 gap-4">
         {categories.map((category) => (
           <div
@@ -824,8 +821,12 @@ const AdminPage = () => {
             className="p-4 border rounded-lg hover:shadow-lg cursor-pointer"
             onClick={() => handleCategorySelect(category)} // Select category on click
           >
-            <h3 className="text-lg font-bold">{category.name}</h3>
-            <p className="text-sm">{category.description}</p>
+            <h3 className="text-base xl:text-lg font-semibold">
+              {category.name}
+            </h3>
+            <p className="text-xs xl:text-sm font-medium">
+              {category.description}
+            </p>
             <button
               onClick={() => handleCategoryDelete(category.id)}
               className="block px-4 py-2 text-sm text-center border-2 border-black rounded-xl hover:bg-red-200 bg-red-500 w-full text-black"
@@ -838,8 +839,8 @@ const AdminPage = () => {
 
       {selectedCategory && (
         <div className="edit-category-form flex flex-col gap-4 p-4 border rounded-lg w-full">
-          <h3 className="text-lg font-bold">Edit Category</h3>
-          <div className="flex gap-4 flex-row w-full items-center">
+          <h3 className="text-base xl:text-lg font-semibold">Edit Category</h3>
+          <div className="flex gap-4 flex-col sm:flex-row w-full items-center">
             <div className="flex gap-4 flex-col w-full">
               <input
                 type="text"
@@ -847,7 +848,7 @@ const AdminPage = () => {
                 placeholder="Category Name"
                 value={selectedCategory.name}
                 onChange={handleCategoryInputChange}
-                className="border p-2 rounded-lg"
+                className="border p-2 rounded-lg text-sm xl:text-base font-medium"
               />
               <input
                 type="text"
@@ -855,7 +856,7 @@ const AdminPage = () => {
                 placeholder="Category Description"
                 value={selectedCategory.description}
                 onChange={handleCategoryInputChange}
-                className="border p-2 rounded-lg"
+                className="border p-2 rounded-lg text-sm xl:text-base font-medium"
               />
             </div>
             <div
@@ -876,7 +877,7 @@ const AdminPage = () => {
           </div>
           <button
             onClick={saveCategoryChanges}
-            className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal xl:text-base text-sm rounded-full h-10 mt-3 shadow-md w-full self-center xl:h-14 hover:bg-red-400"
           >
             Save Changes
           </button>
@@ -891,7 +892,7 @@ const AdminPage = () => {
         <div className="flex-none sm:flex sm:gap-2">
           <input
             placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="name"
             value={empFormData?.name}
             onChange={handleChangeEmp}
@@ -899,7 +900,7 @@ const AdminPage = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="email"
             value={empFormData?.email}
             onChange={handleChangeEmp}
@@ -909,7 +910,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="age"
             value={empFormData?.age}
             onChange={handleChangeEmp}
@@ -917,7 +918,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="number"
             value={empFormData?.contact_num}
             onChange={handleChangeEmp}
@@ -926,21 +927,24 @@ const AdminPage = () => {
 
         <div className="flex-none sm:flex sm:gap-2">
           <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal xl:text-base text-sm 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
             value={empFormData?.role}
             onChange={handleChangeEmp} // Set the current value
             name="role"
           >
-            <option value="Admin" className="font-normal">
+            <option value="Admin" className="font-normal xl:text-base text-sm">
               Admin
             </option>
-            <option value="Moderator" className="font-normal">
+            <option
+              value="Moderator"
+              className="font-normal xl:text-base text-sm"
+            >
               Moderator
             </option>
           </select>
           <input
             placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_name"
             value={empFormData?.emergency_name}
             onChange={handleChangeEmp}
@@ -948,62 +952,70 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_num"
             value={empFormData?.emergency_contact}
             onChange={handleChangeEmp}
           />
         </div>
-        <div className="flex-none sm:flex sm:gap-2">
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            SSS
-          </label>
-          <input
-            type="number"
-            placeholder="SSS"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="sss"
-            value={empFormData?.sss ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            Philhealth
-          </label>
-          <input
-            type="number"
-            placeholder="Philhealth"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="philhealth"
-            value={empFormData?.philhealth ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            Pagibig
-          </label>
-          <input
-            type="number"
-            placeholder="Pagibig"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="pagibig"
-            value={empFormData?.pagibig ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            TIN
-          </label>
-          <input
-            type="number"
-            placeholder="TIN"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="tin"
-            value={empFormData?.tin ?? ""}
-            onChange={handleChangeEmp}
-          />
+        <div className="flex-none flex flex-col sm:flex-row gap-1">
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              SSS
+            </label>
+            <input
+              type="number"
+              placeholder="SSS"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="sss"
+              value={empFormData?.sss ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              Philhealth
+            </label>
+            <input
+              type="number"
+              placeholder="Philhealth"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="philhealth"
+              value={empFormData?.philhealth ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              Pagibig
+            </label>
+            <input
+              type="number"
+              placeholder="Pagibig"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="pagibig"
+              value={empFormData?.pagibig ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              TIN
+            </label>
+            <input
+              type="number"
+              placeholder="TIN"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="tin"
+              value={empFormData?.tin ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
         </div>
         <div className="flex-none sm:flex sm:gap-2"></div>
         <button
           id="login-button"
-          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal xl:text-base text-sm rounded-full h-10 mt-3 shadow-md transition duration-300 w-full self-center xl:h-14"
           onClick={() => handleAdminUpdate(empFormData)}
         >
           Update
@@ -1105,36 +1117,50 @@ const AdminPage = () => {
         >
           <h1 className="text-lg font-medium">Admin Page</h1>
         </div>
-        <div className="add-admin-update-tax-container items-center justify-center flex gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsAddClicked(!isAddClicked)}
-          >
-            {isAddClicked ? "Cancel Add" : "Add Admin"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsTaxClicked(!isTaxClicked)}
-          >
-            {isTaxClicked ? "Cancel Tax" : "Update Tax"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsEmpClicked(!isEmpClicked)}
-          >
-            {!isEmpClicked ? "Employee Profile" : "Close Employee Profile"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsAddCatClicked(!isAddCatClicked)}
-          >
-            {!isAddCatClicked ? "Category Menu" : "Close Category Menu"}
-          </button>
+        <div className="add-admin-update-tax-container items-center justify-center flex flex-col gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
+          <div className="w-full flex gap-2">
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isAddClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsAddClicked(!isAddClicked)}
+            >
+              {isAddClicked ? "Cancel Add" : "Add Admin"}
+            </button>
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isTaxClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsTaxClicked(!isTaxClicked)}
+            >
+              {isTaxClicked ? "Cancel Tax" : "Update Tax"}
+            </button>
+          </div>
+          <div className="w-full flex gap-2">
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isEmpClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsEmpClicked(!isEmpClicked)}
+            >
+              {!isEmpClicked ? "My Profile" : "Close Profile"}
+            </button>
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isAddCatClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsAddCatClicked(!isAddCatClicked)}
+            >
+              {!isAddCatClicked ? "Category Menu" : "Close Category Menu"}
+            </button>
+          </div>
         </div>
-        {isAddClicked && renderAddAdmin()}
-        {isTaxClicked && renderUpdateTax()}
-        {isEmpClicked && renderEmployeeProfile()}
-        {isAddCatClicked && renderCategoryMenu()}
+        <div className="flex flex-col w-full justify-center items-center gap-5">
+          {isAddClicked && renderAddAdmin()}
+          {isTaxClicked && renderUpdateTax()}
+          {isEmpClicked && renderEmployeeProfile()}
+          {isAddCatClicked && renderCategoryMenu()}
+        </div>
 
         <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg sm:px-2 ">
           <hr className="border-2" />

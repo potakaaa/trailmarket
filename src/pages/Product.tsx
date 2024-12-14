@@ -91,8 +91,8 @@ const Product: React.FC<ProductProps> = ({
             </h2>
           </div>
           <div className="right-side flex flex-[2] flex-col justify-start text-center">
-            <h2 className="text-white text-lg md:text-lg xl:text-2xl">
-              ₱ {price.toFixed(2)} pesos
+            <h2 className="text-white text-base md:text-lg xl:text-2xl">
+              ₱ {price.toFixed(2)}
             </h2>
             <h2 className="text-white font-normal text-xs md:text-xs xl:text-sm">
               Stock available: {stock}

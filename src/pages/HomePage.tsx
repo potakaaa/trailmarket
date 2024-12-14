@@ -10,11 +10,17 @@ import Product from "./Product";
 import { Product as ProductType } from "./context/Globals";
 
 const HomePage = () => {
-  const { setIsFetched } = useAuthContext();
+  const {
+    setIsFetched,
+    setIsLoading,
+    selectedCategory,
+    setSelectedCategory,
+    setIsAdminLoggedIn,
+  } = useAuthContext();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [displayProducts, setDisplayProducts] = useState<ProductType[]>([]);
-  const { setIsLoading } = useAuthContext();
-  const { selectedCategory, setSelectedCategory } = useAuthContext();
+
+  setIsAdminLoggedIn(false);
 
   useEffect(() => {
     const fetchData = async () => {
