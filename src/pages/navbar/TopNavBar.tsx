@@ -166,32 +166,38 @@ const TopNavBar = () => {
         <h2 className="text-lg font-bold mb-4">Give Feedback</h2>
         <form className="" onSubmit={handleSubmitFeedback}>
           <select
-            className="w-full p-2 border rounded mb-4 text-black"
+            className="w-full p-2 border rounded mb-4  text-black text-xs xl:text-base"
             defaultValue=""
             name="category"
           >
-            <option value="" disabled>
+            <option className="font-medium" value="" disabled>
               Select a category
             </option>
-            <option value="Bug">Bug</option>
-            <option value="Feature">Feature</option>
-            <option value="Feedback">Feedback</option>
+            <option className="font-medium" value="Bug">
+              Bug
+            </option>
+            <option className="font-medium" value="Feature">
+              Feature
+            </option>
+            <option className="font-medium" value="Feedback">
+              Feedback
+            </option>
           </select>
           <input
             type="text"
-            className="w-full p-2 border rounded mb-4 text-black"
+            className="w-full p-2 border rounded mb-4 text-black text-xs xl:text-base"
             placeholder="Title"
             name="title"
           />
           <textarea
-            className="w-full p-2 border rounded text-black"
+            className="w-full p-2 border rounded text-black text-xs xl:text-base font-medium"
             rows={5}
             placeholder="Your feedback"
             name="feedback"
           ></textarea>
           <button
             type="submit"
-            className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+            className="px-3 py-2 text-xs border-2 border-white text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-lg mt-3"
           >
             Submit
           </button>
