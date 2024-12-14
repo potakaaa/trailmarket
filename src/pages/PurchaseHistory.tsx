@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useAuthContext } from "./context/AuthContext";
 import { useEffect } from "react";
 import { supabase } from "../createClient";
+import { Product } from "./context/Globals";
+import { User } from "./context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Tax {
   id: number;
@@ -11,299 +14,134 @@ interface Tax {
 }
 
 const OrderPage = () => {
-  interface ProductImage {
-    PRODUCT_IMAGE: string;
-    isMainImage: boolean;
-  }
+  const nav = useNavigate();
 
-  interface Product {
-    PROD_NAME: string;
-    PROD_PRICE: number;
-    SELLER_ID: string;
-    DIM_PRODUCTIMAGES: ProductImage[];
-  }
+  const [placedOrders, setPlacedOrders] = useState<any[]>([]);
+  const [receivedOrders, setReceivedOrders] = useState<any[]>([]);
 
-  interface Meetup {
-    // Define fields in DIM_MEETUP table
-    [key: string]: any;
-  }
-
-  interface Payment {
-    PAYMENT_METHOD: PaymentMethod;
-    PAYMENT_STATUS: string;
-  }
-
-  interface PaymentMethod {
-    PAYMENT_METHOD: string;
-  }
-
-  interface Order {
-    ORDER_ID: number;
-    BUYER_FK: number;
-    TAX_APPLIED: number;
-    MEETUP_FK: number;
-    QUANTITY: number;
-    PRODUCT_FK: number;
-    DIM_PAYMENT: Payment;
-    DIM_MEETUP: Meetup;
-    DIM_PRODUCT: Product;
-  }
-
-  const [placedOrders, setPlacedOrders] = useState<Order[]>([]);
-  const [receivedOrders, setReceivedOrders] = useState<Order[]>([]);
-
-  const { isLoading, setIsLoading, user } = useAuthContext();
-  const [subTotal, setSubTotal] = useState(0);
-  const [Tax, setTax] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
+  const { setIsLoading, user } = useAuthContext();
   const [taxes, setTaxes] = useState<Tax[]>([]);
 
-  
-  const fetchTaxes = async () => {
-    try {
-      const { data } = await supabase.from("DIM_TAX").select("*");
-      if (data) {
-        const tempTaxes: Tax[] = data.map((tax: any) => ({
-          id: tax.TAX_ID,
-          low: tax.TAX_BRACKET_LOW,
-          high: tax.TAX_BRACKET_HIGH,
-          amount: tax.TAX_AMOUNT,
-        }));
-        setTaxes(tempTaxes);
-        console.log("TAX", taxes);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const fetchOrders = async () => {
-    console.log("Starting fetchOrders...");
+  async function getPlacedOrders() {
     setIsLoading(true);
-
-    try {
-      const currentUserId = user?.id;
-      if (!currentUserId) {
-        console.error("User ID is not available. Cannot fetch orders.");
-        throw new Error("User ID is required but not available.");
-      }
-
-      console.log("Fetching orders for user ID:", currentUserId);
-
-      // Fetch orders placed by the user
-      const fetchPlacedOrders = async () => {
-        console.log("Fetching placed orders...");
-        const { data, error } = await supabase
-          .from("DIM_ORDER")
-          .select(
-            `
-          ORDER_ID,
-          BUYER_FK(USER_NAME),
-          TAX_APPLIED,
-          MEETUP_FK,
-          QUANTITY,
-          PRODUCT_FK,
-          DIM_PAYMENT(
-            PAYMENT_METHOD,
-            DIM_PAYMENTMETHOD(
-                PAYMENT_METHOD
-          )
-          ),
-          DIM_MEETUP(
-            *
-          ),
-          DIM_PRODUCT(
-            PROD_NAME,
-            PROD_PRICE,
-            SELLER_ID,
-            DIM_PRODUCTIMAGES(
-              PRODUCT_IMAGE,
-              isMainImage
-            )
-          )
+    const { data, error } = await supabase
+      .from("DIM_ORDER")
+      .select(
         `
-          )
-          .eq("BUYER_FK", currentUserId);
-
-        if (error) {
-          console.error("Error fetching placed orders:", error.message);
-          throw new Error(`Error fetching placed orders: ${error.message}`);
-        }
-
-        console.log("Raw placed orders data fetched:", data);
-
-        return data.map((order: any) => ({
-          ORDER_ID: order.ORDER_ID,
-          BUYER_FK: order.BUYER_FK?.USER_NAME || "Unknown Buyer",
-          TAX_APPLIED: order.TAX_APPLIED,
-          MEETUP_FK: order.MEETUP_FK,
-          QUANTITY: order.QUANTITY,
-          PRODUCT_FK: order.PRODUCT_FK,
-          DIM_PAYMENT: {
-            PAYMENT_METHOD:
-              order.DIM_PAYMENT?.PAYMENT_METHOD || "Unknown Payment Method",
-            PAYMENT_STATUS:
-              order.DIM_PAYMENT?.PAYMENT_STATUS || "Unknown Payment",
-          },
-          DIM_MEETUP: {
-            MEETUP_LOCATION:
-              order.DIM_MEETUP?.MEETUP_LOCATION || "Unknown Location",
-            MEETUP_DATE: order.DIM_MEETUP?.MEETUP_DATE || "Unknown Date",
-            MEETUP_TIME: order.DIM_MEETUP?.MEETUP_TIME || "Unknown Time",
-          },
-          DIM_PRODUCT: {
-            PROD_NAME: order.DIM_PRODUCT?.PROD_NAME || "Unknown Product",
-            PROD_PRICE: order.DIM_PRODUCT?.PROD_PRICE || 0,
-            SELLER_ID: order.DIM_PRODUCT?.SELLER_ID || null,
-            DIM_PRODUCTIMAGES: order.DIM_PRODUCT?.DIM_PRODUCTIMAGES || [],
-          },
-        }));
-      };
-
-      // Fetch orders for the user's products
-      const fetchReceivedOrders = async () => {
-        console.log("Fetching received orders...");
-        const { data, error } = await supabase
-          .from("DIM_PRODUCT")
-          .select(
-            `
-    PROD_NAME,
-    PROD_PRICE,
-    SELLER_ID,
-    DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage),
-    DIM_ORDER(ORDER_ID, BUYER_FK, TAX_APPLIED, MEETUP_FK, QUANTITY, PRODUCT_FK)
-  `
-          )
-          .eq("SELLER_ID", currentUserId);
-        console.log("Current", currentUserId);
-
-        if (error) {
-          console.error("Error fetching received orders:", error.message);
-          throw new Error(`Error fetching received orders: ${error.message}`);
-        }
-
-        console.log("Raw received orders data fetched:", data);
-
-        return data.map((order: any) => ({
-          ORDER_ID: order.ORDER_ID,
-          BUYER_FK: order.BUYER_FK?.USER_NAME || "Unknown Buyer",
-          TAX_APPLIED: order.TAX_APPLIED,
-          MEETUP_FK: order.MEETUP_FK,
-          QUANTITY: order.QUANTITY,
-          PRODUCT_FK: order.PRODUCT_FK,
-          DIM_PAYMENT: {
-            PAYMENT_METHOD:
-              order.DIM_PAYMENT?.PAYMENT_METHOD || "Unknown Payment Method",
-            PAYMENT_STATUS:
-              order.DIM_PAYMENT?.PAYMENT_STATUS || "Unknown Payment",
-          },
-          DIM_MEETUP: {
-            MEETUP_LOCATION:
-              order.DIM_MEETUP?.MEETUP_LOCATION || "Unknown Location",
-            MEETUP_DATE: order.DIM_MEETUP?.MEETUP_DATE || "Unknown Date",
-            MEETUP_TIME: order.DIM_MEETUP?.MEETUP_TIME || "Unknown Time",
-          },
-          DIM_PRODUCT: {
-            PROD_NAME: order.DIM_PRODUCT?.PROD_NAME || "Unknown Product",
-            PROD_PRICE: order.DIM_PRODUCT?.PROD_PRICE || 0,
-            SELLER_ID: order.DIM_PRODUCT?.SELLER_ID,
-            DIM_PRODUCTIMAGES: order.DIM_PRODUCT?.DIM_PRODUCTIMAGES || [],
-          },
-        }));
-      };
-
-      // Fetch data in parallel
-      console.log("Fetching both placed and received orders in parallel...");
-      const [placedOrdersNotState, receivedOrdersNotState] = await Promise.all([
-        fetchPlacedOrders(),
-        fetchReceivedOrders(),
-      ]);
-
-      console.log(
-        "Placed orders successfully fetched and mapped:",
-        placedOrdersNotState
-      );
-      console.log(
-        "Received orders successfully fetched and mapped:",
-        receivedOrdersNotState
-      );
-
-      setPlacedOrders(placedOrdersNotState);
-      setReceivedOrders(receivedOrdersNotState);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error in fetchOrders:", error.message);
-      } else {
-        console.error("Unexpected error in fetchOrders:", error);
-      }
-    } finally {
-      console.log("Fetching orders complete. Setting loading to false.");
+        ORDER_ID, 
+        QUANTITY, 
+        DIM_PRODUCT(PRODUCT_ID, PROD_NAME, PROD_PRICE, DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage)), 
+        DIM_MEETUP(MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
+        DIM_PAYMENT(PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
+        `
+      )
+      .eq("BUYER_FK", user?.id);
+    if (error) {
+      console.error("Error fetching orders:", error.message);
+      alert("An error occurred while fetching orders.");
       setIsLoading(false);
-
-      console.log("Final placedOrders state:", placedOrders);
-      console.log("Final receivedOrders state:", receivedOrders);
+      return;
     }
-  };
+    if (data) {
+      console.log("Data:", JSON.stringify(data, null, 2));
+      if (data.length === 0) {
+        setIsLoading(false);
+        return;
+      } else {
+        const orders = data.map((order: any) => {
+          return {
+            order_id: order.ORDER_ID,
+            quantity: order.QUANTITY,
+            product: {
+              id: order.DIM_PRODUCT.PRODUCT_ID,
+              name: order.DIM_PRODUCT.PROD_NAME,
+              price: order.DIM_PRODUCT.PROD_PRICE,
+              image: order.DIM_PRODUCT.DIM_PRODUCTIMAGES[0].PRODUCT_IMAGE,
+            },
+            meetup: {
+              meetup_location: order.DIM_MEETUP.MEETUP_LOCATION,
+              meetup_date: order.DIM_MEETUP.MEETUP_DATE,
+              meetup_time: order.DIM_MEETUP.MEETUP_TIME,
+            },
+            payment: {
+              payment_method: {
+                payment_method:
+                  order.DIM_PAYMENT[0]?.PAYMENT_METHOD.PAYMENT_METHOD,
+                account_number:
+                  order.DIM_PAYMENT[0]?.PAYMENT_METHOD.ACCOUNT_NUMBER,
+              },
+            },
+          };
+        });
+        setPlacedOrders(orders);
+        console.log("State Orders:", orders);
+      }
+      setIsLoading(false);
+    }
+  }
+
+  async function getReceivedOrders() {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from("DIM_ORDER")
+      .select(
+        `
+    ORDER_ID, 
+    QUANTITY, 
+    DIM_PRODUCT!inner(PRODUCT_ID, PROD_NAME, PROD_PRICE, SELLER_ID, DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage)), 
+    DIM_MEETUP(MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
+    DIM_PAYMENT(PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
+    `
+      )
+      .eq("DIM_PRODUCT.SELLER_ID", user?.id);
+    if (error) {
+      console.error("Error fetching orders:", error.message);
+      alert("An error occurred while fetching orders.");
+      setIsLoading(false);
+      return;
+    }
+    if (data) {
+      console.log("Data of Recieved:", JSON.stringify(data, null, 2));
+      if (data.length === 0) {
+        setIsLoading(false);
+        return;
+      } else {
+        const orders = data.map((order: any) => {
+          return {
+            order_id: order.ORDER_ID,
+            quantity: order.QUANTITY,
+            product: {
+              id: order.DIM_PRODUCT.PRODUCT_ID,
+              name: order.DIM_PRODUCT.PROD_NAME,
+              price: order.DIM_PRODUCT.PROD_PRICE,
+              image: order.DIM_PRODUCT.DIM_PRODUCTIMAGES[0].PRODUCT_IMAGE,
+            },
+            meetup: {
+              meetup_location: order.DIM_MEETUP.MEETUP_LOCATION,
+              meetup_date: order.DIM_MEETUP.MEETUP_DATE,
+              meetup_time: order.DIM_MEETUP.MEETUP_TIME,
+            },
+            payment: {
+              payment_method: {
+                payment_method:
+                  order.DIM_PAYMENT[0]?.PAYMENT_METHOD.PAYMENT_METHOD,
+                account_number:
+                  order.DIM_PAYMENT[0]?.PAYMENT_METHOD.ACCOUNT_NUMBER,
+              },
+            },
+          };
+        });
+        setReceivedOrders(orders);
+        console.log("State Orders:", orders);
+      }
+    }
+    setIsLoading(false);
+  }
 
   useEffect(() => {
-    console.log("placedOrders updated:", placedOrders);
-    console.log("receivedOrders updated:", receivedOrders);
-  }, [setPlacedOrders, setReceivedOrders]);
-
-  useEffect(() => {
-    fetchOrders();
-    fetchTaxes();
+    getPlacedOrders();
+    getReceivedOrders();
   }, []);
-
-  const orderItems = [
-    {
-      cartId: "1",
-      cartItems: [
-        {
-          cartItemId: 1,
-          cartItemImage:
-            "https://www.kalkstore.com/cdn/shop/articles/KL_WEB_BLOG_PORTADA_4420x2400_df689793-0c08-4d64-8872-7b415597a5ac.jpg?v=1654701916&width=700",
-          buyerName: "userAlpha4",
-          productName: "Big K Sling Chainbag",
-          totalPrice: 400,
-          quantity: 4,
-          deliveryLocation: "CITC",
-          deliveryMethodOptions: "Pickup",
-          deliveryDate: "2022-12-31",
-          deliveryTime: "10:00",
-          tax: 0,
-        },
-        {
-          cartItemId: 2,
-          cartItemImage:
-            "https://media.karousell.com/media/photos/products/2024/9/9/macbook_air_2018_13inch_core_i_1725901665_e2991c14_progressive.jpg",
-          buyerName: "grandnationalExperimental",
-          productName: "Apple MacBook M1",
-          totalPrice: 40000,
-          quantity: 1,
-          deliveryLocation: "CEA",
-          deliveryMethodOptions: "Delivery",
-          deliveryDate: "2022-12-31",
-          deliveryTime: "11:00",
-          tax: 50,
-        },
-        {
-          cartItemId: 3,
-          cartItemImage:
-            "https://img.ltwebstatic.com/images3_spmp/2023/05/19/1684480567b4c168018d222c224b27ece30b2d14f8_thumbnail_720x.jpg",
-          buyerName: "userAlpha4",
-          productName: "Some Colorful Notebooks",
-          totalPrice: 200,
-          quantity: 1,
-          deliveryLocation: "Study Shed 2",
-          deliveryMethodOptions: "Pickup",
-          deliveryDate: "2022-12-31",
-          deliveryTime: "15:00",
-          tax: 0,
-        },
-      ],
-    },
-  ];
 
   return (
     <div className="pb-4">
@@ -315,44 +153,48 @@ const OrderPage = () => {
           <div className="orderItemTop flex flex-col justify-between">
             <p className="text-2xl py-4">Orders Placed</p>
             <div></div>
-            {placedOrders ? (
+            {placedOrders.length > 0 ? (
               placedOrders?.map((order) => (
-                <div className="flex flex-row my-5">
-                  <img
-                    src={
-                      order.DIM_PRODUCT?.DIM_PRODUCTIMAGES?.[0]
-                        ?.PRODUCT_IMAGE ||
-                      "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                    }
-                    alt="Product"
-                    className="orderItemImage w-20 h-20 object-cover rounded-lg"
-                  />
+                <div key={order.id} className="flex flex-row my-5">
+                  <button
+                    className="flex flex-row"
+                    onClick={() => nav("/product/" + order.product.id)}
+                  >
+                    <img
+                      src={
+                        order.product.image ||
+                        "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                      }
+                      alt="Product"
+                      className="orderItemImage w-20 h-20 object-cover rounded-lg"
+                    />
 
-                  <div className="flex flex-row items-center justify-between w-full ml-5">
-                    <div className="OrderItemInformation">
-                      <p className="OrderItemName text-lg md:text-sm xl:text-base">
-                        {order.DIM_PRODUCT.PROD_NAME}
-                      </p>
-                      <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Quantity: {order.QUANTITY}
-                      </p>
-                      <p className="orderItemLocation text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Location: {order.DIM_MEETUP?.MEETUP_LOCATION}
-                      </p>
-                      <p className="orderItemPayment text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Payment Option:{" "}
-                        {order.DIM_PAYMENT.PAYMENT_METHOD.PAYMENT_METHOD}
-                      </p>
-                      <p className="orderItemTime text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Time: {order.DIM_MEETUP?.MEETUP_TIME}, at{" "}
-                        {order.DIM_MEETUP?.MEETUP_DATE}
-                      </p>
+                    <div className="flex flex-row items-center justify-between w-full ml-5">
+                      <div className="OrderItemInformation">
+                        <p className="OrderItemName text-lg md:text-sm xl:text-base">
+                          {order.product.name}
+                        </p>
+                        <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Quantity: {order.quantity}
+                        </p>
+                        <p className="orderItemLocation text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Location: {order.meetup.meetup_location}
+                        </p>
+                        <p className="orderItemPayment text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Payment Option:{" "}
+                          {order.payment.payment_method.payment_method}
+                        </p>
+                        <p className="orderItemTime text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Time: {order.meetup.meetup_time}, at{" "}
+                          {order.meetup.meetup_date}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))
             ) : (
-              <p>No orders placed</p>
+              <p>No orders Placed</p>
             )}
           </div>
         </div>
@@ -362,44 +204,48 @@ const OrderPage = () => {
           <div className="orderItemTop flex flex-col justify-between">
             <p className="text-2xl py-4">Orders Recieved</p>
             <div></div>
-            {receivedOrders ? (
+            {receivedOrders.length > 0 ? (
               receivedOrders?.map((order) => (
-                <div className="flex flex-row my-5">
-                  <img
-                    src={
-                      order.DIM_PRODUCT?.DIM_PRODUCTIMAGES?.[0]
-                        ?.PRODUCT_IMAGE ||
-                      "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                    }
-                    alt="Product"
-                    className="orderItemImage w-20 h-20 object-cover rounded-lg"
-                  />
+                <div key={order.id} className="flex flex-row my-5">
+                  <button
+                    className="flex flex-row"
+                    onClick={() => nav("/product/" + order.product.id)}
+                  >
+                    <img
+                      src={
+                        order.product.image ||
+                        "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                      }
+                      alt="Product"
+                      className="orderItemImage w-20 h-20 object-cover rounded-lg"
+                    />
 
-                  <div className="flex flex-row items-center justify-between w-full ml-5">
-                    <div className="OrderItemInformation">
-                      <p className="OrderItemName text-lg md:text-sm xl:text-base">
-                        {order.DIM_PRODUCT.PROD_NAME}
-                      </p>
-                      <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Quantity: {order.QUANTITY}
-                      </p>
-                      <p className="orderItemLocation text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Location: {order.DIM_MEETUP?.MEETUP_LOCATION}
-                      </p>
-                      <p className="orderItemPayment text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Payment Option:{" "}
-                        {order.DIM_PAYMENT.PAYMENT_METHOD.PAYMENT_METHOD}
-                      </p>
-                      <p className="orderItemTime text-xs md:text-sm xl:text-base text-gray-700 font-medium">
-                        Time: {order.DIM_MEETUP?.MEETUP_TIME}, at{" "}
-                        {order.DIM_MEETUP?.MEETUP_DATE}
-                      </p>
+                    <div className="flex flex-row items-center justify-between w-full ml-5">
+                      <div className="OrderItemInformation">
+                        <p className="OrderItemName text-lg md:text-sm xl:text-base">
+                          {order.product.name}
+                        </p>
+                        <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Quantity: {order.quantity}
+                        </p>
+                        <p className="orderItemLocation text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Location: {order.meetup.meetup_location}
+                        </p>
+                        <p className="orderItemPayment text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Payment Option:{" "}
+                          {order.payment.payment_method.payment_method}
+                        </p>
+                        <p className="orderItemTime text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                          Time: {order.meetup.meetup_time}, at{" "}
+                          {order.meetup.meetup_date}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))
             ) : (
-              <p>No orders placed</p>
+              <p>No orders Recieved</p>
             )}
           </div>
         </div>
