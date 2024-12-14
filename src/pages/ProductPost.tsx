@@ -536,13 +536,18 @@ const ProductPost = () => {
         <div className="main-app flex w-full flex-col justify-center space-y-2 lg:flex-row space-x-2">
           <div className="left flex w-full h-full flex-col space-y-4 md:flex-[3] lg:flex-[4] xl:flex-[5.5]">
             <div className="gen-info flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
-              <h1 className="text-xl">General Information</h1>
+              <h1 className="text-xl xl:text-2xl">General Information</h1>
               <form className="space-y-4">
                 <div className="flex flex-col">
-                  <label htmlFor="name">Name of Product</label>
+                  <label
+                    htmlFor="name"
+                    className="text-base font-medium xl:text-lg"
+                  >
+                    Name of Product
+                  </label>
                   <input
                     id="name"
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 font-medium text-sm xl:text-base"
                     type="text"
                     value={input.name}
                     placeholder="Make the product name stand out!"
@@ -550,20 +555,30 @@ const ProductPost = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="description">Full Description</label>
+                  <label
+                    htmlFor="description"
+                    className="text-base font-medium xl:text-lg"
+                  >
+                    Full Description
+                  </label>
                   <textarea
                     id="description"
                     value={input.description}
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y text-wrap"
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 min-h-56 max-h-96 resize-y text-wrap font-medium text-sm xl:text-base"
                     placeholder="Enter the full description"
                     onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="short_desc">Short Description</label>
+                  <label
+                    htmlFor="short_desc"
+                    className="text-base font-medium xl:text-lg"
+                  >
+                    Short Description
+                  </label>
                   <input
                     id="short_desc"
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 font-medium text-sm xl:text-base"
                     type="text"
                     value={input.short_desc}
                     placeholder="Be concise, but poignant"
@@ -573,13 +588,15 @@ const ProductPost = () => {
               </form>
             </div>
             <div className="pricing-stock flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
-              <h1 className="text-xl">Details</h1>
+              <h1 className="text-xl xl:text-2xl">Details</h1>
               <form className="flex flex-row space-x-2">
                 <div className="flex flex-col">
-                  <label className="">Base Pricing</label>
+                  <label className="text-base font-medium xl:text-lg">
+                    Base Pricing
+                  </label>
                   <input
                     id="price"
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 w-full"
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 w-full font-medium text-sm xl:text-base "
                     type="number"
                     value={input.price}
                     placeholder="Input a number"
@@ -587,10 +604,12 @@ const ProductPost = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="">Stock</label>
+                  <label className="text-base font-medium xl:text-lg">
+                    Stock
+                  </label>
                   <input
                     id="stock"
-                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500  w-full"
+                    className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500  w-full font-medium text-sm xl:text-base"
                     type="number"
                     value={input.stock}
                     placeholder="Input a number"
@@ -599,12 +618,12 @@ const ProductPost = () => {
                 </div>
               </form>
               <div className="flex flex-col">
-                <h1>Category</h1>
+                <h1 className="text-base font-medium xl:text-lg">Category</h1>
                 <div className=" category-container flex flex-col space gap-x-2 space-y-3 md:flex-row justify-start items-start">
                   <div className=" flex-col md:flex-row flex space-y-2 md:space-x-2">
                     <Dropdown
-                      buttonStyle="px-6 py-1 bg-white border-2 border-black rounded-xl h-full"
-                      optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
+                      buttonStyle="px-6 py-1 bg-white border-2 border-black rounded-xl h-full font-medium text-sm xl:text-base xl:py-2 xl:px-10"
+                      optionStyle="absolute mb-1 left-0 mt-2 w-48 bg-white shadow-lg rounded z-50 font-medium text-sm xl:text-base"
                       onSelect={handleCategorySelect}
                       options={options}
                       selected={selectedCategory?.CategoryName}
@@ -613,14 +632,14 @@ const ProductPost = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <h1>Condition</h1>
+                <h1 className="text-base font-medium xl:text-lg">Condition</h1>
                 <div className=" category-container flex flex-col space gap-x-2 space-y-3 md:flex-row justify-start items-start">
                   <div className=" flex-col md:flex-row flex space-y-2 md:space-x-2">
                     <form className="flex flex-row space-x-2 mt-0 justify-center items-center h-full">
                       <div className="flex flex-col items-center">
                         <input
                           id="condition"
-                          className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500"
+                          className="flex-1 rounded-xl border-2 border-black p-4 placeholder-gray-500 font-medium text-sm xl:text-base w-full"
                           type="text"
                           value={input.condition}
                           placeholder="Set Condition"
@@ -711,14 +730,18 @@ const ProductPost = () => {
               </div>
               <div className="prompt">
                 {images.length < 5 ? (
-                  <p>Drag and Drop your product images!</p>
+                  <p className="text-base font-medium text-center xl:text-lg">
+                    Drag and Drop your product images!
+                  </p>
                 ) : (
-                  <p>Maximum of 5 images only!</p>
+                  <p className="text-base font-medium text-center">
+                    Maximum of 5 images only!
+                  </p>
                 )}
               </div>
             </div>
             <div className="disclaimer flex h-full w-full p-9 px-5 rounded-xl shadow-xl flex-col bg-gray-50 space-y-4">
-              <p>
+              <p className="text-sm font-normal text-center">
                 By posting a product, you confirm ownership and the right to
                 sell it. You agree to provide accurate descriptions and ensure
                 the product complies with all laws. The platform may remove
@@ -727,7 +750,7 @@ const ProductPost = () => {
             </div>
             <button
               onClick={handleSubmit}
-              className="bg-gradient-to-r from-[#26245f] to-[#18181b] text-white font-normal rounded-full w-full h-10 mt-3 self-end shadow-md"
+              className="bg-gradient-to-r from-[#26245f] to-[#18181b] text-white font-normal rounded-full w-full h-10 mt-3 self-end shadow-md lg:text-lg lg:h-16 lg:w-72 lg:self-center"
             >
               {isEditMode ? "Edit Product" : "Post Product"}
             </button>

@@ -38,7 +38,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <a
               key={index}
               onClick={() => handleSelect(option)}
-              className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              className="block px-4 py-2 hover:bg-gray-100 cursor-pointer font-medium text-sm"
             >
               {option}
             </a>
