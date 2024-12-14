@@ -312,48 +312,50 @@ const CheckoutPage = () => {
             </div>
           ))}
         </div>
-        <div className="checkoutBottom flex flex-col sm:flex-row gap-3">
-          <div className="CartPayment flex w-full">
-            <div className="CartPaymentWindow flex w-full flex-col items-center shadow-lg rounded-xl p-8">
-              <div className="CartPaymentInfo w-full">
-                <h1 className="text-lg pb-4">Payment Summary</h1>
-                <div className="PaymentTransactionId"></div>
-                <div className="PaymentOrderSummary">
-                  <p className="text-sm font-medium">Sub Total</p>
-                  <h1 className="pb-4 text-2xl">{subTotal}</h1>
-                </div>
-                <div className="PaymentShippingFee">
-                  <p className="text-sm font-medium">Tax</p>
-                  <h1 className="pb-4 text-2xl">{tax}</h1>
-                </div>
-                <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
-                  <p className="text-sm font-normal">Total Amount</p>
-                  <h1 className="text-2xl font-semibold">{totalAmount}</h1>
+        <div className="flex flex-col gap-4">
+          <div className="checkoutBottom flex flex-col sm:flex-row gap-3">
+            <div className="CartPayment flex w-full">
+              <div className="CartPaymentWindow flex w-full flex-col items-center shadow-lg rounded-xl p-8">
+                <div className="CartPaymentInfo w-full">
+                  <h1 className="text-lg pb-4">Payment Summary</h1>
+                  <div className="PaymentTransactionId"></div>
+                  <div className="PaymentOrderSummary">
+                    <p className="text-sm font-medium">Sub Total</p>
+                    <h1 className="pb-4 text-2xl">{subTotal}</h1>
+                  </div>
+                  <div className="PaymentShippingFee">
+                    <p className="text-sm font-medium">Tax</p>
+                    <h1 className="pb-4 text-2xl">{tax}</h1>
+                  </div>
+                  <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
+                    <p className="text-sm font-normal">Total Amount</p>
+                    <h1 className="text-2xl font-semibold">{totalAmount}</h1>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="PaymentInfo flex flex-col lg:flex-col w-full mx-1">
-            <div className="PaymentInfoBody shadow-2xl flex flex-col items-stretch sm:w-full rounded-xl p-8">
-              <p className="border-b-2 border-gray-400 pb-4">Payment Info</p>
-              {userPayment.map((payment) => (
-                <div className="PaymentInfoItem pt-4">
-                  <p className="PaymentMethod">{payment.paymentMethod}</p>
-                  <p className="PaymentInfo border-[1px] border-black p-2 rounded-xl mb-2 font-medium">
-                    {payment.paymentNumber}
-                  </p>
-                </div>
-              ))}
+            <div className="PaymentInfo flex flex-col lg:flex-col w-full mx-1">
+              <div className="PaymentInfoBody shadow-2xl flex flex-col items-stretch sm:w-full rounded-xl p-8">
+                <p className="border-b-2 border-gray-400 pb-4">Payment Info</p>
+                {userPayment.map((payment) => (
+                  <div className="PaymentInfoItem pt-4">
+                    <p className="PaymentMethod">{payment.paymentMethod}</p>
+                    <p className="PaymentInfo border-[1px] border-black p-2 rounded-xl mb-2 font-medium">
+                      {payment.paymentNumber}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="PaymentInfoButton ">
-          <button
-            className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full"
-            onClick={() => nav("/purchaseHistory")}
-          >
-            Place Order
-          </button>
+          <div className="PaymentInfoButton ">
+            <button
+              className="PlaceOrderButton bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full"
+              onClick={() => nav("/purchaseHistory")}
+            >
+              Place Order
+            </button>
+          </div>
         </div>
       </div>
     </div>
