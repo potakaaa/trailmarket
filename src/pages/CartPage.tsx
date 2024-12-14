@@ -195,9 +195,10 @@ const CartPage = () => {
       <div className="CartBody flex flex-col lg:flex-row h-full m-5  min-h-screen">
         <div className="CartItemList flex flex-col items-stretch lg:w-2/3 sm:w-full gap-5 h-full">
           {cart.map((item) => (
-            <div
+            <button
               key={item?.prod_id}
-              className="CartItem shadow-lg flex-1 h-full flex rounded-xl xl:max-h-[300px]"
+              className="CartItem shadow-lg flex-1 h-full flex rounded-xl xl:max-h-[300px] text-left"
+              onClick={() => nav(`/product/${item?.prod_id}`)}
             >
               <div className="CartItemImage w-[30%] overflow-hidden rounded-xl">
                 <img
@@ -258,36 +259,8 @@ const CartPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
-        </div>
-        <div className="CartPayment lg:w-1/3 sm:w-full">
-          <div className="CartPaymentWindow flex flex-col items-center shadow-lg m-5 rounded-xl p-8">
-            <div className="CartPaymentInfo w-full">
-              <h1 className="text-2xl pb-4">Payment Summary</h1>
-              <div className="PaymentTransactionId"></div>
-              <div className="PaymentOrderSummary">
-                <p className="text-sm font-medium">Sub Total</p>
-                <h1 className="pb-4 text-2xl">₱ {subTotal}</h1>
-              </div>
-              <div className="PaymentShippingFee">
-                <p className="text-sm font-medium">Tax</p>
-                <h1 className="pb-4 text-2xl">₱ {tax}</h1>
-              </div>
-              <div className="PaymentTotal bg-gradient-to-r from-[#282667] to-slate-900 rounded-2xl text-white w-full flex flex-col align-center p-4 mb-4">
-                <p className="text-sm font-normal">Total Amount</p>
-                <h1 className="text-2xl font-semibold">₱ {totalAmount}</h1>
-              </div>
-            </div>
-            <div className="PaymentButton w-full">
-              <button
-                className="bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 rounded-2xl text-white text-center w-full text-base hover:text-lg hover:shadow-lg xl:text-lg xl:hover:text-xl transition-all duration-300"
-                onClick={() => handleCheckout()}
-              >
-                Proceed to Payment
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

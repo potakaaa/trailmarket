@@ -5,19 +5,11 @@ import AdminNavBar from "./navbar/AdminNavBar";
 import TopNavBar from "./navbar/TopNavBar";
 
 const ModeratorPage = () => {
-  const {
-    user,
-    userList,
-    setUserList,
-    setProdList,
-    prodList,
-    setIsAdminLoggedIn,
-    setIsLoggedIn,
-  } = useAuthContext();
+  const { user, userList, setUserList, setProdList, prodList, setIsLoggedIn } =
+    useAuthContext();
   const [activeProds, setActiveProds] = useState<Prod[]>([]);
 
   setIsLoggedIn(false);
-  setIsAdminLoggedIn(false);
 
   const fetchUsers = async () => {
     const { data, error } = await supabase.from("DIM_USER").select("*");

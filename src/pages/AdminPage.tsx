@@ -19,6 +19,9 @@ const AdminPage = () => {
   const [isEmpClicked, setIsEmpClicked] = useState(false);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { setIsLoggedIn } = useAuthContext();
+
+  setIsLoggedIn(false);
 
   interface EmpFormData {
     name: string;
