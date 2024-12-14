@@ -642,7 +642,7 @@ const ProductPage = () => {
                     </div>
                     {reviews.map((review) => (
                       <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                        <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
+                        <div className='flex flex-col items-start justify-start rounded-lg m-2 w-full"'>
                           <div className="w-full flex items-center my-1 xl:my-2">
                             <button
                               className="flex gap-4 w-full items-center"
@@ -707,10 +707,10 @@ const ProductPage = () => {
             </div>
             <div className="product-bottom flex flex-[1] flex-col md:flex-row xl:ml-4 xl:mr-4 2xl:hidden">
               <div className="product-info flex-wrap flex-[3] flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-1 sm:pt-3 md:ml-3 md:mr-1  ">
-                <h1 className="mx-4 mt-1.5 text-2xl sm:text-2xl xl:text-3xl">
+                <h1 className="mx-4 mt-1.5 text-xl sm:text-2xl xl:text-3xl 2xl:text-4xl">
                   Product Information
                 </h1>
-                <p className="text-xs font-normal mx-4 xl:text-sm xl:ml-[18px]">
+                <p className="text-xs font-normal mx-4 xl:text-sm xl:ml-[18px] 2xl:text-base">
                   Product Details
                 </p>
                 <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:gap-3 md:mt-6 ">
@@ -748,9 +748,9 @@ const ProductPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="leave-rev flex-[5] p-2 flex-row items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2 space-y-3">
+              <div className="leave-rev flex-[5] p-2 flex-row items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2 space-y-3 xl:p-4 2xl:p-6">
                 <div className="flex flex-col mx-2.5">
-                  <h1 className=" mt-1.5 text-2xl xl:text-3xl">
+                  <h1 className=" mt-1.5 text-xl xl:text-3xl">
                     Leave a Review
                   </h1>
                   <div className="">
@@ -758,13 +758,13 @@ const ProductPage = () => {
                   </div>
                   <input
                     id="reviewtitle"
-                    className="bg-gray-100 mt-2 p-2 rounded border-black border-2"
+                    className="bg-gray-100 mt-2 p-2 rounded-lg border-black border-2 font-medium text-sm"
                     placeholder="Title your review!"
                     onChange={handleChange}
                   ></input>
                   <textarea
                     id="review"
-                    className="bg-gray-100 mt-2 p-2 rounded border-black border-2 h-52"
+                    className="bg-gray-100 mt-2 p-2 rounded-lg border-black border-2 h-52 font-medium text-sm"
                     placeholder="Write your review here"
                     onChange={handleChange}
                   />
@@ -779,42 +779,44 @@ const ProductPage = () => {
                 </div>
               </div>
               <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg my-2 sm:mx-4 sm:p-2">
-                <div className="flex flex-[1] flex-col mb-3">
-                  <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
+                <div className="flex flex-[1] flex-col mb-3 p-2">
+                  <h1 className="mx-2 mt-1.5 text-xl">Customer Reviews</h1>
                   <div className=" review-ave flex space-x-1 mx-2.5 my-1">
                     {renderStars(averageRating)}
                     <h3 className="text-sm font-medium">{`(${reviews.length} reviews)`}</h3>
                   </div>
-                  <h2 className="review-percent text-[11px] mx-2.5 font-medium xl:text-sm">
+                  <h2 className="review-percent text-[11px] mx-2.5 font-medium lg:text-sm">
                     {highRatingPercentage.toFixed(2)}% of costumers are
                     satisfied
                   </h2>
                 </div>
                 {reviews.map((review) => (
                   <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
-                    <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
-                      <div className="w-full flex items-center my-1 xl:my-2">
+                    <div className="flex flex-col items-start justify-start rounded-lg m-2 w-full">
+                      <div className="w-full flex flex-row md:flex-col md:gap-2 items-center my-1 xl:my-2">
                         <button
                           className="flex gap-4 w-full items-center"
                           onClick={() => nav(`/profile/${review.REVIEWER_ID}`)}
                         >
-                          <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                          <div className="size-8 rounded-full overflow-hidden border border-black">
                             <img
                               className="object-cover h-full w-full"
                               src={review.userImage}
                               alt="User"
                             />
                           </div>
-                          <p className="text-xl">{review.username}</p>
+                          <p className="text-sm lg:text-base text-left w-full">
+                            {review.username}
+                          </p>
                         </button>
-                        <div className="flex flex-row justify-end items-end w-full mx-2">
+                        <div className="flex flex-row justify-end items-end md:items-start md:justify-start w-full mx-2">
                           {renderStars(review.REVIEW_RATING)}
                         </div>
                       </div>
-                      <h1 className="font-bold text-base">
+                      <h1 className="font-medium text-sm lg:text-base">
                         {review.REVIEW_TITLE}
                       </h1>
-                      <h1 className="font-normal text-base">
+                      <h1 className="font-normal text-xs lg:text-sm">
                         {review.REVIEW_DESC}
                       </h1>
                     </div>

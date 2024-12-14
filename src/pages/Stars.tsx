@@ -9,13 +9,18 @@ export const renderStars = (rating: number) => {
   return (
     <div className="flex">
       {Array.from({ length: fullStars }).map((_, index) => (
-        <FaStar key={`full-${index}`} className="text-black w-6 h-6" />
+        <FaStar key={`full-${index}`} className="text-black size-4 lg:size-6" />
       ))}
 
-      {halfStar && <FaStarHalfAlt key="half" className="text-black w-6 h-6" />}
+      {halfStar && (
+        <FaStarHalfAlt key="half" className="text-black size-4 lg:size-6" />
+      )}
 
       {Array.from({ length: emptyStars }).map((_, index) => (
-        <FaRegStar key={`empty-${index}`} className="text-gray-300 w-6 h-6" />
+        <FaRegStar
+          key={`empty-${index}`}
+          className="text-gray-300 size-4 lg:size-6"
+        />
       ))}
     </div>
   );
@@ -39,7 +44,7 @@ const Star = ({
   if (half) {
     return (
       <FaStarHalfAlt
-        className="w-6 h-6 cursor-pointer text-black"
+        className="size-4 lg:size-6 cursor-pointer text-black"
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -48,7 +53,7 @@ const Star = ({
   }
   return filled ? (
     <FaStar
-      className="w-6 h-6 cursor-pointer text-black"
+      className="size-4 lg:size-6 cursor-pointer text-black"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -76,7 +81,7 @@ export const StarRating = ({ rating, setRating }: StarRatingProps) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex ">
       {Array.from({ length: 5 }, (_, index) => (
         <div
           key={index}
