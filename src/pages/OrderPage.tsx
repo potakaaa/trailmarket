@@ -1,7 +1,7 @@
 const OrderPage = () => {
     const orderItems = [
         {
-            orderId: 1,
+            cartId: "1",
             cartItems: [
                 {
                     cartItemId: 1,
@@ -14,7 +14,7 @@ const OrderPage = () => {
                     deliveryMethodOptions: "Pickup",
                     deliveryDate: "2022-12-31",
                     deliveryTime: "10:00",
-                    shippingFee: 0
+                    tax: 0
                 },
                 {
                     cartItemId: 2,
@@ -27,7 +27,7 @@ const OrderPage = () => {
                     deliveryMethodOptions: "Delivery",
                     deliveryDate: "2022-12-31",
                     deliveryTime: "11:00",
-                    shippingFee: 50
+                    tax: 50
                 },
                 {
                     cartItemId: 3,
@@ -40,27 +40,27 @@ const OrderPage = () => {
                     deliveryMethodOptions: "Pickup",
                     deliveryDate: "2022-12-31",
                     deliveryTime: "15:00",
-                    shippingFee: 0
+                    tax: 0
                 }
             ]    
         },
     ];
 
     return (
-        <div>
+        <div className="pb-4">
             <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 mx-5 rounded-2xl text-white text-center">
                 <h1 className="text-2xl">
-                    Order
+                    Purchase History
                 </h1>
             </div>
             <div className="OrderItemList shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex flex-col items-stretch rounded-xl px-5 m-5 h-full">
             {orderItems.map((item) => (
                 (<div
-                key={item.orderId}
+                key={item.cartId}
                 className={"orderItem flex-1 flex-col p-5"}
                 >
                 <div className="orderItemTop flex flex-col justify-between">
-                    <p className="text-2xl py-4">Order {item.orderId}</p>
+                    <p className="text-2xl py-4">Order ID {item.cartId}</p>
                     <div>
 
                     </div>
@@ -73,9 +73,18 @@ const OrderPage = () => {
                             />
                             <div className="flex flex-row items-center justify-between w-full ml-5">
                                 <div className="OrderItemInformation">
-                                    <p className="OrderItemName text-sm md:text-base xl:text-xl">{cartItem.productName}</p>
-                                    <p className="orderItemQuantity text-sm md:text-base xl:text-lg text-gray-700 font-medium">
+                                    <p className="OrderItemName text-lg md:text-sm xl:text-base">{cartItem.productName}</p>
+                                    <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
                                         Quantity: {cartItem.quantity}
+                                    </p>
+                                    <p className="orderItemLocation text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                                        Location: {cartItem.deliveryLocation}
+                                    </p>
+                                    <p className="orderItemPayment text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                                        Payment Option: {cartItem.deliveryMethodOptions}
+                                    </p>
+                                    <p className="orderItemTime text-xs md:text-sm xl:text-base text-gray-700 font-medium">
+                                        Time: {cartItem.deliveryTime}, at {cartItem.deliveryDate}
                                     </p>
                                 </div>
                                 <div className="orderItemDetails">
@@ -83,7 +92,7 @@ const OrderPage = () => {
                                         Price: {cartItem.totalPrice}
                                     </p>
                                     <p className="orderItemShipping text-xs sm:text-sm md:text-base xl:text-lg text-right text-gray-700 font-medium">
-                                        Shipping Fee: {cartItem.shippingFee}
+                                        Tax: {cartItem.tax}
                                     </p>
                                 </div>
                             </div>
