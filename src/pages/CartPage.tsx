@@ -195,14 +195,14 @@ const CartPage = () => {
           {cart.map((item) => (
             <button
               key={item?.prod_id}
-              className="CartItem shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex-1 h-screen flex flex-row rounded-xl text-left max-h-[500px] items-center"
+              className="CartItem shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex-1 h-screen flex flex-row rounded-xl text-left max-h-[250px] items-center"
               onClick={() => nav(`/product/${item?.prod_id}`)}
             >
               <div className="w-1/4 h-full flex-1 flex flex-col">
                 <img
                   src={item?.img}
                   alt={item?.name}
-                  className="Image flex-1 rounded-2xl object-cover max-h-[300px] min-h-[200px]" 
+                  className="Image flex-1 rounded-2xl object-cover max-h-[250px] min-h-[250px]" 
                 />
               </div>
               <div className="CartItemInfo m-6 flex flex-col w-[70%]">
