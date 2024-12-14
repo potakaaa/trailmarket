@@ -5,12 +5,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CheckoutProd, useAuthContext } from "./context/AuthContext";
 import { renderStars, StarRating } from "./Stars";
 import { ChangeEvent } from "react";
+import Modal from "./Modal";
 
 const ProductPage = () => {
   const nav = useNavigate();
   const [count, setCount] = useState(1);
   const [rating, setRating] = useState(0);
   const placeholder = "https://via.placeholder.com/150";
+  const [currentReviewId, setCurrentReviewId] = useState("");
   const [reviews, setReviews] = useState<any[]>([]);
   const [input, setInput] = useState({
     review: "",
@@ -38,9 +40,18 @@ const ProductPage = () => {
   const [username, setUsername] = useState("");
   const [userImage, setUserImage] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>(mainImage);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
+  };
+
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const toggleMenu = (reviewId: string) => {
+    setOpenMenu((prevOpenMenu) =>
+      prevOpenMenu === reviewId ? null : reviewId
+    );
   };
 
   const handleReviewSubmit = async () => {
@@ -62,6 +73,7 @@ const ProductPage = () => {
       fetchReviews();
     }
   };
+
   const fetchReviews = async () => {
     const { data: reviewsData, error: reviewsError } = await supabase
       .from("DIM_REVIEW")
@@ -101,6 +113,31 @@ const ProductPage = () => {
     }
   };
   const images = [mainImage, otherImages].flat();
+
+  const handleEditReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form submission default behavior
+
+    if (!currentReviewId) {
+      console.error("No review ID available for editing.");
+      return;
+    }
+
+    const { error: reviewError } = await supabase
+      .from("DIM_REVIEW")
+      .update({
+        REVIEW_TITLE: input.reviewtitle,
+        REVIEW_DESC: input.review,
+        REVIEW_RATING: rating,
+      })
+      .eq("REVIEW_ID", currentReviewId); // Use the correct review ID
+
+    if (reviewError) {
+      console.error("Error updating review:", reviewError.message);
+    } else {
+      fetchReviews(); // Refresh reviews
+      setIsModalOpen(false); // Close the modal
+    }
+  };
 
   const unselectedImages = images.filter((img) => img !== selectedImage);
   useEffect(() => {
@@ -328,6 +365,7 @@ const ProductPage = () => {
       paymentMethod: undefined,
       paymentDate: undefined,
       paymentStatus: undefined,
+      sellerId: product.SELLER_ID,
     };
     setCheckoutProds([...checkoutProds, tempCheckoutProd]);
     nav("/checkout");
@@ -402,6 +440,29 @@ const ProductPage = () => {
       alert("An error occurred while adding the product to your cart.");
     }
     setIsLoading(false);
+  };
+
+  function handleEditReview(review: any): void {
+    setInput({
+      reviewtitle: review.REVIEW_TITLE,
+      review: review.REVIEW_DESC,
+    });
+    setRating(review.REVIEW_RATING);
+    setCurrentReviewId(review.REVIEW_ID);
+    setIsModalOpen(true);
+  }
+
+  const handleDeleteReview = async (reviewId: string) => {
+    const { error } = await supabase
+      .from("DIM_REVIEW")
+      .delete()
+      .eq("REVIEW_ID", reviewId);
+
+    if (error) {
+      console.error("Error deleting review:", error.message);
+    } else {
+      fetchReviews();
+    }
   };
 
   return (
@@ -570,7 +631,7 @@ const ProductPage = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg p-5 ml-2">
+                  <div className="product-reviews flex-[5] items-start justify-start bg-gray-100 rounded-lg p-5 ml-2 w-full">
                     <div className=" review-container flex flex-col mb-3">
                       <h1 className="mx-2 mt-1.5 text-4xl">Customer Reviews</h1>
                       <div className=" review-ave flex space-x-1 mx-2.5 my-1">
@@ -586,7 +647,12 @@ const ProductPage = () => {
                       <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                         <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
                           <div className="w-full flex items-center my-1 xl:my-2">
-                            <button className="flex gap-4 w-full items-center">
+                            <button
+                              className="flex gap-4 w-full items-center"
+                              onClick={() =>
+                                nav(`/profile/${review.REVIEWER_ID}`)
+                              }
+                            >
                               <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
                                 <img
                                   className="object-cover h-full w-full"
@@ -599,6 +665,35 @@ const ProductPage = () => {
                             <div className="flex flex-row justify-end items-end w-full mx-2">
                               {renderStars(review.REVIEW_RATING)}
                             </div>
+                            {/* Three-dot menu for user-owned reviews */}
+                            {review.REVIEWER_ID === user?.id && (
+                              <div className="relative items-end">
+                                <button
+                                  className="text-gray-500 hover:text-gray-800 focus:outline-none"
+                                  onClick={() => toggleMenu(review.REVIEW_ID)}
+                                >
+                                  &#x22EE;
+                                </button>
+                                {openMenu === review.REVIEW_ID && (
+                                  <div className="absolute left bg-white border rounded shadow-md w-max">
+                                    <button
+                                      className="block px-4 py-2 text-sm text-left hover:bg-gray-100 w-full"
+                                      onClick={() => handleEditReview(review)}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="block px-4 py-2 text-sm text-left hover:bg-gray-100 w-full text-red-500"
+                                      onClick={() =>
+                                        handleDeleteReview(review.REVIEW_ID)
+                                      }
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                           <h1 className="font-bold text-base">
                             {review.REVIEW_TITLE}
@@ -702,7 +797,10 @@ const ProductPage = () => {
                   <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3">
                     <div className='flex flex-col items-start justify-start rounded-lg m-2"'>
                       <div className="w-full flex items-center my-1 xl:my-2">
-                        <button className="flex gap-4 w-full items-center">
+                        <button
+                          className="flex gap-4 w-full items-center"
+                          onClick={() => nav(`/profile/${review.REVIEWER_ID}`)}
+                        >
                           <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
                             <img
                               className="object-cover h-full w-full"
@@ -730,6 +828,48 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Edit Review"
+      >
+        <form
+          className="flex flex-col items-center justify-center space-y-4"
+          onSubmit={handleEditReviewSubmit}
+        >
+          <StarRating rating={rating} setRating={setRating} />
+          <input
+            className="w-full border rounded p-2 mt-4"
+            placeholder="Edit your review title"
+            value={input.reviewtitle}
+            onChange={(e) =>
+              setInput((prevState) => ({
+                ...prevState,
+                reviewtitle: e.target.value, // Update reviewtitle
+              }))
+            }
+          />
+          <textarea
+            className="w-full border rounded p-2"
+            placeholder="Edit your review"
+            value={input.review}
+            onChange={(e) =>
+              setInput((prevState) => ({
+                ...prevState,
+                review: e.target.value, // Update review
+              }))
+            }
+          />
+          <button
+            type="submit"
+            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+            onClick={handleEditReviewSubmit}
+          >
+            Save Changes
+          </button>
+        </form>
+      </Modal>
     </div>
   );
 };

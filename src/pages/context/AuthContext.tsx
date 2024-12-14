@@ -59,6 +59,7 @@ export interface CartProd {
   seller: string;
   img: string | undefined;
   quantity: number;
+  seller_id: number;
 }
 
 export interface Issue {
@@ -99,6 +100,7 @@ export interface CheckoutProd {
   paymentMethod: string | undefined;
   paymentDate: string | undefined;
   paymentStatus: string | undefined;
+  sellerId: number;
 }
 
 export interface UserPayment {
@@ -185,9 +187,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const [emp, setEmp] = useState<Emp | null>(() => {
-    const storedEmp = localStorage.getItem("user");
+    const storedEmp = localStorage.getItem("emp"); // Use a distinct key for emp
     return storedEmp ? JSON.parse(storedEmp) : null;
   });
+
+  useEffect(() => {
+    if (emp) {
+      localStorage.setItem("emp", JSON.stringify(emp)); // Save emp to local storage
+    } else {
+      localStorage.removeItem("emp"); // Remove emp if it’s null
+    }
+  }, [emp]);
   const [isFetched, setIsFetched] = useState(false);
   useEffect(() => {
     if (user) {

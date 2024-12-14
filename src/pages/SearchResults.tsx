@@ -76,17 +76,24 @@ const SearchResults = () => {
       }
     }
 
-    if (dateOrder === "latest") {
-      filtered.sort((a, b) => b.id - a.id);
-    } else {
-      filtered.sort((a, b) => a.id - b.id);
-    }
+    filtered.sort((a, b) => {
+      // Date order sorting (default priority)
+      if (dateOrder === "latest") {
+        if (b.id !== a.id) return b.id - a.id;
+      } else if (dateOrder === "oldest") {
+        if (a.id !== b.id) return a.id - b.id;
+      }
 
-    if (priceOrder === "high") {
-      filtered.sort((a, b) => b.price - a.price);
-    } else if (priceOrder === "low") {
-      filtered.sort((a, b) => a.price - b.price);
-    }
+      // Price order sorting (secondary priority)
+      if (priceOrder === "high") {
+        return b.price - a.price;
+      } else if (priceOrder === "low") {
+        return a.price - b.price;
+      }
+
+      // If all else is equal, keep the original order
+      return 0;
+    });
 
     setFilteredProducts(filtered);
   }, [searchState, selectedCategory, products, dateOrder, priceOrder]);
@@ -107,7 +114,14 @@ const SearchResults = () => {
                 <h1>By Tags</h1>
                 <div className="space-y-2 lg:space-x-1">
                   {categories.map((category) => (
-                    <button className="px-6 py-1 bg-white border-2 border-black rounded-3xl">
+                    <button
+                      className={`px-6 py-1  border-2 border-black rounded-3xl ${
+                        selectedCategory === category
+                          ? "bg-black text-white"
+                          : "bg-white"
+                      }`}
+                      onClick={() => handleCategoryClicked(category)}
+                    >
                       {category}
                     </button>
                   ))}
@@ -176,6 +190,7 @@ const SearchResults = () => {
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
                   options={["Price", "High to Low", "Low to High"]}
+                  selected="Price"
                 ></Dropdown>
               </div>
               <div className="p-4">
@@ -184,6 +199,7 @@ const SearchResults = () => {
                   optionStyle="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded z-50"
                   onSelect={handleSelect}
                   options={["Date", "Latest to Oldest", "Oldest to Latest"]}
+                  selected="Date"
                 ></Dropdown>
               </div>
             </div>

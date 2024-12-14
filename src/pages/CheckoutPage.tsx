@@ -15,6 +15,10 @@ const CheckoutPage = () => {
     userPayment,
     setUserPayment,
   } = useAuthContext();
+
+  const [sellerPayments, setSellerPayments] = useState<any>([
+    "Cash on Delivery",
+  ]);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
   const loc = useLocation();
@@ -29,12 +33,72 @@ const CheckoutPage = () => {
     "Old CSM",
   ];
 
-  const OrderPaymentMethod = [
-    "Cash on Delivery",
-    "GCash",
-    "PayMaya",
-    "Credit Card",
-  ];
+  const fetchSellerPaymentMethods = async () => {
+    try {
+      // Extract unique seller IDs
+      const sellerIds = [
+        ...new Set(checkoutProds.map((prod) => prod.sellerId)),
+      ];
+
+      console.log("Seller IDs:", sellerIds);
+
+      if (sellerIds.length === 0) {
+        console.warn("No valid seller IDs found in checkoutProds.");
+        return;
+      }
+
+      // Fetch payment methods for all seller IDs
+      const { data, error } = await supabase
+        .from("DIM_PAYMENTMETHOD")
+        .select("*")
+        .in("USER_PAY_FK", sellerIds);
+
+      if (error) {
+        console.error("Error fetching seller payment methods:", error);
+        return;
+      }
+
+      // Map results to seller IDs, ensuring all sellers are included
+      const paymentMethodsBySeller: {
+        [key: number]: { paymentMethod: string; paymentNumber: string }[];
+      } = sellerIds.reduce(
+        (
+          acc: {
+            [key: number]: { paymentMethod: string; paymentNumber: string }[];
+          },
+          sellerId: number
+        ) => {
+          const sellerPayments = data
+            .filter((payment) => payment.USER_PAY_FK === sellerId)
+            .map((payment) => ({
+              paymentMethod: payment.PAYMENT_METHOD,
+              paymentNumber: payment.ACCOUNT_NUMBER,
+            }))
+            .filter((payment) => payment.paymentMethod); // Filter out invalid entries
+
+          acc[sellerId] = [
+            { paymentMethod: "Cash on Delivery", paymentNumber: "" }, // Add default COD
+            ...sellerPayments,
+          ];
+
+          return acc;
+        },
+        {}
+      );
+
+      // Ensure every sellerId in sellerIds has at least an empty array
+      sellerIds.forEach((sellerId) => {
+        if (!paymentMethodsBySeller[sellerId]) {
+          paymentMethodsBySeller[sellerId] = [];
+        }
+      });
+
+      setSellerPayments(paymentMethodsBySeller);
+      console.log("Seller Payments:", paymentMethodsBySeller);
+    } catch (error) {
+      console.error("Unexpected error fetching seller payment methods:", error);
+    }
+  };
 
   const fetchUserPayment = async () => {
     const { data, error } = await supabase
@@ -115,8 +179,11 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    console.log("Checkout Products:", checkoutProds);
+
     fetchTaxes();
     fetchUserPayment();
+    fetchSellerPaymentMethods();
   }, []);
 
   useEffect(() => {
@@ -219,17 +286,25 @@ const CheckoutPage = () => {
                 <div className="OrderPaymentMethod grow sm:basis-1/2 md:basis-1/5">
                   <select
                     value={item.paymentMethod}
-                    className="w-full border-[1px]  border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
+                    className="w-full border-[1px] border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                   >
-                    {OrderPaymentMethod.map((option, index) => (
-                      <option
-                        key={index}
-                        value={option}
-                        className="font-medium"
-                      >
-                        {option}
-                      </option>
-                    ))}
+                    {(sellerPayments[item.sellerId] || []).map(
+                      (
+                        option: {
+                          paymentMethod: string;
+                          paymentNumber: string;
+                        },
+                        index: number
+                      ) => (
+                        <option
+                          key={index}
+                          value={option.paymentMethod}
+                          className="font-medium"
+                        >
+                          {option.paymentMethod}
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
               </div>
