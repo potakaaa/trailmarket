@@ -679,7 +679,7 @@ const UserPage = () => {
                   <button type="submit"></button>
                 </form>
                 <div className="Payment-methods flex flex-col lg:flex-row items-center align-start  flex-1 w-full">
-                  <div className="w-full flex align-top ">
+                  <div className="w-full lg:w-32 flex align-top ">
                     <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
                       Payment Options
                     </label>
@@ -691,7 +691,7 @@ const UserPage = () => {
                         method.status !== "deleted" && (
                           <div
                             key={method.id}
-                            className="flex flex-row items-center space-x-2"
+                            className="flex flex-row items-center space-x-2 w-full"
                           >
                             <select
                               value={method.method}
@@ -705,7 +705,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                              className="rounded-xl flex-0 w-[2em] lg:flex-1 sm:w-52 md:w-32 font-medium text-xs md:text-sm lg:text-base border-2 border-black p-1"
                             >
                               {paymentMethodOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
