@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../createClient";
-import {
-  CartProd,
-  CheckoutProd,
-  Tax,
-  useAuthContext,
-} from "./context/AuthContext";
+import { CartProd, Tax, useAuthContext } from "./context/AuthContext";
 import { BiTrash } from "react-icons/bi";
 
 const CartPage = () => {
@@ -15,6 +10,8 @@ const CartPage = () => {
   const [quantity, setQuantity] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
+
+  console.log(tax);
 
   const {
     cart,
@@ -25,9 +22,9 @@ const CartPage = () => {
     setTotalAmount,
     setTaxes,
     taxes,
-    setCheckoutProds,
-    checkoutProds,
   } = useAuthContext();
+
+  console.log(totalAmount);
 
   const handleDelete = async (prod_id: number) => {
     const { error: deleteError } = await supabase
@@ -83,7 +80,8 @@ const CartPage = () => {
     setSubTotal(tempSubTotal);
   };
 
-  const handleCheckout = () => {
+  {
+    /*const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd[] = cart.map((item) => {
       return {
         order_id: undefined,
@@ -104,7 +102,8 @@ const CartPage = () => {
     setCheckoutProds(tempCheckoutProd);
     nav("/checkout");
     console.log(checkoutProds);
-  };
+  };*/
+  }
 
   const getOrders = async () => {
     setIsLoading(true);

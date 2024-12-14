@@ -4,7 +4,6 @@ import SignupPage from "./SignupPage";
 import ForgetPass from "./ForgetPass";
 import { useLocation, useNavigate } from "react-router-dom";
 import AdminLogin from "./AdminLogin";
-import { useAuthContext } from "../context/AuthContext";
 
 const SignOrLoginPage = () => {
   const location = useLocation();
