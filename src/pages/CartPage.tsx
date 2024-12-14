@@ -186,17 +186,17 @@ const CartPage = () => {
 
   return (
     <div className="px-5 pb-5">
-      <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
+      <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 rounded-2xl 2xl:mx-8 text-white text-center">
         <p className="text-xl sm:text-3xl text-white text-center font-semibold">
           Shopping Cart
         </p>
       </div>
-      <div className="CartBody flex flex-col h-full m-5">
+      <div className="CartBody flex flex-col h-full my-5">
         <div className="CartItemList flex flex-col xl:grid xl:grid-cols-1 xl:grid-cols-2 gap-5">
           {cart.map((item) => (
             <button
               key={item?.prod_id}
-              className="CartItem shadow-lg flex flex-col md:flex-row items-stretch"
+              className="CartItem shadow-[0_0px_20px_rgba(0,0,0,0.2)] rounded-2xl flex flex-col md:flex-row items-stretch"
               onClick={() => nav(`/product/${item?.prod_id}`)}
             >
              <div className="md:w-3/4 w-full h-full flex-1 flex flex-col">
@@ -223,7 +223,7 @@ const CartPage = () => {
                     </div>
                   </div>
                 </div>
-                <div className="CartItemMiddle">
+                <div className="CartItemMiddle my-2">
                   <h1 className="text-2xl border-b-2 border-gray-400 pb-4 md:text-left sm:text-center">
                     {item?.name}
                   </h1>

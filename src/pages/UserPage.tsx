@@ -547,12 +547,17 @@ const UserPage = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
     }
-  }
+  } 
 
   return (
-    <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto ">
-      <div className="seller-page p-6 flex flex-col flex-1 h-full w-full rounded-xl overflow-hidden">
-        <div className="top-seller-page md:flex-row border flex flex-[5] flex-col rounded-xl p-4 border-gray-300">
+    <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto px-5 pb-5">
+      <div className="seller-page flex flex-col flex-1 w-full rounded-xl overflow-hidden gap-5">
+        <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
+          <p className="text-xl sm:text-3xl text-white text-center font-semibold">
+          User Page
+          </p>
+        </div>
+        <div className="top-seller-page md:flex-row border flex flex-[5] flex-col rounded-xl p-4 border-gray-300 gap-5 mx-5">
           <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-1 lg:p-6 flex-col">
             <div className="bigcontain flex flex-col ">
               <div className="flex flex-row">
