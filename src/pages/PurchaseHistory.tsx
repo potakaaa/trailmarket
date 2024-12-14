@@ -58,10 +58,7 @@ const OrderPage = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [taxes, setTaxes] = useState<Tax[]>([]);
 
-  useEffect(() => {
-    fetchOrders();
-    fetchTaxes();
-  }, []);
+  
   const fetchTaxes = async () => {
     try {
       const { data } = await supabase.from("DIM_TAX").select("*");
@@ -135,62 +132,50 @@ const OrderPage = () => {
 
         console.log("Raw placed orders data fetched:", data);
 
-        return data.map((order: any) => {
-          console.log("Mapping placed order:", order);
-          return {
-            ORDER_ID: order.ORDER_ID,
-            BUYER_FK: order.BUYER_FK,
-            TAX_APPLIED: order.TAX_APPLIED,
-            MEETUP_FK: order.MEETUP_FK,
-            QUANTITY: order.QUANTITY,
-            PRODUCT_FK: order.PRODUCT_FK,
-            DIM_PAYMENT: order.DIM_PAYMENT?.[0] || null,
-            DIM_MEETUP: order.DIM_MEETUP?.[0] || null,
-            DIM_PRODUCT: {
-              PROD_NAME: order.DIM_PRODUCT?.[0]?.PROD_NAME || "Unknown Product",
-              PROD_PRICE: order.DIM_PRODUCT?.[0]?.PROD_PRICE || 0,
-              SELLER_ID: order.DIM_PRODUCT?.[0]?.SELLER_ID || null,
-              DIM_PRODUCTIMAGES:
-                order.DIM_PRODUCT?.[0]?.DIM_PRODUCTIMAGES || [],
-            },
-          };
-        });
+        return data.map((order: any) => ({
+          ORDER_ID: order.ORDER_ID,
+          BUYER_FK: order.BUYER_FK?.USER_NAME || "Unknown Buyer",
+          TAX_APPLIED: order.TAX_APPLIED,
+          MEETUP_FK: order.MEETUP_FK,
+          QUANTITY: order.QUANTITY,
+          PRODUCT_FK: order.PRODUCT_FK,
+          DIM_PAYMENT: {
+            PAYMENT_METHOD:
+              order.DIM_PAYMENT?.PAYMENT_METHOD || "Unknown Payment Method",
+            PAYMENT_STATUS:
+              order.DIM_PAYMENT?.PAYMENT_STATUS || "Unknown Payment",
+          },
+          DIM_MEETUP: {
+            MEETUP_LOCATION:
+              order.DIM_MEETUP?.MEETUP_LOCATION || "Unknown Location",
+            MEETUP_DATE: order.DIM_MEETUP?.MEETUP_DATE || "Unknown Date",
+            MEETUP_TIME: order.DIM_MEETUP?.MEETUP_TIME || "Unknown Time",
+          },
+          DIM_PRODUCT: {
+            PROD_NAME: order.DIM_PRODUCT?.PROD_NAME || "Unknown Product",
+            PROD_PRICE: order.DIM_PRODUCT?.PROD_PRICE || 0,
+            SELLER_ID: order.DIM_PRODUCT?.SELLER_ID || null,
+            DIM_PRODUCTIMAGES: order.DIM_PRODUCT?.DIM_PRODUCTIMAGES || [],
+          },
+        }));
       };
 
       // Fetch orders for the user's products
       const fetchReceivedOrders = async () => {
         console.log("Fetching received orders...");
         const { data, error } = await supabase
-          .from("DIM_ORDER")
+          .from("DIM_PRODUCT")
           .select(
             `
-          ORDER_ID,
-          BUYER_FK,
-          TAX_APPLIED,
-          MEETUP_FK,
-          QUANTITY,
-          PRODUCT_FK,
-          DIM_PAYMENT(
-            PAYMENT_METHOD,
-            PAYMENT_STATUS,
-            DIM_PAYMENTMETHOD(
-              PAYMENT_METHOD)
-          ),
-          DIM_MEETUP(
-            *
-          ),
-          DIM_PRODUCT(
-            PROD_NAME,
-            PROD_PRICE,
-            SELLER_ID,
-            DIM_PRODUCTIMAGES(
-              PRODUCT_IMAGE,
-              isMainImage
-            )
+    PROD_NAME,
+    PROD_PRICE,
+    SELLER_ID,
+    DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage),
+    DIM_ORDER(ORDER_ID, BUYER_FK, TAX_APPLIED, MEETUP_FK, QUANTITY, PRODUCT_FK)
+  `
           )
-        `
-          )
-          .filter("DIM_PRODUCT.SELLER_ID", "eq", currentUserId);
+          .eq("SELLER_ID", currentUserId);
+        console.log("Current", currentUserId);
 
         if (error) {
           console.error("Error fetching received orders:", error.message);
@@ -199,26 +184,32 @@ const OrderPage = () => {
 
         console.log("Raw received orders data fetched:", data);
 
-        return data.map((order: any) => {
-          console.log("Mapping received order:", order);
-          return {
-            ORDER_ID: order.ORDER_ID,
-            BUYER_FK: order.BUYER_FK,
-            TAX_APPLIED: order.TAX_APPLIED,
-            MEETUP_FK: order.MEETUP_FK,
-            QUANTITY: order.QUANTITY,
-            PRODUCT_FK: order.PRODUCT_FK,
-            DIM_PAYMENT: order.DIM_PAYMENT?.[0] || null,
-            DIM_MEETUP: order.DIM_MEETUP?.[0] || null,
-            DIM_PRODUCT: {
-              PROD_NAME: order.DIM_PRODUCT?.[0]?.PROD_NAME || "Unknown Product",
-              PROD_PRICE: order.DIM_PRODUCT?.[0]?.PROD_PRICE || 0,
-              SELLER_ID: order.DIM_PRODUCT?.[0]?.SELLER_ID || null,
-              DIM_PRODUCTIMAGES:
-                order.DIM_PRODUCT?.[0]?.DIM_PRODUCTIMAGES || [],
-            },
-          };
-        });
+        return data.map((order: any) => ({
+          ORDER_ID: order.ORDER_ID,
+          BUYER_FK: order.BUYER_FK?.USER_NAME || "Unknown Buyer",
+          TAX_APPLIED: order.TAX_APPLIED,
+          MEETUP_FK: order.MEETUP_FK,
+          QUANTITY: order.QUANTITY,
+          PRODUCT_FK: order.PRODUCT_FK,
+          DIM_PAYMENT: {
+            PAYMENT_METHOD:
+              order.DIM_PAYMENT?.PAYMENT_METHOD || "Unknown Payment Method",
+            PAYMENT_STATUS:
+              order.DIM_PAYMENT?.PAYMENT_STATUS || "Unknown Payment",
+          },
+          DIM_MEETUP: {
+            MEETUP_LOCATION:
+              order.DIM_MEETUP?.MEETUP_LOCATION || "Unknown Location",
+            MEETUP_DATE: order.DIM_MEETUP?.MEETUP_DATE || "Unknown Date",
+            MEETUP_TIME: order.DIM_MEETUP?.MEETUP_TIME || "Unknown Time",
+          },
+          DIM_PRODUCT: {
+            PROD_NAME: order.DIM_PRODUCT?.PROD_NAME || "Unknown Product",
+            PROD_PRICE: order.DIM_PRODUCT?.PROD_PRICE || 0,
+            SELLER_ID: order.DIM_PRODUCT?.SELLER_ID,
+            DIM_PRODUCTIMAGES: order.DIM_PRODUCT?.DIM_PRODUCTIMAGES || [],
+          },
+        }));
       };
 
       // Fetch data in parallel
@@ -260,14 +251,9 @@ const OrderPage = () => {
   }, [setPlacedOrders, setReceivedOrders]);
 
   useEffect(() => {
-    console.log("Fetching orders...");
     fetchOrders();
+    fetchTaxes();
   }, []);
-
-  useEffect(() => {
-    console.log("placedOrders updated:", placedOrders);
-    console.log("receivedOrders updated:", receivedOrders);
-  }, [placedOrders, receivedOrders]);
 
   const orderItems = [
     {
@@ -374,7 +360,7 @@ const OrderPage = () => {
       <div className="OrderItemList shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex flex-col items-stretch rounded-xl px-5 m-5 h-full">
         <div className={"orderItem flex-1 flex-col p-5"}>
           <div className="orderItemTop flex flex-col justify-between">
-            <p className="text-2xl py-4">Orders Placed</p>
+            <p className="text-2xl py-4">Orders Recieved</p>
             <div></div>
             {receivedOrders ? (
               receivedOrders?.map((order) => (

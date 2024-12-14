@@ -23,6 +23,13 @@ const CheckoutPage = () => {
   const [tax, setTax] = useState(0);
   const loc = useLocation();
 
+  interface OrderDetail {
+    orderId: number;
+    [key: string]: any;
+  }
+
+  const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
+
   const deliveryLocationOptions = [
     "CITC",
     "CEA",
@@ -136,8 +143,8 @@ const CheckoutPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  console.log(getCurrentTime());
-  console.log(getCurrentDate());
+  //console.log(getCurrentTime());
+  //console.log(getCurrentDate());
 
   const fetchTaxes = async () => {
     try {
@@ -203,10 +210,36 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (loc.pathname != "/checkout") {
-      setCheckoutProds([]);
     }
-  }, [checkoutProds]);
+  }, [totalAmount]);
 
+  const handleInputChange = (orderId: number, field: string, value: string) => {
+    setOrderDetails((prevDetails) =>
+      prevDetails.map((order) =>
+        order.orderId === orderId ? { ...order, [field]: value } : order
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (checkoutProds.length > 0) {
+      const initialOrderDetails = checkoutProds.map((prod) => ({
+        orderId: prod.order_id ?? 0,
+        prodId: prod.prod_fk, // Assuming 'productId' is the correct property name
+        sellerId: prod.sellerId,
+        prodName: prod.prodName,
+        quantity: prod.quantity,
+        prodPrice: prod.prodPrice,
+        meetupLoc: "",
+        meetupTime: "",
+        meetupDate: "",
+        paymentMethod: "",
+      }));
+      setOrderDetails(initialOrderDetails);
+    }
+
+    console.log("Order Details:", orderDetails);
+  }, [checkoutProds]);
   return (
     <div>
       <div className="OrderHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
@@ -216,7 +249,7 @@ const CheckoutPage = () => {
         <div className="OrderItemList shadow-2xl flex flex-col items-stretch xl:w-2/3 sm:w-full h-full rounded-xl px-4">
           {checkoutProds.map((item) => (
             <div
-              key={item.orderListId}
+              key={item.order_id}
               className={`orderItem flex-1 h-full flex-col py-4 xl:max-h-[300px] px-4 ${
                 checkoutProds ? "border-b-2 border-gray-400" : ""
               }`}
@@ -255,6 +288,14 @@ const CheckoutPage = () => {
                       <select
                         value={item.meetupLoc}
                         className="w-full border-[1px] border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
+                        onChange={(e) =>
+                          item.order_id !== undefined &&
+                          handleInputChange(
+                            item.order_id ?? 0,
+                            "meetupLoc",
+                            e.target.value
+                          )
+                        }
                       >
                         {deliveryLocationOptions.map((option, index) => (
                           <option
@@ -270,7 +311,17 @@ const CheckoutPage = () => {
                     <div className="OrderItemDeliveryTime grow sm:basis-1/2 md:basis-1/5 w-full flex">
                       <input
                         type="time"
-                        value={item.meetupTime}
+                        value={
+                          orderDetails.find((o) => o.orderId === item.order_id)
+                            ?.meetupTime || ""
+                        }
+                        onChange={(e) =>
+                          handleInputChange(
+                            item.order_id ?? 0,
+                            "meetupTime",
+                            e.target.value
+                          )
+                        }
                         className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                       />
                     </div>
@@ -278,6 +329,14 @@ const CheckoutPage = () => {
                   <div className="OrderItemDeliveryDate grow sm:basis-1/2 md:basis-1/5">
                     <input
                       type="date"
+                      onChange={(e) =>
+                        item.order_id !== undefined &&
+                        handleInputChange(
+                          item.order_id,
+                          "meetupDate",
+                          e.target.value
+                        )
+                      }
                       value={item.meetupDate}
                       className="w-full border-[1px]  border-black rounded-2xl px-4 sm:w-full font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                     />
@@ -285,6 +344,14 @@ const CheckoutPage = () => {
                 </div>
                 <div className="OrderPaymentMethod grow sm:basis-1/2 md:basis-1/5">
                   <select
+                    onChange={(e) =>
+                      item.order_id !== undefined &&
+                      handleInputChange(
+                        item.order_id,
+                        "paymentMethod",
+                        e.target.value
+                      )
+                    }
                     value={item.paymentMethod}
                     className="w-full border-[1px] border-black rounded-2xl px-4 font-medium text-sm md:text-base md:py-1 md:rounded-full xl:text-lg xl:py-2"
                   >
