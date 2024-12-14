@@ -45,7 +45,7 @@ const ProductPost = () => {
   const [isPlaceholder, setIsPlaceholder] = useState(true);
   const { user, setIsLoading } = useAuthContext();
   const nav = useNavigate();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -237,6 +237,7 @@ const ProductPost = () => {
     setGalleryImages((prevGalleryImages) =>
       prevGalleryImages.filter((img) => img !== image)
     );
+    setImages((prevImages) => prevImages.filter((img) => img !== image));
   };
 
   const uploadImages = async (imagesToUpload: File[]) => {
@@ -267,6 +268,7 @@ const ProductPost = () => {
 
   const handleEditPost = async () => {
     console.log("Editing product with data:", input);
+    setIsLoading(true);
 
     if (!input.name || !mainImage || images.length === 0) {
       alert(
@@ -325,6 +327,9 @@ const ProductPost = () => {
           "Error fetching existing images:",
           existingImagesError.message
         );
+        setIsLoading(false);
+        alert("Error fetching existing images:" + existingImagesError.message);
+        nav("/home");
         return;
       }
 
@@ -339,20 +344,26 @@ const ProductPost = () => {
 
       // Delete removed images from storage and database
       for (const imageUrl of removedImages) {
-        const filePath = imageUrl.replace(
-          `${
-            supabase.storage.from("trailmarket-images").getPublicUrl("").data
-              .publicUrl
-          }/`,
+        const filePath = new URL(imageUrl).pathname.replace(
+          "/storage/v1/object/public/trailmarket-images/",
           ""
         );
 
+        console.log("File Path:", filePath);
+
+        if (!filePath) {
+          console.error("Invalid file path:", imageUrl);
+          continue;
+        }
         const { error: deleteError } = await supabase.storage
           .from("trailmarket-images")
           .remove([filePath]);
 
         if (deleteError) {
           console.error("Error deleting image:", deleteError.message);
+          setIsLoading(false);
+          alert("Error deleting image:" + deleteError.message);
+          nav("/home");
           continue;
         }
 

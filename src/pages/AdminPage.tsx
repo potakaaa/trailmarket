@@ -5,6 +5,7 @@ import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
 import TopNavBar from "./navbar/TopNavBar";
 import AdminNavBar from "./navbar/AdminNavBar";
+import Modal from "./Modal";
 
 const issueStat = ["Not Started", "In Progress", "Done"];
 
@@ -12,7 +13,7 @@ const AdminPage = () => {
   {
     /* ISSUE_ID, FEEDBACK_CAT, ISSUE_STAT, ASSIGNED_EMP, FEEDBACK_TITLE, FEEDBACK_TITLE, FEEDBACK_DESC, */
   }
-
+  const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [isAddClicked, setIsAddClicked] = useState(false);
   const [isTaxClicked, setIsTaxClicked] = useState(false);
   const [isEmpClicked, setIsEmpClicked] = useState(false);
@@ -47,6 +48,28 @@ const AdminPage = () => {
     tin: 0,
   });
   const [isAddCatClicked, setIsAddCatClicked] = useState(false);
+  const [categoryData, setCategoryData] = useState<{
+    name: string;
+    description: string;
+    imageFile: File | null;
+  }>({
+    name: "",
+    description: "",
+    imageFile: null,
+  });
+
+  const resetCategoryData = () => {
+    setCategoryData({
+      name: "",
+      description: "",
+      imageFile: null,
+    });
+  };
+
+  const handleCloseModal = () => {
+    resetCategoryData();
+    setIsCatModalOpen(false);
+  };
 
   const {
     issues,
@@ -64,6 +87,14 @@ const AdminPage = () => {
     fetchEmpList();
     fetchTaxes();
   }, [setIssues, setEmpList, setIsLoading, setIsAddClicked, setTaxes]);
+
+  const handleImageUpload = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setCategoryData((prev) => ({
+      ...prev,
+      imageFile: file,
+    }));
+  };
 
   const fetchIssues = async () => {
     const { data, error } = await supabase.from("FACT_ISSUE_TRACKER").select(`
@@ -172,7 +203,8 @@ const AdminPage = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    setImageFile(file);
+    setImageFile(file); //this is for employee forms
+    handleImageUpload(categoryData.imageFile ? [file] : acceptedFiles); //this is for category uploads... i am so sorry kapoy ireuse HAHAHAHA
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -190,9 +222,11 @@ const AdminPage = () => {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ): void => {
-    const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -375,6 +409,57 @@ const AdminPage = () => {
           </button>
         </div>
       ));
+  };
+
+  const handleAddCategory = () => {
+    setIsCatModalOpen(true);
+  };
+
+  const handleCategoryUpload = async () => {
+    if (!categoryData.name || !categoryData.description) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
+    try {
+      let imageUrl = "";
+
+      if (categoryData.imageFile) {
+        const uniqueName = `categories/${uuidv4()}-${
+          categoryData.imageFile.name
+        }`;
+        const { error: uploadError } = await supabase.storage
+          .from("trailmarket-images")
+          .upload(uniqueName, categoryData.imageFile);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError.message);
+          return;
+        }
+
+        imageUrl = supabase.storage
+          .from("trailmarket-images")
+          .getPublicUrl(uniqueName).data.publicUrl;
+      }
+
+      const { error: insertError } = await supabase
+        .from("DIM_CATEGORY")
+        .insert({
+          CATEGORY_NAME: categoryData.name,
+          CATEGORY_DESC: categoryData.description,
+          CATEGORY_IMAGE: imageUrl,
+        });
+
+      if (insertError) {
+        console.error("Error adding category:", insertError.message);
+        return;
+      }
+
+      alert("Category added successfully!");
+      setIsCatModalOpen(false);
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
   };
 
   const renderAddAdmin = () => {
@@ -609,6 +694,33 @@ const AdminPage = () => {
     setSelectedCategory(category); // Set the selected category
   };
 
+  const handleCategoryDelete = async (categoryId: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase
+          .from("DIM_CATEGORY")
+          .delete()
+          .eq("CATEGORY_ID", categoryId);
+
+        if (error) {
+          console.error("Error deleting category:", error.message);
+          return;
+        }
+
+        setCategories(
+          categories.filter((category) => category.id !== categoryId)
+        );
+        alert("Category deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting category:", error);
+      }
+    }
+  };
+
   const handleCategoryInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -696,8 +808,15 @@ const AdminPage = () => {
       setIsLoading(false);
     }
   };
+
   const renderCategoryMenu = () => (
     <div className="flex flex-col w-full gap-4">
+      <button
+        onClick={handleAddCategory}
+        className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
+      >
+        Add Category
+      </button>
       <div className="category-list grid grid-cols-2 gap-4">
         {categories.map((category) => (
           <div
@@ -707,6 +826,12 @@ const AdminPage = () => {
           >
             <h3 className="text-lg font-bold">{category.name}</h3>
             <p className="text-sm">{category.description}</p>
+            <button
+              onClick={() => handleCategoryDelete(category.id)}
+              className="block px-4 py-2 text-sm text-center border-2 border-black rounded-xl hover:bg-red-200 bg-red-500 w-full text-black"
+            >
+              Delete Category
+            </button>
           </div>
         ))}
       </div>
@@ -751,7 +876,7 @@ const AdminPage = () => {
           </div>
           <button
             onClick={saveCategoryChanges}
-            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+            className="mx-2 px-3 py-2 text-xs border-2 border-zinc-900 text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-zinc-900 hover:text-white transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl"
           >
             Save Changes
           </button>
@@ -883,8 +1008,40 @@ const AdminPage = () => {
         >
           Update
         </button>
+        <button
+          id="login-button"
+          className=" bg-red-500 text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          onClick={() => emp?.id !== undefined && handleEmployeeDelete(emp.id)}
+        >
+          Delete
+        </button>
       </div>
     );
+  };
+
+  const handleEmployeeDelete = async (empId: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase
+          .from("DIM_EMPLOYEE")
+          .delete()
+          .eq("EMP_ID", empId);
+
+        if (error) {
+          console.error("Error deleting employee:", error.message);
+          return;
+        }
+
+        setEmpList(empList.filter((employee) => employee.id !== empId));
+        alert("Employee deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+      }
+    }
   };
 
   const handleAdminUpdate = async (input: any) => {
@@ -1091,8 +1248,62 @@ const AdminPage = () => {
             </table>
           </div>
         </div>
+
         <div className="issue-container"></div>
       </div>
+      <Modal
+        isOpen={isCatModalOpen}
+        onClose={handleCloseModal}
+        title="Add Category"
+      >
+        <div className="flex flex-col gap-4 p-4 justify-center items-center w-full">
+          <div {...getRootProps()} className="flex cursor-pointer">
+            <input {...getInputProps()} />
+            {categoryData.imageFile ? (
+              <img
+                src={URL.createObjectURL(categoryData.imageFile)}
+                alt="Uploaded Category"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            ) : (
+              <img
+                src="https://via.placeholder.com/150"
+                alt="Category Placeholder"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            )}
+          </div>
+          <input
+            type="text"
+            placeholder="Category Name"
+            className="border p-2 rounded-lg w-full"
+            name="name"
+            onChange={(e) =>
+              setCategoryData((prev) => ({
+                ...prev,
+                name: e.target.value, // Update name in state
+              }))
+            }
+          />
+          <textarea
+            placeholder="Category Description"
+            className="border p-2 rounded-lg w-full"
+            name="description"
+            onChange={(e) =>
+              setCategoryData((prev) => ({
+                ...prev,
+                description: e.target.value, // Update description in state
+              }))
+            }
+          />
+          <button
+            onClick={handleCategoryUpload}
+            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          >
+            Add Category
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
