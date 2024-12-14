@@ -20,6 +20,7 @@ import NotFound404 from "./pages/NotFound404";
 import AdminPrivateRoute from "./pages/context/PrivateRouteAdmin";
 import ModeratorPage from "./pages/ModeratorPage";
 import MyProfileRedirect from "./pages/MyProfileRedirect";
+import OrderPage from "./pages/OrderPage";
 
 const router = createHashRouter([
   {
@@ -91,6 +92,11 @@ const router = createHashRouter([
           {
             path: "checkout",
             element: <CheckoutPage />,
+            errorElement: <div>404 Not Found</div>,
+          },
+          {
+            path: "order",
+            element: <OrderPage />,
             errorElement: <div>404 Not Found</div>,
           },
         ],
