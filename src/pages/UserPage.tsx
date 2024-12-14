@@ -418,8 +418,8 @@ const UserPage = () => {
         const productIds = products.map((product) => product.PRODUCT_ID);
 
         const { data: orderItems, error: orderItemsError } = await supabase
-          .from("DIM_ORDER_ITEM")
-          .select("ORDER_FK, PRODUCT_FK, QUANTITY")
+          .from("DIM_ORDER")
+          .select("ORDER_ID, PRODUCT_FK, QUANTITY")
           .in("PRODUCT_FK", productIds);
 
         if (orderItemsError) {
@@ -427,7 +427,7 @@ const UserPage = () => {
           return;
         }
 
-        const orderIds = orderItems.map((item) => item.ORDER_FK);
+        const orderIds = orderItems.map((item) => item.ORDER_ID);
 
         const { data: fulfilledOrders, error: fulfilledError } = await supabase
           .from("DIM_PAYMENT")
@@ -448,7 +448,7 @@ const UserPage = () => {
         );
 
         const fulfilledOrderItems = orderItems.filter((item) =>
-          fulfilledOrderIds.includes(item.ORDER_FK)
+          fulfilledOrderIds.includes(item.ORDER_ID)
         );
 
         const { data: productPrices, error: productPricesError } =
@@ -876,9 +876,7 @@ const UserPage = () => {
             ))}
           </div>
         </div>
-        <div className="">
-
-        </div>
+        <div className=""></div>
       </div>
     </div>
   );

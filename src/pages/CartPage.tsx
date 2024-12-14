@@ -86,8 +86,7 @@ const CartPage = () => {
   const handleCheckout = () => {
     const tempCheckoutProd: CheckoutProd[] = cart.map((item) => {
       return {
-        orderId: undefined,
-        orderListId: undefined,
+        order_id: undefined,
         prod_fk: item?.prod_id,
         meetupLoc: undefined,
         meetupDate: undefined,

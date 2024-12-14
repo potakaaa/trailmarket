@@ -87,8 +87,7 @@ export interface FactCart {
 }
 
 export interface CheckoutProd {
-  orderId: number | undefined;
-  orderListId: number | undefined;
+  order_id: number | undefined;
   prod_fk: number;
   meetupLoc: string | undefined;
   meetupDate: string | undefined;
