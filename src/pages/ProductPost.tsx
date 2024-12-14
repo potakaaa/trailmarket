@@ -45,7 +45,6 @@ const ProductPost = () => {
   const [isPlaceholder, setIsPlaceholder] = useState(true);
   const { user, setIsLoading } = useAuthContext();
   const nav = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {

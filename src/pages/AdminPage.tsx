@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDropzone } from "react-dropzone";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
@@ -412,10 +412,6 @@ const AdminPage = () => {
           </button>
         </div>
       ));
-  };
-
-  const handleAddCategory = () => {
-    setIsCatModalOpen(true);
   };
 
   const handleCategoryUpload = async () => {
