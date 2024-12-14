@@ -498,7 +498,7 @@ const ProductPage = () => {
                     <div>
                       <button onClick={handeUserVisit}>
                         <div className="flex flex-row align-middle space-x-2 items-center">
-                          <div className="w-12 h-12 rounded-full overflow-hidden border border-black">
+                          <div className="size-5 rounded-full overflow-hidden border border-black">
                             <img
                               className="object-cover h-full w-full"
                               src={userImage}
@@ -506,30 +506,30 @@ const ProductPage = () => {
                             />
                           </div>
                           <div className=" h-full align-middle">
-                            <p className="text-xl align-middle justify-center">
+                            <p className="text-xs font-medium align-middle justify-center">
                               {username}
                             </p>
                           </div>
                         </div>
                       </button>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
+                    <h1 className="text-xl sm:text-3xl md:text-4xl xl:text-5xl 2xl:text-[4rem] ">
                       {product.PROD_NAME}
                     </h1>
-                    <h2 className="text-sm font-normal md:text-base xl:mt-3 xl:text-lg 2xl:text-xl">
+                    <h2 className="text-xs font-normal md:text-base xl:mt-3 xl:text-lg 2xl:text-xl">
                       {product.PROD_DESC}
                     </h2>
                     {product.SELLER_ID === user?.id && (
                       <div className="product-actions flex flex-row space-x-2 pt-2">
                         <button
                           onClick={handleEdit}
-                          className="edit-button px-10 py-2 text-base border-2 border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
+                          className="edit-button px-5 py-1 text-sm border font-medium border-black text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 text-center flex justify-center items-center"
                         >
                           Edit
                         </button>
                         <button
                           onClick={handleDelete}
-                          className="delete-button px-10 py-2 text-base border-2 border-black text-black bg-red-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-red-300 hover:text-black transition duration-300 text-center flex justify-center items-center"
+                          className="delete-button px-5 py-1 text-sm border font-medium border-black text-black bg-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-red-300 hover:text-black transition duration-300 text-center flex justify-center items-center"
                         >
                           Delete
                         </button>
@@ -537,7 +537,7 @@ const ProductPage = () => {
                     )}
                   </div>
                   <div className="product-price flex-[1] 2xl:flex-[0] items-center justify-center bg-gray-900 rounded-lg my-2 py-4 sm:mx-3 2xl:pl-4">
-                    <h1 className="text-2xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3 xl:text-5xl 2xl:text-[4rem] 2xl:my-5">
+                    <h1 className="text-xl md:text-4xl text-gray-100 mx-4 sm:mx-6 sm:text-3xl md:mx-7 md:my-3 xl:text-5xl 2xl:text-[4rem] 2xl:my-5">
                       PHP {product.PROD_PRICE.toFixed(2)}
                     </h1>
                     <div className="mt-2 mx-3 flex-row space-x-2 pb-2 sm:mx-5 sm:mt-3 md:mx-6 md:my-3 xl:my-5 2xl:my-8">
@@ -560,10 +560,8 @@ const ProductPage = () => {
                 </div>
                 <div className="product-bottom flex-col mr-7 ml-1 hidden 2xl:flex">
                   <div className="product-info flex flex-col items-start justify-start bg-gray-100 rounded-lg my-2 ml-2 p-4 mb-6">
-                    <h1 className="mx-4 mt-1.5 text-4xl">
-                      Product Information
-                    </h1>
-                    <p className="text-xs font-normal mx-4 xl:text-sm xl:ml-[18px]">
+                    <h1 className="mx-4 mt-1.5 text-lg">Product Information</h1>
+                    <p className="text-[10px] font-normal mx-4 xl:text-sm xl:ml-[18px]">
                       Product Details
                     </p>
                     <div className="flex flex-row space-x-2 m-2 w-full justify-between gap-7 md:mt-6">
