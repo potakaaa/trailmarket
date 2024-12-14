@@ -132,18 +132,6 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
               />
             </div>
           </div>
-          <div
-            className="NavBarSeller sm:border border-black
-            rounded-full flex justify-center items-center text-[10px]
-            font-semibold "
-          >
-            <button
-              className="hidden sm:block w-32 h-9 sm:h-12 text-sm font-medium rounded-full hover:bg-black hover:text-white hover:shadow-md md:text-base lg:w-40 lg:h-14 transition-all duration-300"
-              onClick={() => nav("/post")}
-            >
-              Post Product
-            </button>
-          </div>
         </div>
         <div className="NavBarRight flex justify-end">
           <div
