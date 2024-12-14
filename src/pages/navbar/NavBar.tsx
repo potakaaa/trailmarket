@@ -3,7 +3,7 @@ import ChevronDown from "../../../public/assets/Chevron.svg";
 import LogOut from "../../../public/assets/LogOut.svg";
 import Person from "../../../public/assets/Person.svg";
 import ShoppingCart from "../../../public/assets/ShoppingCart.svg";
-import Order from "../../../public/assets/Order.svg";
+import PurchaseHistory from "../../../public/assets/Order.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangeEvent } from "react";
@@ -12,7 +12,7 @@ const RightIcons = [
   { Icon: LogOut, IconName: "Log Out" },
   { Icon: Person, IconName: "Person" },
   { Icon: ShoppingCart, IconName: "Shopping Cart" },
-  { Icon: Order, IconName: "Order" },
+  { Icon: PurchaseHistory, IconName: "Purchase History" },
 ];
 
 interface Categories {
@@ -45,7 +45,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
     },
     () => nav("/myprofile"),
     () => nav("/cart"),
-    () => nav("/order"),
+    () => nav("/purchasehistory"),
   ];
 
   const handleSearch = (value: string) => {
