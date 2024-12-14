@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../createClient";
 import { ChangeEvent } from "react";
-import "./SignupPage.css";
 import { useNavigate } from "react-router-dom";
 
 {
