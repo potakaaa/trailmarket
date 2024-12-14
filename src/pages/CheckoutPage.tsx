@@ -216,7 +216,7 @@ const CheckoutPage = () => {
         <div className="OrderItemList shadow-2xl flex flex-col items-stretch xl:w-2/3 sm:w-full h-full rounded-xl px-4">
           {checkoutProds.map((item) => (
             <div
-              key={item.orderListId}
+              key={item.order_id}
               className={`orderItem flex-1 h-full flex-col py-4 xl:max-h-[300px] px-4 ${
                 checkoutProds ? "border-b-2 border-gray-400" : ""
               }`}
