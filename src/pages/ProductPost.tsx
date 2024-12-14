@@ -16,6 +16,8 @@ const urlToFile = async (url: string, filename: string, mimeType: string) => {
   return new File([blob], filename, { type: mimeType });
 };
 
+console.log(urlToFile);
+
 const ProductPost = () => {
   const location = useLocation();
   const existingProduct = location.state?.product || null;
