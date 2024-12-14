@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useDropzone } from "react-dropzone";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
 import TopNavBar from "./navbar/TopNavBar";
@@ -14,6 +16,9 @@ const AdminPage = () => {
   const [isAddClicked, setIsAddClicked] = useState(false);
   const [isTaxClicked, setIsTaxClicked] = useState(false);
   const [isEmpClicked, setIsEmpClicked] = useState(false);
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
   interface EmpFormData {
     name: string;
     email: string;
@@ -163,6 +168,25 @@ const AdminPage = () => {
     philhealth: "",
     pagibig: "",
     tin: "",
+  });
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEmpFormData((prev) => ({
+        ...prev,
+        image: reader.result as string,
+      }));
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
   });
 
   const handleChange = (
@@ -595,46 +619,83 @@ const AdminPage = () => {
   };
 
   const saveCategoryChanges = async () => {
-    if (!selectedCategory) {
-      alert("No category selected.");
-      return;
-    }
-
-    const { id, name, description, image } = selectedCategory;
-
+    setIsLoading(true);
+    const folderPath = "categories";
     try {
-      const { error } = await supabase
+      let newImageUrl = selectedCategory?.image;
+
+      if (imageFile) {
+        const uniqueName = `${folderPath}/${uuidv4()}-${imageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("trailmarket-images")
+          .upload(uniqueName, imageFile);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError.message);
+          return;
+        }
+
+        // Get the public URL of the uploaded image
+        newImageUrl = supabase.storage
+          .from("trailmarket-images")
+          .getPublicUrl(uniqueName).data.publicUrl;
+      }
+
+      const oldImageUrl = selectedCategory?.image; // Store the current image URL for deletion
+
+      // Update the category details in the database
+      const { id, name, description } = selectedCategory || {};
+
+      const { error: updateError } = await supabase
         .from("DIM_CATEGORY")
         .update({
           CATEGORY_NAME: name,
           CATEGORY_DESC: description,
-          CATEGORY_IMAGE: image,
+          CATEGORY_IMAGE: newImageUrl,
         })
         .eq("CATEGORY_ID", id);
 
-      if (error) {
-        console.error("Error saving category:", error.message);
-        alert("Failed to save category changes.");
-      } else {
-        alert("Category updated successfully!");
-
-        // Fetch updated categories immediately
-        const updatedCategories = await fetchCategories();
-        const formattedCategories = updatedCategories.map((category: any) => ({
-          id: category.CATEGORY_ID,
-          name: category.CATEGORY_NAME,
-          description: category.CATEGORY_DESC,
-          image: category.CATEGORY_IMAGE,
-        }));
-        setCategories(formattedCategories); // Update state with fresh data
-        setSelectedCategory(null); // Deselect category after saving
+      if (updateError) {
+        console.error("Error updating category details:", updateError.message);
+        return;
       }
+
+      // Delete the old image if a new one was uploaded
+      if (oldImageUrl && imageFile) {
+        try {
+          const filePath = new URL(oldImageUrl).pathname.replace(
+            "/storage/v1/object/public/trailmarket-images/",
+            ""
+          );
+
+          if (filePath) {
+            console.log("Deleting old image:", oldImageUrl);
+
+            const { error: deleteError } = await supabase.storage
+              .from("trailmarket-images")
+              .remove([filePath]);
+
+            if (deleteError) {
+              console.error("Error deleting old image:", deleteError.message);
+              return;
+            }
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error("Invalid URL:", oldImageUrl, error.message);
+          } else {
+            console.error("Invalid URL:", oldImageUrl);
+          }
+          return;
+        }
+      }
+      alert("Category updated successfully!");
     } catch (error) {
-      console.error("Unexpected error:", error);
-      alert("An unexpected error occurred while saving the category.");
+      console.error("Error saving category:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
   const renderCategoryMenu = () => (
     <div className="flex flex-col w-full gap-4">
       <div className="category-list grid grid-cols-2 gap-4">
@@ -672,11 +733,21 @@ const AdminPage = () => {
                 className="border p-2 rounded-lg"
               />
             </div>
-            <img
-              src={selectedCategory.image}
-              alt="Category Image"
-              className="w-32 h-32 object-cover rounded-lg"
-            />
+            <div
+              {...getRootProps()}
+              className="flex cursor-pointer border-2 border-dashed border-gray-300 p-4 aspect-square"
+            >
+              <input {...getInputProps()} className="w-full flex flex-[1]" />
+              <img
+                src={
+                  imageFile
+                    ? URL.createObjectURL(imageFile)
+                    : selectedCategory?.image || "placeholder-image.jpg"
+                }
+                alt="Category Image"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            </div>
           </div>
           <button
             onClick={saveCategoryChanges}

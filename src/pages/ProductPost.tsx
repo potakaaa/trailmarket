@@ -280,25 +280,20 @@ const ProductPost = () => {
         return;
       }
 
-      // Separate new images and existing image URLs
       const newImages = images.filter((image) => image instanceof File);
       const existingImageUrls = images.filter(
         (image) => typeof image === "string"
       );
 
-      // Upload new images
       const uploadedNewImageUrls = newImages.length
         ? await uploadImages(newImages)
         : [];
 
-      // Combine existing and new image URLs
       const updatedImages = [...existingImageUrls, ...uploadedNewImageUrls];
 
-      // Determine the main image URL
       const mainImageUrl =
         typeof mainImage === "string" ? mainImage : uploadedNewImageUrls[0];
 
-      // Update product details
       const { error: productError } = await supabase
         .from("DIM_PRODUCT")
         .update({
@@ -317,7 +312,6 @@ const ProductPost = () => {
         return;
       }
 
-      // Fetch existing images from the database
       const { data: existingImages, error: existingImagesError } =
         await supabase
           .from("DIM_PRODUCTIMAGES")
