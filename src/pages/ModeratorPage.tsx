@@ -5,9 +5,20 @@ import AdminNavBar from "./navbar/AdminNavBar";
 import TopNavBar from "./navbar/TopNavBar";
 
 const ModeratorPage = () => {
-  const { user, userList, setUserList, setProdList, prodList } =
-    useAuthContext();
+  const {
+    user,
+    userList,
+    setUserList,
+    setProdList,
+    prodList,
+    setIsAdminLoggedIn,
+    setIsLoggedIn,
+  } = useAuthContext();
   const [activeProds, setActiveProds] = useState<Prod[]>([]);
+
+  setIsLoggedIn(false);
+  setIsAdminLoggedIn(false);
+
   const fetchUsers = async () => {
     const { data, error } = await supabase.from("DIM_USER").select("*");
     if (error) {
@@ -152,7 +163,7 @@ const ModeratorPage = () => {
                       <img
                         src={prod.img}
                         alt={prod.name}
-                        className="size-14 rounded-lg m-1 border shadow-sm md:size-20 xl:size-24 2xl:size-36"
+                        className="size-14 rounded-lg m-1 border shadow-sm md:size-20 xl:size-24 2xl:size-36 object-cover"
                       />
                     </td>
                     <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3 ">
@@ -167,7 +178,7 @@ const ModeratorPage = () => {
                     <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3 ">
                       {prod.category}
                     </td>
-                    <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3 ">
+                    <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3">
                       {prod.desc}
                     </td>
                     <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
