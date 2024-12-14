@@ -1,8 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useDropzone } from "react-dropzone";
 import { Emp, Issue, Tax, useAuthContext } from "./context/AuthContext";
 import { supabase } from "../createClient";
 import TopNavBar from "./navbar/TopNavBar";
 import AdminNavBar from "./navbar/AdminNavBar";
+import Modal from "./Modal";
 
 const issueStat = ["Not Started", "In Progress", "Done"];
 
@@ -10,10 +13,16 @@ const AdminPage = () => {
   {
     /* ISSUE_ID, FEEDBACK_CAT, ISSUE_STAT, ASSIGNED_EMP, FEEDBACK_TITLE, FEEDBACK_TITLE, FEEDBACK_DESC, */
   }
-
+  const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [isAddClicked, setIsAddClicked] = useState(false);
   const [isTaxClicked, setIsTaxClicked] = useState(false);
   const [isEmpClicked, setIsEmpClicked] = useState(false);
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const { setIsLoggedIn } = useAuthContext();
+
+  setIsLoggedIn(false);
+
   interface EmpFormData {
     name: string;
     email: string;
@@ -42,6 +51,28 @@ const AdminPage = () => {
     tin: 0,
   });
   const [isAddCatClicked, setIsAddCatClicked] = useState(false);
+  const [categoryData, setCategoryData] = useState<{
+    name: string;
+    description: string;
+    imageFile: File | null;
+  }>({
+    name: "",
+    description: "",
+    imageFile: null,
+  });
+
+  const resetCategoryData = () => {
+    setCategoryData({
+      name: "",
+      description: "",
+      imageFile: null,
+    });
+  };
+
+  const handleCloseModal = () => {
+    resetCategoryData();
+    setIsCatModalOpen(false);
+  };
 
   const {
     issues,
@@ -59,6 +90,14 @@ const AdminPage = () => {
     fetchEmpList();
     fetchTaxes();
   }, [setIssues, setEmpList, setIsLoading, setIsAddClicked, setTaxes]);
+
+  const handleImageUpload = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setCategoryData((prev) => ({
+      ...prev,
+      imageFile: file,
+    }));
+  };
 
   const fetchIssues = async () => {
     const { data, error } = await supabase.from("FACT_ISSUE_TRACKER").select(`
@@ -165,10 +204,32 @@ const AdminPage = () => {
     tin: "",
   });
 
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setImageFile(file); //this is for employee forms
+    handleImageUpload(categoryData.imageFile ? [file] : acceptedFiles); //this is for category uploads... i am so sorry kapoy ireuse HAHAHAHA
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEmpFormData((prev) => ({
+        ...prev,
+        image: reader.result as string,
+      }));
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+  });
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ): void => {
-    const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -353,13 +414,64 @@ const AdminPage = () => {
       ));
   };
 
+  const handleAddCategory = () => {
+    setIsCatModalOpen(true);
+  };
+
+  const handleCategoryUpload = async () => {
+    if (!categoryData.name || !categoryData.description) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
+    try {
+      let imageUrl = "";
+
+      if (categoryData.imageFile) {
+        const uniqueName = `categories/${uuidv4()}-${
+          categoryData.imageFile.name
+        }`;
+        const { error: uploadError } = await supabase.storage
+          .from("trailmarket-images")
+          .upload(uniqueName, categoryData.imageFile);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError.message);
+          return;
+        }
+
+        imageUrl = supabase.storage
+          .from("trailmarket-images")
+          .getPublicUrl(uniqueName).data.publicUrl;
+      }
+
+      const { error: insertError } = await supabase
+        .from("DIM_CATEGORY")
+        .insert({
+          CATEGORY_NAME: categoryData.name,
+          CATEGORY_DESC: categoryData.description,
+          CATEGORY_IMAGE: imageUrl,
+        });
+
+      if (insertError) {
+        console.error("Error adding category:", insertError.message);
+        return;
+      }
+
+      alert("Category added successfully!");
+      setIsCatModalOpen(false);
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  };
+
   const renderAddAdmin = () => {
     return (
-      <div className="form-container flex flex-col sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
+      <div className="form-container flex flex-col w-full sm:px-2 md:px-4 xl:px-8 sm:mt-5 max-w-4xl self-center lg:mt-10">
         <div className="flex-none sm:flex sm:gap-2">
           <input
             placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -367,7 +479,7 @@ const AdminPage = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -376,7 +488,7 @@ const AdminPage = () => {
         <input
           type="password"
           placeholder="Password"
-          className=" w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px] "
+          className=" w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px] "
           name="password"
           value={formData.password}
           onChange={handleChange}
@@ -385,7 +497,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="age"
             value={formData.age}
             onChange={handleChange}
@@ -393,14 +505,14 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="number"
             value={formData.number}
             onChange={handleChange}
           />
           <input
             placeholder="City"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="city"
             value={formData.city}
             onChange={handleChange}
@@ -409,7 +521,7 @@ const AdminPage = () => {
 
         <div className="flex-none sm:flex sm:gap-2">
           <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
             value={formData.role}
             onChange={handleChange} // Set the current value
             name="role"
@@ -423,7 +535,7 @@ const AdminPage = () => {
           </select>
           <input
             placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_name"
             value={formData.emergency_contact_name}
             onChange={handleChange}
@@ -431,7 +543,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full text-sm xl:text-base border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_num"
             value={formData.emergency_contact_num}
             onChange={handleChange}
@@ -439,7 +551,7 @@ const AdminPage = () => {
         </div>
         <button
           id="login-button"
-          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white xl:text-base font-normal text-sm rounded-full h-10 mt-3 shadow-md transition duration-300 w-full self-center xl:h-14"
           onClick={() => handleAdminSubmit(formData)}
         >
           Submit
@@ -585,6 +697,33 @@ const AdminPage = () => {
     setSelectedCategory(category); // Set the selected category
   };
 
+  const handleCategoryDelete = async (categoryId: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase
+          .from("DIM_CATEGORY")
+          .delete()
+          .eq("CATEGORY_ID", categoryId);
+
+        if (error) {
+          console.error("Error deleting category:", error.message);
+          return;
+        }
+
+        setCategories(
+          categories.filter((category) => category.id !== categoryId)
+        );
+        alert("Category deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting category:", error);
+      }
+    }
+  };
+
   const handleCategoryInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -595,48 +734,86 @@ const AdminPage = () => {
   };
 
   const saveCategoryChanges = async () => {
-    if (!selectedCategory) {
-      alert("No category selected.");
-      return;
-    }
-
-    const { id, name, description, image } = selectedCategory;
-
+    setIsLoading(true);
+    const folderPath = "categories";
     try {
-      const { error } = await supabase
+      let newImageUrl = selectedCategory?.image;
+
+      if (imageFile) {
+        const uniqueName = `${folderPath}/${uuidv4()}-${imageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("trailmarket-images")
+          .upload(uniqueName, imageFile);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError.message);
+          return;
+        }
+
+        // Get the public URL of the uploaded image
+        newImageUrl = supabase.storage
+          .from("trailmarket-images")
+          .getPublicUrl(uniqueName).data.publicUrl;
+      }
+
+      const oldImageUrl = selectedCategory?.image; // Store the current image URL for deletion
+
+      // Update the category details in the database
+      const { id, name, description } = selectedCategory || {};
+
+      const { error: updateError } = await supabase
         .from("DIM_CATEGORY")
         .update({
           CATEGORY_NAME: name,
           CATEGORY_DESC: description,
-          CATEGORY_IMAGE: image,
+          CATEGORY_IMAGE: newImageUrl,
         })
         .eq("CATEGORY_ID", id);
 
-      if (error) {
-        console.error("Error saving category:", error.message);
-        alert("Failed to save category changes.");
-      } else {
-        alert("Category updated successfully!");
-
-        // Fetch updated categories immediately
-        const updatedCategories = await fetchCategories();
-        const formattedCategories = updatedCategories.map((category: any) => ({
-          id: category.CATEGORY_ID,
-          name: category.CATEGORY_NAME,
-          description: category.CATEGORY_DESC,
-          image: category.CATEGORY_IMAGE,
-        }));
-        setCategories(formattedCategories); // Update state with fresh data
-        setSelectedCategory(null); // Deselect category after saving
+      if (updateError) {
+        console.error("Error updating category details:", updateError.message);
+        return;
       }
+
+      // Delete the old image if a new one was uploaded
+      if (oldImageUrl && imageFile) {
+        try {
+          const filePath = new URL(oldImageUrl).pathname.replace(
+            "/storage/v1/object/public/trailmarket-images/",
+            ""
+          );
+
+          if (filePath) {
+            console.log("Deleting old image:", oldImageUrl);
+
+            const { error: deleteError } = await supabase.storage
+              .from("trailmarket-images")
+              .remove([filePath]);
+
+            if (deleteError) {
+              console.error("Error deleting old image:", deleteError.message);
+              return;
+            }
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error("Invalid URL:", oldImageUrl, error.message);
+          } else {
+            console.error("Invalid URL:", oldImageUrl);
+          }
+          return;
+        }
+      }
+      alert("Category updated successfully!");
     } catch (error) {
-      console.error("Unexpected error:", error);
-      alert("An unexpected error occurred while saving the category.");
+      console.error("Error saving category:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const renderCategoryMenu = () => (
-    <div className="flex flex-col w-full gap-4">
+    <div className="flex flex-col w-full gap-4 px-4 max-w-4xl">
       <div className="category-list grid grid-cols-2 gap-4">
         {categories.map((category) => (
           <div
@@ -644,16 +821,26 @@ const AdminPage = () => {
             className="p-4 border rounded-lg hover:shadow-lg cursor-pointer"
             onClick={() => handleCategorySelect(category)} // Select category on click
           >
-            <h3 className="text-lg font-bold">{category.name}</h3>
-            <p className="text-sm">{category.description}</p>
+            <h3 className="text-base xl:text-lg font-semibold">
+              {category.name}
+            </h3>
+            <p className="text-xs xl:text-sm font-medium">
+              {category.description}
+            </p>
+            <button
+              onClick={() => handleCategoryDelete(category.id)}
+              className="block px-4 py-2 text-sm text-center border-2 border-black rounded-xl hover:bg-red-200 bg-red-500 w-full text-black"
+            >
+              Delete Category
+            </button>
           </div>
         ))}
       </div>
 
       {selectedCategory && (
         <div className="edit-category-form flex flex-col gap-4 p-4 border rounded-lg w-full">
-          <h3 className="text-lg font-bold">Edit Category</h3>
-          <div className="flex gap-4 flex-row w-full items-center">
+          <h3 className="text-base xl:text-lg font-semibold">Edit Category</h3>
+          <div className="flex gap-4 flex-col sm:flex-row w-full items-center">
             <div className="flex gap-4 flex-col w-full">
               <input
                 type="text"
@@ -661,7 +848,7 @@ const AdminPage = () => {
                 placeholder="Category Name"
                 value={selectedCategory.name}
                 onChange={handleCategoryInputChange}
-                className="border p-2 rounded-lg"
+                className="border p-2 rounded-lg text-sm xl:text-base font-medium"
               />
               <input
                 type="text"
@@ -669,18 +856,28 @@ const AdminPage = () => {
                 placeholder="Category Description"
                 value={selectedCategory.description}
                 onChange={handleCategoryInputChange}
-                className="border p-2 rounded-lg"
+                className="border p-2 rounded-lg text-sm xl:text-base font-medium"
               />
             </div>
-            <img
-              src={selectedCategory.image}
-              alt="Category Image"
-              className="w-32 h-32 object-cover rounded-lg"
-            />
+            <div
+              {...getRootProps()}
+              className="flex cursor-pointer border-2 border-dashed border-gray-300 p-4 aspect-square"
+            >
+              <input {...getInputProps()} className="w-full flex flex-[1]" />
+              <img
+                src={
+                  imageFile
+                    ? URL.createObjectURL(imageFile)
+                    : selectedCategory?.image || "placeholder-image.jpg"
+                }
+                alt="Category Image"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            </div>
           </div>
           <button
             onClick={saveCategoryChanges}
-            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal xl:text-base text-sm rounded-full h-10 mt-3 shadow-md w-full self-center xl:h-14 hover:bg-red-400"
           >
             Save Changes
           </button>
@@ -695,7 +892,7 @@ const AdminPage = () => {
         <div className="flex-none sm:flex sm:gap-2">
           <input
             placeholder="Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="name"
             value={empFormData?.name}
             onChange={handleChangeEmp}
@@ -703,7 +900,7 @@ const AdminPage = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="email"
             value={empFormData?.email}
             onChange={handleChangeEmp}
@@ -713,7 +910,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Age"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="age"
             value={empFormData?.age}
             onChange={handleChangeEmp}
@@ -721,7 +918,7 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="number"
             value={empFormData?.contact_num}
             onChange={handleChangeEmp}
@@ -730,21 +927,24 @@ const AdminPage = () => {
 
         <div className="flex-none sm:flex sm:gap-2">
           <select
-            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-10 px-3 font-normal xl:text-base text-sm 2xl:h-14 lg:h-[42px] mb-3 xl:border-[3px]"
             value={empFormData?.role}
             onChange={handleChangeEmp} // Set the current value
             name="role"
           >
-            <option value="Admin" className="font-normal">
+            <option value="Admin" className="font-normal xl:text-base text-sm">
               Admin
             </option>
-            <option value="Moderator" className="font-normal">
+            <option
+              value="Moderator"
+              className="font-normal xl:text-base text-sm"
+            >
               Moderator
             </option>
           </select>
           <input
             placeholder="Emergency Contact Name"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_name"
             value={empFormData?.emergency_name}
             onChange={handleChangeEmp}
@@ -752,68 +952,108 @@ const AdminPage = () => {
           <input
             type="number"
             placeholder="Emergency Contact Number"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
+            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
             name="emergency_contact_num"
             value={empFormData?.emergency_contact}
             onChange={handleChangeEmp}
           />
         </div>
-        <div className="flex-none sm:flex sm:gap-2">
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            SSS
-          </label>
-          <input
-            type="number"
-            placeholder="SSS"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="sss"
-            value={empFormData?.sss ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            Philhealth
-          </label>
-          <input
-            type="number"
-            placeholder="Philhealth"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="philhealth"
-            value={empFormData?.philhealth ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            Pagibig
-          </label>
-          <input
-            type="number"
-            placeholder="Pagibig"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="pagibig"
-            value={empFormData?.pagibig ?? ""}
-            onChange={handleChangeEmp}
-          />
-          <label className="text-sm font-medium px-2 text-center justify-center align-middle lg:text-base">
-            TIN
-          </label>
-          <input
-            type="number"
-            placeholder="TIN"
-            className="w-full border-black border-2 rounded-full h-6 p-4 mb-3 font-normal 2xl:h-14 lg:py-5 xl:border-[3px]"
-            name="tin"
-            value={empFormData?.tin ?? ""}
-            onChange={handleChangeEmp}
-          />
+        <div className="flex-none flex flex-col sm:flex-row gap-1">
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              SSS
+            </label>
+            <input
+              type="number"
+              placeholder="SSS"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="sss"
+              value={empFormData?.sss ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              Philhealth
+            </label>
+            <input
+              type="number"
+              placeholder="Philhealth"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="philhealth"
+              value={empFormData?.philhealth ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              Pagibig
+            </label>
+            <input
+              type="number"
+              placeholder="Pagibig"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="pagibig"
+              value={empFormData?.pagibig ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="text-sm font-medium px-2 text-left justify-center align-middle lg:text-base">
+              TIN
+            </label>
+            <input
+              type="number"
+              placeholder="TIN"
+              className="w-full border-black border-2 rounded-full h-6 p-4 font-normal xl:text-base text-sm 2xl:h-14 lg:py-5 xl:border-[3px]"
+              name="tin"
+              value={empFormData?.tin ?? ""}
+              onChange={handleChangeEmp}
+            />
+          </div>
         </div>
         <div className="flex-none sm:flex sm:gap-2"></div>
         <button
           id="login-button"
-          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          className=" bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal xl:text-base text-sm rounded-full h-10 mt-3 shadow-md transition duration-300 w-full self-center xl:h-14"
           onClick={() => handleAdminUpdate(empFormData)}
         >
           Update
         </button>
+        <button
+          id="login-button"
+          className=" bg-red-500 text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          onClick={() => emp?.id !== undefined && handleEmployeeDelete(emp.id)}
+        >
+          Delete
+        </button>
       </div>
     );
+  };
+
+  const handleEmployeeDelete = async (empId: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase
+          .from("DIM_EMPLOYEE")
+          .delete()
+          .eq("EMP_ID", empId);
+
+        if (error) {
+          console.error("Error deleting employee:", error.message);
+          return;
+        }
+
+        setEmpList(empList.filter((employee) => employee.id !== empId));
+        alert("Employee deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+      }
+    }
   };
 
   const handleAdminUpdate = async (input: any) => {
@@ -877,36 +1117,50 @@ const AdminPage = () => {
         >
           <h1 className="text-lg font-medium">Admin Page</h1>
         </div>
-        <div className="add-admin-update-tax-container items-center justify-center flex gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsAddClicked(!isAddClicked)}
-          >
-            {isAddClicked ? "Cancel Add" : "Add Admin"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsTaxClicked(!isTaxClicked)}
-          >
-            {isTaxClicked ? "Cancel Tax" : "Update Tax"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsEmpClicked(!isEmpClicked)}
-          >
-            {!isEmpClicked ? "Employee Profile" : "Close Employee Profile"}
-          </button>
-          <button
-            className="bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-sm hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl"
-            onClick={() => setIsAddCatClicked(!isAddCatClicked)}
-          >
-            {!isAddCatClicked ? "Category Menu" : "Close Category Menu"}
-          </button>
+        <div className="add-admin-update-tax-container items-center justify-center flex flex-col gap-2 w-full sm:px-2 md:px-4 md:gap-5 xl:gap-10 xl:px-8">
+          <div className="w-full flex gap-2">
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isAddClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsAddClicked(!isAddClicked)}
+            >
+              {isAddClicked ? "Cancel Add" : "Add Admin"}
+            </button>
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isTaxClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsTaxClicked(!isTaxClicked)}
+            >
+              {isTaxClicked ? "Cancel Tax" : "Update Tax"}
+            </button>
+          </div>
+          <div className="w-full flex gap-2">
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isEmpClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsEmpClicked(!isEmpClicked)}
+            >
+              {!isEmpClicked ? "My Profile" : "Close Profile"}
+            </button>
+            <button
+              className={`bg-slate-200 bg-opacity-60 px-5 py-2 shadow-md rounded-full border-2 border-black w-full text-xs hover:border-none hover:text-base transition-all duration-300 md:text-base md:hover:text-lg xl:text-xl xl:py-3 xl:border-[3px] xl:hover:text-2xl ${
+                isAddCatClicked && "bg-green-200"
+              }`}
+              onClick={() => setIsAddCatClicked(!isAddCatClicked)}
+            >
+              {!isAddCatClicked ? "Category Menu" : "Close Category Menu"}
+            </button>
+          </div>
         </div>
-        {isAddClicked && renderAddAdmin()}
-        {isTaxClicked && renderUpdateTax()}
-        {isEmpClicked && renderEmployeeProfile()}
-        {isAddCatClicked && renderCategoryMenu()}
+        <div className="flex flex-col w-full justify-center items-center gap-5">
+          {isAddClicked && renderAddAdmin()}
+          {isTaxClicked && renderUpdateTax()}
+          {isEmpClicked && renderEmployeeProfile()}
+          {isAddCatClicked && renderCategoryMenu()}
+        </div>
 
         <div className="issuetracker-container flex flex-col w-full gap-1 my-5 rounded-md shadow-lg sm:px-2 ">
           <hr className="border-2" />
@@ -1020,8 +1274,62 @@ const AdminPage = () => {
             </table>
           </div>
         </div>
+
         <div className="issue-container"></div>
       </div>
+      <Modal
+        isOpen={isCatModalOpen}
+        onClose={handleCloseModal}
+        title="Add Category"
+      >
+        <div className="flex flex-col gap-4 p-4 justify-center items-center w-full">
+          <div {...getRootProps()} className="flex cursor-pointer">
+            <input {...getInputProps()} />
+            {categoryData.imageFile ? (
+              <img
+                src={URL.createObjectURL(categoryData.imageFile)}
+                alt="Uploaded Category"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            ) : (
+              <img
+                src="https://via.placeholder.com/150"
+                alt="Category Placeholder"
+                className="w-32 h-32 object-cover rounded-lg"
+              />
+            )}
+          </div>
+          <input
+            type="text"
+            placeholder="Category Name"
+            className="border p-2 rounded-lg w-full"
+            name="name"
+            onChange={(e) =>
+              setCategoryData((prev) => ({
+                ...prev,
+                name: e.target.value, // Update name in state
+              }))
+            }
+          />
+          <textarea
+            placeholder="Category Description"
+            className="border p-2 rounded-lg w-full"
+            name="description"
+            onChange={(e) =>
+              setCategoryData((prev) => ({
+                ...prev,
+                description: e.target.value, // Update description in state
+              }))
+            }
+          />
+          <button
+            onClick={handleCategoryUpload}
+            className="bg-gradient-to-r from-[#191847] to-[#000000] text-white font-normal rounded-full h-10 mt-3 shadow-md transition duration-300 w-[20rem] self-center xl:h-14"
+          >
+            Add Category
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
