@@ -185,28 +185,28 @@ const CartPage = () => {
   }, [cart]);
 
   return (
-    <div className="mb-5">
+    <div>
       <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-2 sm:p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
         <p className="text-xl sm:text-3xl text-white text-center font-semibold">
           Shopping Cart
         </p>
       </div>
-      <div className="CartBody flex flex-col lg:flex-row h-full m-5  min-h-screen">
-        <div className="CartItemList flex flex-col items-stretch lg:w-2/3 sm:w-full gap-5 h-full">
+      <div className="CartBody flex flex-col m-5">
+        <div className="CartItemList flex flex-col items-stretch sm:w-full gap-5 h-full mb-5">
           {cart.map((item) => (
             <button
               key={item?.prod_id}
-              className="CartItem shadow-lg flex-1 h-full flex rounded-xl xl:max-h-[300px] text-left"
+              className="CartItem shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex-1 h-screen flex flex-row rounded-xl text-left max-h-[500px] items-center"
               onClick={() => nav(`/product/${item?.prod_id}`)}
             >
-              <div className="CartItemImage w-[30%] overflow-hidden rounded-xl">
+              <div className="w-1/4 h-full flex-1 flex flex-col">
                 <img
                   src={item?.img}
                   alt={item?.name}
-                  className="Image w-full h-full object-cover"
+                  className="Image flex-1 rounded-2xl object-cover max-h-[300px] min-h-[200px]" 
                 />
               </div>
-              <div className="CartItemInfo m-6 flex gap-2 flex-col w-[70%]">
+              <div className="CartItemInfo m-6 flex flex-col w-[70%]">
                 <div className="CartItemTop">
                   <div className="CartItemSeller flex items-center w-full">
                     <div className="CartItemSellerImage bg-gray-700 size-3 mr-2 rounded-full"></div>
