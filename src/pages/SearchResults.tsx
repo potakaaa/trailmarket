@@ -34,11 +34,13 @@ const SearchResults = () => {
     };
 
   const handleSortOrderChange = (order: string) => {
-    setDateOrder(order);
+    setDateOrder((prevOrder) => (prevOrder === order ? "none" : order));
+    setPriceOrder("none"); // Turn off price sorting when date sorting is applied
   };
 
   const handlePriceOrderChange = (order: string) => {
     setPriceOrder((prevOrder) => (prevOrder === order ? "none" : order));
+    setDateOrder("none"); // Turn off date sorting when price sorting is applied
   };
 
   useEffect(() => {
@@ -55,47 +57,47 @@ const SearchResults = () => {
   }, [setIsFetched]);
 
   useEffect(() => {
-    let filtered: ProductType[] = [];
+    let processedProducts: ProductType[] = [...products];
 
+    // Step 1: Apply search filter
     if (searchState) {
-      filtered = products.filter((product) =>
+      processedProducts = processedProducts.filter((product) =>
         product.name.toLowerCase().includes(searchState.toLowerCase())
       );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
     }
 
-    if (selectedCategory) {
-      if (selectedCategory === CategoryArray[0].CategoryName) {
-        setFilteredProducts(products);
-      } else {
-        filtered = filtered.filter(
-          (product) => product.category === selectedCategory
-        );
-      }
+    // Step 2: Apply category filter
+    if (
+      selectedCategory &&
+      selectedCategory !== CategoryArray[0].CategoryName
+    ) {
+      processedProducts = processedProducts.filter(
+        (product) => product.category === selectedCategory
+      );
     }
 
-    filtered.sort((a, b) => {
-      // Date order sorting (default priority)
+    // Step 3: Apply sorting logic
+    processedProducts.sort((a, b) => {
+      // Sorting by date
       if (dateOrder === "latest") {
-        if (b.id !== a.id) return b.id - a.id;
+        return b.id - a.id; // Higher ID = Latest
       } else if (dateOrder === "oldest") {
-        if (a.id !== b.id) return a.id - b.id;
+        return a.id - b.id; // Lower ID = Oldest
       }
 
-      // Price order sorting (secondary priority)
+      // Sorting by price
       if (priceOrder === "high") {
-        return b.price - a.price;
+        return b.price - a.price; // Higher price first
       } else if (priceOrder === "low") {
-        return a.price - b.price;
+        return a.price - b.price; // Lower price first
       }
 
-      // If all else is equal, keep the original order
+      // Default: No sorting
       return 0;
     });
 
-    setFilteredProducts(filtered);
+    // Update filtered products state
+    setFilteredProducts(processedProducts);
   }, [searchState, selectedCategory, products, dateOrder, priceOrder]);
 
   async function handleCategoryClicked(categoryName: string) {
