@@ -675,9 +675,9 @@ const UserPage = () => {
                   </div>
                   <button type="submit"></button>
                 </form>
-                <div className="Payment-methods flex flex-col lg:flex-row items-center align-start flex-1">
-                  <div className="w-full lg:w-32 flex">
-                    <label className="font-normal text-sm lg:text-base">
+                <div className="Payment-methods flex flex-col items-left">
+                  <div className="flex w-full">
+                    <label className="font-normal text-sm lg:text-base pb-5 w-full">
                       Payment Options
                     </label>
                   </div>
@@ -687,7 +687,7 @@ const UserPage = () => {
                         method.status !== "deleted" && (
                           <div
                             key={method.id}
-                            className="flex flex-row items-center space-x-2 w-full"
+                            className="flex flex-row items-center"
                           >
                             <select
                               value={method.method}
@@ -701,7 +701,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="rounded-full p-2 pl-5 rounded-full p-2 pl-5 flex-0 w-[2em] lg:flex-1 sm:w-52 md:w-32 font-medium text-xs md:text-sm lg:text-base border-[2px] border-black"
+                              className="p-2 pl-5 p-2 pl-5 flex-0 lg:flex-1 font-medium text-xs md:text-sm lg:text-base border-2 border-black border-r-0 rounded-l-full w-1/2"
                             >
                               {paymentMethodOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -724,7 +724,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5"
+                              className="p-2 pl-5 p-2 pl-5 flex-0 lg:flex-1 font-medium text-xs md:text-sm lg:text-base border-2 border-black rounded-r-full w-1/2"
                             />
 
                             {isEditing &&
