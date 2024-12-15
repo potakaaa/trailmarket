@@ -16,6 +16,8 @@ const CartPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState(0);
 
+  console.log(tax);
+
   const {
     cart,
     setCart,
@@ -105,6 +107,8 @@ const CartPage = () => {
     nav("/checkout");
     console.log(checkoutProds);
   };
+
+  console.log(handleCheckout);
 
   const getOrders = async () => {
     setIsLoading(true);
@@ -199,11 +203,11 @@ const CartPage = () => {
               className="CartItem shadow-[0_0px_20px_rgba(0,0,0,0.2)] rounded-2xl flex flex-col md:flex-row items-stretch"
               onClick={() => nav(`/product/${item?.prod_id}`)}
             >
-             <div className="md:w-3/4 w-full h-full flex-1 flex flex-col">
+              <div className="md:w-3/4 w-full h-full flex-1 flex flex-col">
                 <img
                   src={item?.img}
                   alt={item?.name}
-                  className="Image flex-1 rounded-2xl object-cover max-h-[250px] min-h-[250px]" 
+                  className="Image flex-1 rounded-2xl object-cover max-h-[250px] min-h-[250px]"
                 />
               </div>
               <div className="CartItemInfo p-6 flex flex-col md:w-3/4 w-full justify-center">
