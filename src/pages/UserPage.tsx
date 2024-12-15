@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import UploadIcon from "/assets/Upload.png";
+import placeholder from "/assets/placeholder.png";
 
 type User = {
   id: string;
@@ -15,11 +17,10 @@ type User = {
   contact_num: number | null;
   email: string;
   facebook: string | null;
-  image: string | "https://via.placeholder.com/150";
+  image: string | "/assets/placeholder.png";
   isEditing?: boolean;
 };
 
-const placeholder = "https://via.placeholder.com/150";
 const UserPage = () => {
   const nav = useNavigate();
   const { user, setIsLoading } = useAuthContext();
@@ -552,50 +553,43 @@ const UserPage = () => {
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto px-5 pb-5">
       <div className="seller-page flex flex-col flex-1 w-full rounded-xl overflow-hidden gap-5">
-        <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 mx-5 rounded-2xl 2xl:mx-8 text-white text-center">
+        <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 rounded-2xl 2xl:mx-8 text-white text-center">
           <p className="text-xl sm:text-3xl text-white text-center font-semibold">
           User Page
           </p>
         </div>
-        <div className="top-seller-page md:flex-row border flex flex-[5] flex-col rounded-xl p-4 border-gray-300 gap-5 mx-5">
-          <div className="flex flex-1  rounded-tr-xl rounded-tl-xl p-1 lg:p-6 flex-col">
-            <div className="bigcontain flex flex-col ">
-              <div className="flex flex-row">
+        <div className="top-seller-page flex-col shadow-[0_0px_20px_rgba(0,0,0,0.2)]  flex flex-[5] xl:flex-row rounded-xl p-10 gap-5">
+          <div className="flex flex-1 rounded-tr-xl rounded-tl-xl flex-col">
+            <div className="bigcontain flex flex-col gap-5">
+              <div className="flex flex-row border-b-2 border-gray-400 pb-10 h-full items-center justify-center md:justify-start">
                 <div
-                  className={`${
-                    isEditing ? "w-24 h-24" : "size-10 lg:size-12"
-                  } rounded-full overflow-hidden border border-black`}
-                >
-                  <div {...getRootProps()} className="h-full w-full">
+                  className="rounded-full overflow-hidden border-2 border-black">
+                  <div {...getRootProps()} className="">
                     <input {...getInputProps()} />
                     <img
-                      className="object-cover h-full w-full"
-                      src={tempFormValues.image || placeholder}
+                      className="object-cover w-20 h-20"
+                      src={isEditing ? UploadIcon : tempFormValues.image || placeholder}
                       alt="Profile"
                     />
                   </div>
                 </div>
                 <div className="flex flex-col ml-4">
-                  <p className=" font-normal text-xs lg:text-sm">
+                  <p className="font-normal text-md lg:text-lg">
                     Seller Dashboard
                   </p>
-                  <h1 className=" text-xl lg:text-2xl">{pageOwner?.name}</h1>
+                  <h1 className="text-4xl">{pageOwner?.name}</h1>
                 </div>
               </div>
-              {isEditing && (
-                <p className="text-wrap text-xs w-24">
-                  Drop image here, or click to select
-                </p>
-              )}
-              <div className="details mt-6 flex flex-col space-y-4">
-                <form className="flex flex-col space-y-4">
-                  <div className="flex flex-col lg:flex-row items-center">
-                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+              {}
+              <div className="details mt-6 flex flex-col gap-5">
+                <form className="flex flex-col gap-5 pb-5 mb-5 border-b-2 border-gray-400">
+                  <div className="flex flex-col lg:flex-row lg:items-center sm:items-start gap-2">
+                    <label className="w-1/6 font-normal text-sm lg:text-base">
                       Name
                     </label>
                     <input
                       id="name"
-                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                      className="flex-1 w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5 w-8/9"
                       type="text"
                       value={tempFormValues.name}
                       readOnly={!isOwner || !isEditing}
@@ -607,13 +601,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-col lg:flex-row items-center">
-                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                  <div className="flex flex-col lg:flex-row lg:items-center sm:items-start gap-2">
+                    <label className="w-1/6 font-normal text-sm lg:text-base">
                       Age
                     </label>
                     <input
                       id="age"
-                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                      className="flex-1 rounded-full p-2 pl-5 w-full font-medium text-sm lg:text-base border-2 border-black"
                       type="number"
                       value={tempFormValues.age ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -625,14 +619,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-
-                  <div className="flex flex-col lg:flex-row items-center">
-                    <label className="w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                  <div className="flex flex-col lg:flex-row lg:items-center sm:items-start gap-2">
+                    <label className="w-1/6 font-normal text-sm lg:text-base">
                       Contact No
                     </label>
                     <input
                       id="contact"
-                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                      className="flex-1 w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5"
                       type="text"
                       value={tempFormValues.contact_num ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -644,13 +637,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-col lg:flex-row items-center">
-                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                  <div className="flex flex-col lg:flex-row lg:items-center sm:items-start gap-2">
+                    <label className="w-1/6 font-normal text-sm lg:text-base">
                       Email Address
                     </label>
                     <input
                       id="email"
-                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                      className="flex-1 w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5"
                       type="email"
                       value={tempFormValues.email}
                       readOnly={!isOwner || !isEditing}
@@ -662,13 +655,13 @@ const UserPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-col lg:flex-row items-center">
-                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                  <div className="flex flex-col lg:flex-row lg:items-center sm:items-start gap-2">
+                    <label className="w-1/6 font-normal text-sm lg:text-base">
                       Facebook
                     </label>
                     <input
                       id="facebook"
-                      className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                      className="flex-1 w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5"
                       type="text"
                       value={tempFormValues.facebook ?? ""}
                       readOnly={!isOwner || !isEditing}
@@ -680,16 +673,14 @@ const UserPage = () => {
                       }
                     />
                   </div>
-
                   <button type="submit"></button>
                 </form>
-                <div className="Payment-methods flex flex-col lg:flex-row items-center align-start  flex-1 w-full">
-                  <div className="w-full lg:w-32 flex align-top ">
-                    <label className=" w-full px-2 lg:px-2 font-normal lg:w-32 text-sm lg:text-base">
+                <div className="Payment-methods flex flex-col lg:flex-row items-center align-start flex-1">
+                  <div className="w-full lg:w-32 flex">
+                    <label className="font-normal text-sm lg:text-base">
                       Payment Options
                     </label>
                   </div>
-
                   <div className="flex flex-col space-y-4 flex-grow-0 w-full">
                     {tempPaymentMethods.map(
                       (method) =>
@@ -710,7 +701,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="rounded-xl flex-0 w-[2em] lg:flex-1 sm:w-52 md:w-32 font-medium text-xs md:text-sm lg:text-base border-2 border-black p-1"
+                              className="rounded-full p-2 pl-5 rounded-full p-2 pl-5 flex-0 w-[2em] lg:flex-1 sm:w-52 md:w-32 font-medium text-xs md:text-sm lg:text-base border-[2px] border-black"
                             >
                               {paymentMethodOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -733,7 +724,7 @@ const UserPage = () => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black p-1"
+                              className="flex-1 rounded-xl w-full font-medium text-sm lg:text-base border-2 border-black rounded-full p-2 pl-5"
                             />
 
                             {isEditing &&
@@ -772,10 +763,10 @@ const UserPage = () => {
                     )}
                     {isOwner && isEditing && (
                       <form onSubmit={handleAddPaymentMethod}>
-                        <div className="flex flex-row">
+                        <div className="flex flex-row py-5">
                           {/* Dropdown for Payment Method */}
                           <select
-                            className="flex-[1] flex rounded-tl-xl text-xs rounded-bl-xl border-black border-2 p-2 w-full bg-gray-100"
+                            className="flex-[1] flex rounded-l-full border-2 border-black border-r-0 p-2 pl-4 w-full bg-gray-100 font-medium" 
                             value={newPaymentMethod.method}
                             onChange={(e) =>
                               setNewPaymentMethod((prev) => ({
@@ -785,10 +776,10 @@ const UserPage = () => {
                             }
                           >
                             <option value="" disabled>
-                              Select Payment Method
+                              Payment Method
                             </option>
                             {paymentMethodOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
+                              <option key={option.value} value={option.value} className="text-sm font-medium">
                                 {option.label}
                               </option>
                             ))}
@@ -798,7 +789,7 @@ const UserPage = () => {
                           <input
                             type="text"
                             placeholder="Account Number"
-                            className="flex-[5] flex rounded-tr-xl rounded-br-xl border-2 border-black p-1"
+                            className="w-3/4 flex rounded-r-full border-2 border-black border-black p-1"
                             value={newPaymentMethod.account}
                             onChange={(e) =>
                               setNewPaymentMethod((prev) => ({

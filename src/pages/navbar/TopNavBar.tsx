@@ -111,7 +111,7 @@ const TopNavBar = () => {
     <div
       className="main w-full
     flex justify-between items-center
-    bg-[#202020] text-white mb-3
+    bg-[#202020] text-white mb-1
     md:px-3
     text-[12px] lg:text-[15px]
     2xl:text-[17px]
