@@ -192,7 +192,7 @@ const CartPage = () => {
         </p>
       </div>
       <div className="CartBody flex flex-col h-full my-5">
-        <div className="CartItemList flex flex-col xl:grid xl:grid-cols-1 xl:grid-cols-2 gap-5">
+        <div className="CartItemList flex flex-col xl:grid xl:grid-cols-1 2xl:grid-cols-2 gap-5">
           {cart.map((item) => (
             <button
               key={item?.prod_id}
