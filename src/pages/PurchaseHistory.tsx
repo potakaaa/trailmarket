@@ -324,7 +324,7 @@ const OrderPage = () => {
               filteredPlacedOrders?.map((order) => (
                 <div key={order.id} className="flex flex-row my-5">
                   <button
-                    className="flex flex-row"
+                    className="flex flex-row w-full"
                     onClick={() => nav("/product/" + order.product.id)}
                   >
                     <img
@@ -336,9 +336,9 @@ const OrderPage = () => {
                       className="orderItemImage w-20 h-20 object-cover rounded-lg"
                     />
 
-                    <div className="flex flex-row items-center justify-between w-full ml-5">
-                      <div className="OrderItemInformation">
-                        <p className="OrderItemName text-lg md:text-sm xl:text-base">
+                    <div className="flex flex-row items-center justify-between w-full text-left ml-5">
+                      <div className="OrderItemInformation w-full">
+                        <p className="OrderItemName text-sm md:text-lg xl:text-base">
                           {order.product.name}
                         </p>
                         <p className="orderItemQuantity text-xs md:text-sm xl:text-base text-gray-700 font-medium">
@@ -358,39 +358,38 @@ const OrderPage = () => {
                       </div>
                     </div>
                   </button>
-                  <select
-                    className="border-2 border-black rounded-lg p-2 ml-5"
-                    value={order.payment.payment_status}
-                    disabled
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-
-                  <select
-                    className="border-2 border-black rounded-lg p-2 ml-5"
-                    onChange={(e) => {
-                      const value = e.target.value;
-
-                      if (value === "Delete") {
-                        deleteOrder(order.meetup.meetup_id); // Call delete function
-                      } else if (value === "Details") {
-                        handleOpenModal(order); // Open the modal with order details
-                      }
-
-                      // Reset the select value back to "Options" after the action
-                      e.target.value = "Options";
-                    }}
-                    defaultValue="Options"
-                  >
-                    <option value="Options" disabled>
-                      Options
-                    </option>
-                    {order.payment.payment_status === "Completed" && (
-                      <option value="Delete">Delete</option>
-                    )}
-                    <option value="Details">Details</option>
-                  </select>
+                  <div className="flex flex-col gap-3 md:flex-row md:gap-0 w-full h-full justify-end items-center self-center">
+                    <select
+                      className="border-2 border-black rounded-lg p-2 ml-5 h-full self-end md:self-center"
+                      value={order.payment.payment_status}
+                      disabled
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                    <select
+                      className="border-2 border-black rounded-lg p-2 ml-5 h-full self-end md:self-center"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === "Delete") {
+                          deleteOrder(order.meetup.meetup_id); // Call delete function
+                        } else if (value === "Details") {
+                          handleOpenModal(order); // Open the modal with order details
+                        }
+                        // Reset the select value back to "Options" after the action
+                        e.target.value = "Options";
+                      }}
+                      defaultValue="Options"
+                    >
+                      <option value="Options" disabled>
+                        Options
+                      </option>
+                      {order.payment.payment_status === "Completed" && (
+                        <option value="Delete">Delete</option>
+                      )}
+                      <option value="Details">Details</option>
+                    </select>
+                  </div>
                 </div>
               ))
             ) : (
@@ -406,7 +405,7 @@ const OrderPage = () => {
             <select
               value={receivedFilter}
               onChange={(e) => setReceivedFilter(e.target.value)} // Use receivedFilter
-              className="border-2 border-black rounded-lg p-2"
+              className="border-2 border-black rounded-lg p-2 "
             >
               <option value="All">All</option>
               <option value="Pending">Pending</option>
@@ -417,7 +416,7 @@ const OrderPage = () => {
               filteredReceivedOrders?.map((order) => (
                 <div key={order.id} className="flex flex-row my-5">
                   <button
-                    className="flex flex-row"
+                    className="flex flex-row w-full"
                     onClick={() => nav("/product/" + order.product.id)}
                   >
                     <img
@@ -429,7 +428,7 @@ const OrderPage = () => {
                       className="orderItemImage w-20 h-20 object-cover rounded-lg"
                     />
 
-                    <div className="flex flex-row items-center justify-between w-full ml-5">
+                    <div className="flex flex-row items-center justify-between w-full ml-5 text-left">
                       <div className="OrderItemInformation">
                         <p className="OrderItemName text-lg md:text-sm xl:text-base">
                           {order.product.name}
@@ -451,36 +450,38 @@ const OrderPage = () => {
                       </div>
                     </div>
                   </button>
-                  <select
-                    className="border-2 border-black rounded-lg p-2 ml-5"
-                    value={order.payment.payment_status}
-                    onChange={(e) =>
-                      updatePaymentStatus(order.order_id, e.target.value)
-                    }
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                  {order.payment.payment_status === "Completed" && (
+                  <div className="flex flex-col gap-3 md:flex-row md:gap-0 w-full h-full justify-end items-center self-center">
                     <select
-                      className="border-2 border-black rounded-lg p-2 ml-5"
-                      onChange={(e) => {
-                        if (e.target.value === "Delete") {
-                          deleteOrder(order.meetup.meetup_id);
-                        }
-                      }}
-                      defaultValue="Options"
+                      className="border-2 border-black rounded-lg p-2 ml-5 h-full self-end md:self-center"
+                      value={order.payment.payment_status}
+                      onChange={(e) =>
+                        updatePaymentStatus(order.order_id, e.target.value)
+                      }
                     >
-                      <option value="Options" disabled>
-                        Options
-                      </option>
-                      <option value="Delete">Delete</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Completed">Completed</option>
                     </select>
-                  )}
+                    {order.payment.payment_status === "Completed" && (
+                      <select
+                        className="border-2 border-black rounded-lg p-2 ml-5 h-full self-end md:self-center"
+                        onChange={(e) => {
+                          if (e.target.value === "Delete") {
+                            deleteOrder(order.meetup.meetup_id);
+                          }
+                        }}
+                        defaultValue="Options"
+                      >
+                        <option value="Options" disabled>
+                          Options
+                        </option>
+                        <option value="Delete">Delete</option>
+                      </select>
+                    )}
+                  </div>
                 </div>
               ))
             ) : (
-              <p>No orders Recieved</p>
+              <p>No orders Received</p>
             )}
           </div>
         </div>
@@ -520,38 +521,38 @@ const OrderDetailsModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg p-5 w-3/4 max-w-lg">
         <h2 className="text-xl font-semibold mb-4">Order Details</h2>
-        <p>
+        <p className="font-medium">
           <strong>Product:</strong> {order.product.name}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Quantity:</strong> {order.quantity}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Price:</strong> PHP {order.product.price}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Subtotal:</strong> PHP {subTotal}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Tax:</strong> PHP {taxAmount}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Total Price:</strong> PHP {totalPrice}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Meetup Location:</strong> {order.meetup.meetup_location}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Meetup Date:</strong> {order.meetup.meetup_date}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Meetup Time:</strong> {order.meetup.meetup_time}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Payment Method:</strong>{" "}
           {order.payment.payment_method.payment_method}
         </p>
-        <p>
+        <p className="font-medium">
           <strong>Payment Status:</strong> {order.payment.payment_status}
         </p>
         <button
