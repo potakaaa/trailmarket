@@ -148,13 +148,23 @@ const CheckoutPage = () => {
     const tempTax = taxes.find(
       (tax) => subTotal >= tax.low && subTotal <= tax.high
     );
-    console.log("TAX", tempTax);
-    if (tempTax?.amount) {
-      setTax((tempTax?.amount / 100) * subTotal);
-      console.log("TOTAL", subTotal + tempTax?.amount);
-      setTotalAmount(Math.round(subTotal + (tempTax?.amount / 100) * subTotal));
-      return tempTax.id;
-    }
+
+    const calculatedTax = tempTax ? (tempTax.amount / 100) * subTotal : 0; // Default to 0 if no tax bracket matches
+
+    setTax(calculatedTax); // Update the tax state
+
+    const newTotalAmount = subTotal + calculatedTax;
+    setTotalAmount(Math.round(newTotalAmount)); // Update total amount
+    console.log(
+      "Subtotal:",
+      subTotal,
+      "Tax:",
+      calculatedTax,
+      "Total:",
+      newTotalAmount
+    );
+
+    return tempTax ? tempTax.id : null; // Return tax ID or null
   };
 
   const calculateSubTotal = () => {
