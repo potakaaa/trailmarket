@@ -31,6 +31,24 @@ const OrderPage = () => {
   const { setIsLoading, user } = useAuthContext();
   const [taxes, setTaxes] = useState<Tax[]>([]);
 
+  const fetchTaxes = async () => {
+    try {
+      const { data } = await supabase.from("DIM_TAX").select("*");
+      if (data) {
+        const tempTaxes: Tax[] = data.map((tax: any) => ({
+          id: tax.TAX_ID,
+          low: tax.TAX_BRACKET_LOW,
+          high: tax.TAX_BRACKET_HIGH,
+          amount: tax.TAX_AMOUNT,
+        }));
+        setTaxes(tempTaxes);
+        console.log("TAX", taxes);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleOpenModal = (order: any) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
@@ -92,12 +110,16 @@ const OrderPage = () => {
         `
         ORDER_ID, 
         QUANTITY, 
+        DIM_TAX(TAX_AMOUNT),
         DIM_PRODUCT(PRODUCT_ID, PROD_NAME, PROD_PRICE, DIM_PRODUCTIMAGES(PRODUCT_IMAGE, isMainImage)), 
         DIM_MEETUP(MEETUP_ID, MEETUP_LOCATION, MEETUP_DATE, MEETUP_TIME), 
         DIM_PAYMENT(PAYMENT_STATUS, PAYMENT_METHOD(PAYMENT_METHOD, ACCOUNT_NUMBER))
+        
         `
       )
       .eq("BUYER_FK", user?.id);
+
+    console.log("Data:", JSON.stringify(data, null, 2));
     if (error) {
       console.error("Error fetching orders:", error.message);
       alert("An error occurred while fetching orders.");
@@ -134,6 +156,9 @@ const OrderPage = () => {
                 account_number:
                   order.DIM_PAYMENT[0]?.PAYMENT_METHOD.ACCOUNT_NUMBER,
               },
+            },
+            tax: {
+              tax_amount: order.DIM_TAX.TAX_AMOUNT,
             },
           };
         });
@@ -464,6 +489,7 @@ const OrderPage = () => {
         <OrderDetailsModal
           order={selectedOrder}
           onClose={() => setIsModalOpen(false)}
+          tax={selectedOrder.tax.tax_amount}
         ></OrderDetailsModal>
       )}
     </div>
@@ -474,12 +500,21 @@ export default OrderPage;
 
 const OrderDetailsModal = ({
   order,
+  tax,
   onClose,
 }: {
   order: any;
+  tax: number;
   onClose: () => void;
 }) => {
   if (!order) return null;
+
+  // Calculate subtotal, tax, and total
+  const subTotal = order.quantity * order.product.price;
+
+  const taxAmount = tax ? Math.round((tax / 100) * subTotal) : 0;
+
+  const totalPrice = subTotal + taxAmount;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -492,7 +527,16 @@ const OrderDetailsModal = ({
           <strong>Quantity:</strong> {order.quantity}
         </p>
         <p>
-          <strong>Price: NEED TO APPLY TAXES</strong> PHP {order.product.price}
+          <strong>Price:</strong> PHP {order.product.price}
+        </p>
+        <p>
+          <strong>Subtotal:</strong> PHP {subTotal}
+        </p>
+        <p>
+          <strong>Tax:</strong> PHP {taxAmount}
+        </p>
+        <p>
+          <strong>Total Price:</strong> PHP {totalPrice}
         </p>
         <p>
           <strong>Meetup Location:</strong> {order.meetup.meetup_location}
