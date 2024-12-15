@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuthContext } from "./context/AuthContext";
 import { useEffect } from "react";
 import { supabase } from "../createClient";
-import { Product } from "./context/Globals";
-import { User } from "./context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 interface Tax {
@@ -48,6 +46,8 @@ const OrderPage = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  console.log(fetchTaxes);
 
   const handleOpenModal = (order: any) => {
     setSelectedOrder(order);
