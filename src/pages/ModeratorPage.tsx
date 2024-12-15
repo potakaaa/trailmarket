@@ -151,7 +151,7 @@ const ModeratorPage = () => {
               <tbody>
                 {activeProds.map((prod, index) => (
                   <tr key={index} className="border-t">
-                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3 text-center items-center justify-center flex">
+                    <td className="text-xs md:text-sm xl:text-base font-normal px-2 py-2 md:py-3 text-center items-center justify-center self-center">
                       <img
                         src={prod.img}
                         alt={prod.name}
@@ -170,7 +170,7 @@ const ModeratorPage = () => {
                     <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3 ">
                       {prod.category}
                     </td>
-                    <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3">
+                    <td className="text-xs md:text-sm xl:text-base 2xl:text-lg font-medium px-2 py-2 md:py-3 whitespace-normal flex w-96">
                       {prod.desc}
                     </td>
                     <td className="text-xs md:text-sm xl:text-base font-medium px-2 py-2 md:py-3 text-center">
