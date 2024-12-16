@@ -518,6 +518,7 @@ const UserPage = () => {
       return;
     }
 
+    console.log(pageOwner.id);
     try {
       const { error: userError } = await supabase
         .from("DIM_USER")
@@ -548,27 +549,30 @@ const UserPage = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
     }
-  } 
+  }
 
   return (
     <div className="app-wrapper flex flex-col items-center justify-center min-h-screen overflow-y-auto px-5 pb-5">
       <div className="seller-page flex flex-col flex-1 w-full rounded-xl overflow-hidden gap-5">
         <div className="CartHeader bg-gradient-to-r from-[#282667] to-slate-900 p-4 rounded-2xl 2xl:mx-8 text-white text-center">
           <p className="text-xl sm:text-3xl text-white text-center font-semibold">
-          User Page
+            User Page
           </p>
         </div>
         <div className="top-seller-page flex-col shadow-[0_0px_20px_rgba(0,0,0,0.2)]  flex flex-[5] xl:flex-row rounded-xl p-10 gap-5">
           <div className="flex flex-1 rounded-tr-xl rounded-tl-xl flex-col">
             <div className="bigcontain flex flex-col gap-5">
               <div className="flex flex-row border-b-2 border-gray-400 pb-10 h-full items-center justify-center md:justify-start">
-                <div
-                  className="rounded-full overflow-hidden border-2 border-black">
+                <div className="rounded-full overflow-hidden border-2 border-black">
                   <div {...getRootProps()} className="">
                     <input {...getInputProps()} />
                     <img
                       className="object-cover w-20 h-20"
-                      src={isEditing ? UploadIcon : tempFormValues.image || placeholder}
+                      src={
+                        isEditing
+                          ? UploadIcon
+                          : tempFormValues.image || placeholder
+                      }
                       alt="Profile"
                     />
                   </div>
@@ -766,7 +770,7 @@ const UserPage = () => {
                         <div className="flex flex-row py-5">
                           {/* Dropdown for Payment Method */}
                           <select
-                            className="flex-[1] flex rounded-l-full border-2 border-black border-r-0 p-2 pl-4 w-full bg-gray-100 font-medium" 
+                            className="flex-[1] flex rounded-l-full border-2 border-black border-r-0 p-2 pl-4 w-full bg-gray-100 font-medium"
                             value={newPaymentMethod.method}
                             onChange={(e) =>
                               setNewPaymentMethod((prev) => ({
@@ -779,7 +783,11 @@ const UserPage = () => {
                               Payment Method
                             </option>
                             {paymentMethodOptions.map((option) => (
-                              <option key={option.value} value={option.value} className="text-sm font-medium">
+                              <option
+                                key={option.value}
+                                value={option.value}
+                                className="text-sm font-medium"
+                              >
                                 {option.label}
                               </option>
                             ))}
@@ -835,7 +843,7 @@ const UserPage = () => {
                   ))}
                 {isOwner && (
                   <button
-                    onClick={deleteUser}
+                    onClick={() => deleteUser()}
                     className="px-3 py-2 text-xs border-2 border-black bg-red-700 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-white hover:text-black transition duration-300 font-normal xl:p-3 xl:px-6 xl:text-sm xl:mr-3 2xl:text-xl w-full"
                   >
                     Delete User
