@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChevronDown from "../../../public/assets/Chevron.svg";
 import LogOut from "../../../public/assets/LogOut.svg";
 import Person from "../../../public/assets/Person.svg";
@@ -69,6 +69,23 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
   };
 
   const nav = useNavigate();
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (event: any) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownRightIconsOpen(false);
+      setDropdownCategoryOpen(false);
+    }
+  };
+
+  // Add and clean up event listener for clicks
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="NavBar mb-5 flex flex-col xl:flex-row 2xl:flex-row justify-center items-center lg:px-10 md:px-5 px-5 xl:px-10 w-full">
@@ -153,7 +170,7 @@ const NavBar: React.FC<NavBarProps> = ({ obj }) => {
               </button>
             ))}
           </div>
-          <div className="dropdown flex md:hidden relative">
+          <div className="dropdown flex md:hidden relative" ref={dropdownRef}>
             <button
               onClick={toggleRightIconsDropdown}
               className="flex items-center pl-2"
