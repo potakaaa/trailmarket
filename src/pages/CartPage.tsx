@@ -196,9 +196,13 @@ const CartPage = () => {
         </p>
       </div>
       <div className="CartBody flex flex-col h-full my-5">
-        <div className="CartItemList flex flex-col xl:grid xl:grid-cols-1 2xl:grid-cols-2 gap-5">
+        <div
+          className={`CartItemList flex flex-col xl:grid xl:grid-cols-1 ${
+            cart.length && "2xl:grid-cols-2"
+          } gap-5`}
+        >
           {!cart.length ? (
-            <h1 className="flex items-center justify-center text-xl">
+            <h1 className="flex items-center justify-center w-full text-xl">
               No items in cart
             </h1>
           ) : (
