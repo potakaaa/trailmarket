@@ -642,6 +642,7 @@ const ProductPage = () => {
                         satisfied
                       </h2>
                     </div>
+                    {/* USER REVIEW EDIT IS NOT VISIBLE*/}
                     {reviews.map((review) => (
                       <div className="review-preview w-full max-h-full overflow-y-auto flex flex-col items-start justify-start break-all px-3 my-1 mb-3 overflow-hidden">
                         <div className="flex flex-col items-start justify-start rounded-lg m-2 w-full ">
